@@ -10,15 +10,15 @@ import type {
   Unite,
 } from '../types';
 
-// v11: mevcut 213 soru arsive cekildi (yeni soru seti baslayacak) —
-// eski cache'lerde hala onaylı sorular var, invalidate gerekir.
-// v10 not'u: `icerik` JSONB kolonları (unite_modulleri,
-// modul_alt_basliklari, unite_konulari) liste yüklemesinde çekilmiyor,
-// lazy load yapılıyor (egress optimizasyonu).
-const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v11';
+// v13: sorular.muavinler jsonb kolonu eklendi — soruya özel muavin sözlüğü.
+// HesapKoduInput global muavinlerle birleştirip dropdown'da gösterir.
+// v12 not'u: atölye soruları junction tablosundan yükleniyor.
+// v11 not'u: mevcut 213 soru arsive cekildi.
+// v10 not'u: `icerik` JSONB kolonları liste yüklemesinde çekilmiyor.
+const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v13';
 
 interface OnbellekPaketi {
-  v: 11;
+  v: 13;
   ts: number;
   uniteler: Unite[];
 }
@@ -30,7 +30,7 @@ export interface UnitelerVerisi {
 
 // Liste yüklemesinde çekilen kolonlar — icerik/icerik_guncellendi YOK
 const SORU_LISTE_KOLONLARI =
-  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id';
+  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler';
 const MODUL_LISTE_KOLONLARI =
   'id, unite_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
 const ALT_BASLIK_LISTE_KOLONLARI = 'id, modul_id, sira, baslik, karma, aktif';
@@ -47,23 +47,35 @@ const duzleTumSorular = (uniteler: Unite[]): SoruWithUnite[] =>
   );
 
 export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
-  const [unitesR, konularR, modullerR, altBasliklarR, sorularR, cozumlerR] =
-    await Promise.all([
-      supabase.from('unites').select('*').order('sira'),
-      supabase.from('unite_konulari').select(KONU_LISTE_KOLONLARI).order('sira'),
-      supabase.from('unite_modulleri').select(MODUL_LISTE_KOLONLARI).order('sira'),
-      supabase
-        .from('modul_alt_basliklari')
-        .select(ALT_BASLIK_LISTE_KOLONLARI)
-        .order('sira'),
-      supabase
-        .from('sorular')
-        .select(SORU_LISTE_KOLONLARI)
-        .eq('durum', 'onayli')
-        .order('unite_id')
-        .order('id'),
-      supabase.from('cozumler').select('*').order('soru_id').order('sira'),
-    ]);
+  const [
+    unitesR,
+    konularR,
+    modullerR,
+    altBasliklarR,
+    sorularR,
+    cozumlerR,
+    atolyeSorulariR,
+  ] = await Promise.all([
+    supabase.from('unites').select('*').order('sira'),
+    supabase.from('unite_konulari').select(KONU_LISTE_KOLONLARI).order('sira'),
+    supabase.from('unite_modulleri').select(MODUL_LISTE_KOLONLARI).order('sira'),
+    supabase
+      .from('modul_alt_basliklari')
+      .select(ALT_BASLIK_LISTE_KOLONLARI)
+      .order('sira'),
+    supabase
+      .from('sorular')
+      .select(SORU_LISTE_KOLONLARI)
+      .eq('durum', 'onayli')
+      .order('unite_id')
+      .order('id'),
+    supabase.from('cozumler').select('*').order('soru_id').order('sira'),
+    supabase
+      .from('atolye_sorulari')
+      .select('alt_baslik_id, soru_id, sira')
+      .order('alt_baslik_id')
+      .order('sira'),
+  ]);
 
   if (unitesR.error) throw new Error(`Ünites yüklenemedi: ${unitesR.error.message}`);
   if (konularR.error) throw new Error(`Konular yüklenemedi: ${konularR.error.message}`);
@@ -73,6 +85,8 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     throw new Error(`Alt başlıklar yüklenemedi: ${altBasliklarR.error.message}`);
   if (sorularR.error) throw new Error(`Sorular yüklenemedi: ${sorularR.error.message}`);
   if (cozumlerR.error) throw new Error(`Çözümler yüklenemedi: ${cozumlerR.error.message}`);
+  if (atolyeSorulariR.error)
+    throw new Error(`Atölye soruları yüklenemedi: ${atolyeSorulariR.error.message}`);
 
   const cozumById: Record<string, { kod: string; borc: number; alacak: number }[]> = {};
   (cozumlerR.data ?? []).forEach((c) => {
@@ -82,10 +96,14 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
 
   const sorularByUnite: Record<string, Soru[]> = {};
   const sorularByKonu: Record<string, Soru[]> = {};
-  const sorularByAltBaslik: Record<string, Soru[]> = {};
+  const soruById: Record<string, Soru> = {};
   (sorularR.data ?? []).forEach((s) => {
     if (!sorularByUnite[s.unite_id]) sorularByUnite[s.unite_id] = [];
     const altBaslikId = (s as { alt_baslik_id?: string | null }).alt_baslik_id ?? null;
+    const muavinlerRaw = (s as { muavinler?: unknown }).muavinler;
+    const muavinler = Array.isArray(muavinlerRaw)
+      ? (muavinlerRaw as { kod: string; ad: string }[])
+      : [];
     const soru: Soru = {
       id: s.id,
       baslik: s.baslik,
@@ -98,17 +116,26 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       belgeler: undefined,
       konuId: s.konu_id ?? null,
       altBaslikId,
+      muavinler,
       ekleyenId: s.ekleyen_id ?? null,
     };
+    soruById[s.id] = soru;
     sorularByUnite[s.unite_id].push(soru);
     if (s.konu_id) {
       if (!sorularByKonu[s.konu_id]) sorularByKonu[s.konu_id] = [];
       sorularByKonu[s.konu_id].push(soru);
     }
-    if (altBaslikId) {
-      if (!sorularByAltBaslik[altBaslikId]) sorularByAltBaslik[altBaslikId] = [];
-      sorularByAltBaslik[altBaslikId].push(soru);
-    }
+  });
+
+  // Atölye soruları junction'dan — admin'in atadığı sıraya göre.
+  // Sadece "onayli" sorulara referans veren satırlar görünür; arşiv/taslak
+  // soruları junction'da olsa bile soruById'da olmadığı için atlanır.
+  const sorularByAltBaslik: Record<string, Soru[]> = {};
+  (atolyeSorulariR.data ?? []).forEach((r) => {
+    const soru = soruById[r.soru_id];
+    if (!soru) return;
+    if (!sorularByAltBaslik[r.alt_baslik_id]) sorularByAltBaslik[r.alt_baslik_id] = [];
+    sorularByAltBaslik[r.alt_baslik_id].push(soru);
   });
 
   const konularByUnite: Record<string, Konu[]> = {};
@@ -264,7 +291,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
     const raw = localStorage.getItem(UNITELER_CACHE_KEY);
     if (!raw) return null;
     const paket = JSON.parse(raw) as OnbellekPaketi;
-    if (paket.v !== 11 || !Array.isArray(paket.uniteler)) return null;
+    if (paket.v !== 12 || !Array.isArray(paket.uniteler)) return null;
     return { uniteler: paket.uniteler, tumSorular: duzleTumSorular(paket.uniteler) };
   } catch {
     return null;

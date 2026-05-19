@@ -144,6 +144,12 @@ export interface DekontBelge {
 
 export type Belge = FaturaBelge | PerakendeFisBelge | CekBelge | SenetBelge | DekontBelge;
 
+/** Soruya özel muavin (örn: 100.001 Merkez Kasa). Global tabloya yazılmaz. */
+export interface SoruMuavin {
+  kod: string;
+  ad: string;
+}
+
 export interface Soru {
   id: string;
   baslik: string;
@@ -156,6 +162,8 @@ export interface Soru {
   konuId?: string | null;
   /** Yeni atölye yapısı: hangi alt başlığa bağlı. Null ise eski seed. */
   altBaslikId?: string | null;
+  /** Bu soruya özel muavinler — HesapKoduInput dropdown'unda global ile birleşir. */
+  muavinler?: SoruMuavin[];
   /** Katkıcı ekledi ise yazar user_id'si. Adı/unvanı ek sorguyla çekilir. */
   ekleyenId?: string | null;
 }

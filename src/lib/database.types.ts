@@ -46,6 +46,16 @@ export type MuavinHesapRow = {
   updated_at: string;
 };
 
+// 20260519000001 — atölye sorularını yönetmek için many-to-many junction.
+// sorular.alt_baslik_id artık "konu havuzu etiketi"; atölye müfredatı
+// burada belirlenir.
+export type AtolyeSoruRow = {
+  alt_baslik_id: string;
+  soru_id: string;
+  sira: number;
+  eklenme: string;
+};
+
 export type UnitesRow = {
   id: string;
   ad: string;
@@ -57,6 +67,13 @@ export type UnitesRow = {
   // 20260516000007 — aktif/pasif kontrolü (admin yönetir)
   aktif: boolean;
   created_at: string;
+};
+
+// Soruya özel muavin — her soru kendi muavin sözlüğünü taşır.
+// Global muavin_hesaplar tablosuna yazılmaz; bu listeden gelir.
+export type SoruMuavin = {
+  kod: string;
+  ad: string;
 };
 
 export type SorularRow = {
@@ -73,6 +90,8 @@ export type SorularRow = {
   kaynak: string | null;
   yayinlanma_tarihi: string | null;
   belgeler: unknown;
+  // Soruya özel muavinler — 20260519 migration (sorulara_muavin_listesi)
+  muavinler: SoruMuavin[];
   // Katkıcı sistemi — 20260504000010 migration (yazar)
   ekleyen_id: string | null;
   created_at: string;
@@ -394,6 +413,15 @@ export type Database = {
           aktif?: boolean;
         };
         Update: Partial<MuavinHesapRow>;
+        Relationships: [];
+      };
+      atolye_sorulari: {
+        Row: AtolyeSoruRow;
+        Insert: Omit<AtolyeSoruRow, 'eklenme' | 'sira'> & {
+          sira?: number;
+          eklenme?: string;
+        };
+        Update: Partial<AtolyeSoruRow>;
         Relationships: [];
       };
       unites: {

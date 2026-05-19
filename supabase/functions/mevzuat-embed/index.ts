@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     // Auth — sadece admin
     const yetki = await kullaniciDogrula(req);
     if (yetki instanceof Response) return yetki;
-    if (!adminKontrol(yetki.user)) {
+    if (!(await adminKontrol(yetki.supabase, 'icerik'))) {
       return new Response(JSON.stringify({ hata: 'Yetki yok' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

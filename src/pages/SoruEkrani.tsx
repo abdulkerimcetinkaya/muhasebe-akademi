@@ -415,7 +415,18 @@ const SoruEkraniIci = ({
       return;
     }
 
-    const analiz = yanlisAnaliziYap(kayitlar, soru.cozum, muavinler);
+    // Global muavinler + soruya özel muavinler birleşik geçilir.
+    const soruyaOzelMuavinHesaplar = (soru.muavinler ?? []).map((m) => ({
+      kod: m.kod,
+      ad: m.ad,
+      ana_kod: m.kod.includes('.') ? m.kod.split('.')[0] : m.kod,
+    }));
+    const mevcutKodlar = new Set(muavinler.map((m) => m.kod));
+    const birlesikMuavinler = [
+      ...muavinler.map((m) => ({ kod: m.kod, ad: m.ad, ana_kod: m.ana_kod })),
+      ...soruyaOzelMuavinHesaplar.filter((m) => !mevcutKodlar.has(m.kod)),
+    ];
+    const analiz = yanlisAnaliziYap(kayitlar, soru.cozum, birlesikMuavinler);
 
     // En iyi senaryo: tüm satırlar doğru ve eksik yok
     const hepsiDogru =
@@ -478,18 +489,34 @@ const SoruEkraniIci = ({
   }, [kontrol, cozumAcik, cozumOnayAcik, belgeAcik, hataAcik, aiAsistanAcik]);
 
   const bulunanHesap = (kod: string) => hesapAdiBul(kod, muavinler);
-  const handleTutarKey = (e: React.KeyboardEvent<HTMLInputElement>, i: number, col: string) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (i === kayitlar.length - 1 && col === 'alacak') satirEkle();
-      else {
-        const next = document.querySelector<HTMLInputElement>(
-          `[data-row="${i + 1}"][data-col="kod"]`,
-        );
-        if (next) next.focus();
-        else satirEkle();
-      }
+
+  // Enter akışı: kod → açıklama → borç → alacak → alt satır kodu.
+  // Tek satırın içinde sağa, son alanda alt satıra atlar.
+  const handleSatirKey = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    i: number,
+    col: 'aciklama' | 'borc' | 'alacak',
+  ) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (col === 'aciklama') {
+      document
+        .querySelector<HTMLInputElement>(`[data-row="${i}"][data-col="borc"]`)
+        ?.focus();
+      return;
     }
+    if (col === 'borc') {
+      document
+        .querySelector<HTMLInputElement>(`[data-row="${i}"][data-col="alacak"]`)
+        ?.focus();
+      return;
+    }
+    // alacak → alt satır kod (yoksa yeni satır)
+    const next = document.querySelector<HTMLInputElement>(
+      `[data-row="${i + 1}"][data-col="kod"]`,
+    );
+    if (next) next.focus();
+    else satirEkle();
   };
 
   const sonraki = () => {
@@ -746,6 +773,7 @@ const SoruEkraniIci = ({
                   onChange={(v) => satirGuncelle(i, 'kod', v)}
                   rowIndex={i}
                   muavinler={muavinler}
+                  soruyaOzelMuavinler={soru.muavinler}
                 />
               </div>
               <div
@@ -758,6 +786,7 @@ const SoruEkraniIci = ({
                   type="text"
                   value={k.aciklama ?? ''}
                   onChange={(e) => satirGuncelle(i, 'aciklama', e.target.value)}
+                  onKeyDown={(e) => handleSatirKey(e, i, 'aciklama')}
                   placeholder="—"
                   data-row={i}
                   data-col="aciklama"
@@ -769,7 +798,7 @@ const SoruEkraniIci = ({
                   type="number"
                   value={k.borc}
                   onChange={(e) => satirGuncelle(i, 'borc', e.target.value)}
-                  onKeyDown={(e) => handleTutarKey(e, i, 'borc')}
+                  onKeyDown={(e) => handleSatirKey(e, i, 'borc')}
                   placeholder="0,00"
                   data-row={i}
                   data-col="borc"
@@ -781,7 +810,7 @@ const SoruEkraniIci = ({
                   type="number"
                   value={k.alacak}
                   onChange={(e) => satirGuncelle(i, 'alacak', e.target.value)}
-                  onKeyDown={(e) => handleTutarKey(e, i, 'alacak')}
+                  onKeyDown={(e) => handleSatirKey(e, i, 'alacak')}
                   placeholder="0,00"
                   data-row={i}
                   data-col="alacak"

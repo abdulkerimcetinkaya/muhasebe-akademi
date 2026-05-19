@@ -18,6 +18,8 @@ interface Props {
   rowIndex: number;
   /** Aktif muavin listesi — parent'tan tek sefer yüklenip prop olarak geçilir. */
   muavinler?: MuavinHesap[];
+  /** Soruya özel muavinler — global ile birleşip dropdown'da gösterilir. */
+  soruyaOzelMuavinler?: { kod: string; ad: string }[];
   /** Admin context'inde true → dropdown'da "+ Yeni Muavin" butonu çıkar. */
   yeniMuavinEkleyebilir?: boolean;
   /** Yeni muavin eklendiğinde parent'ın listesini güncellemek için. */
@@ -29,9 +31,30 @@ export const HesapKoduInput = ({
   onChange,
   rowIndex,
   muavinler = [],
+  soruyaOzelMuavinler = [],
   yeniMuavinEkleyebilir = false,
   onMuavinEklendi,
 }: Props) => {
+  // Soruya özel muavinleri MuavinHesap formatına yükselt — global ile birleşir.
+  // ana_kod muavin kodunun ilk parçasından türetilir (örn 100.001 → 100).
+  // tip: 'departman' default (etiket bilgisi yoksa).
+  const birlesikMuavinler = useMemo<MuavinHesap[]>(() => {
+    const soruyaOzelMuavinHesaplar: MuavinHesap[] = soruyaOzelMuavinler.map(
+      (m) => ({
+        kod: m.kod,
+        ad: m.ad,
+        ana_kod: m.kod.includes('.') ? m.kod.split('.')[0] : m.kod,
+        tip: 'departman',
+        aktif: true,
+        sira: 0,
+      }),
+    );
+    const mevcutKodlar = new Set(muavinler.map((m) => m.kod));
+    return [
+      ...muavinler,
+      ...soruyaOzelMuavinHesaplar.filter((m) => !mevcutKodlar.has(m.kod)),
+    ];
+  }, [muavinler, soruyaOzelMuavinler]);
   const nav = useNavigate();
   const isPremium = useIsPremium();
   const [dropdownAcik, setDropdownAcik] = useState(false);
@@ -44,6 +67,7 @@ export const HesapKoduInput = ({
     top: number;
     left: number;
     width: number;
+    maxHeight: number;
   } | null>(null);
 
   const sayisalMi = /^[0-9.]+$/.test(value);
@@ -56,7 +80,7 @@ export const HesapKoduInput = ({
       const anaHesaplar: Oneri[] = HESAP_PLANI.filter((h) =>
         h.kod.startsWith(value),
       ).map((h) => ({ tip: 'ana' as const, hesap: h }));
-      const muavinSatirlari: Oneri[] = muavinler
+      const muavinSatirlari: Oneri[] = birlesikMuavinler
         .filter((m) => m.kod.startsWith(value))
         .map((m) => ({ tip: 'muavin' as const, muavin: m }));
       // Ana hesap önce, ardından muavinleri (gruplar halinde)
@@ -83,11 +107,11 @@ export const HesapKoduInput = ({
     const anaAd: Oneri[] = HESAP_PLANI.filter((h) =>
       h.ad.toLocaleLowerCase('tr').includes(q),
     ).map((h) => ({ tip: 'ana' as const, hesap: h }));
-    const muavinAd: Oneri[] = muavinler
+    const muavinAd: Oneri[] = birlesikMuavinler
       .filter((m) => m.ad.toLocaleLowerCase('tr').includes(q))
       .map((m) => ({ tip: 'muavin' as const, muavin: m }));
     return [...muavinAd, ...anaAd].slice(0, 10);
-  }, [value, sayisalMi, muavinler, isPremium]);
+  }, [value, sayisalMi, birlesikMuavinler, isPremium]);
 
   // Ana hesap seçilmiş ve onun aktif muavinleri var mı? (uyarı için)
   const anaHesapUyari = useMemo(() => {
@@ -114,7 +138,8 @@ export const HesapKoduInput = ({
   }, []);
 
   // Portal pozisyonunu hesapla — dropdown açıldığında/öneriler değiştiğinde.
-  // Input'un altında yer yoksa üstüne aç (akıllı flip).
+  // Varsayılan: aşağı aç. Sadece altta gerçekten yer kalmadıysa (160px'den az)
+  // ve üstte daha fazla yer varsa yukarı aç. maxHeight ile içerik scroll edilir.
   useLayoutEffect(() => {
     if (!dropdownAcik || oneriler.length === 0 || !containerRef.current) {
       setDropdownPos(null);
@@ -122,13 +147,18 @@ export const HesapKoduInput = ({
     }
     const rect = containerRef.current.getBoundingClientRect();
     const istenenY = Math.min(384, oneriler.length * 38 + 24);
-    const altSpace = window.innerHeight - rect.bottom;
-    const ustSpace = rect.top;
-    const yukariAc = altSpace < istenenY && ustSpace > altSpace;
+    const altSpace = window.innerHeight - rect.bottom - 16;
+    const ustSpace = rect.top - 16;
+    const altYetersiz = altSpace < 160;
+    const yukariAc = altYetersiz && ustSpace > altSpace;
+    const maxH = yukariAc
+      ? Math.min(istenenY, ustSpace)
+      : Math.min(istenenY, altSpace);
     setDropdownPos({
-      top: yukariAc ? Math.max(8, rect.top - istenenY - 4) : rect.bottom + 4,
+      top: yukariAc ? Math.max(8, rect.top - maxH - 4) : rect.bottom + 4,
       left: rect.left,
       width: Math.max(rect.width, 380),
+      maxHeight: maxH,
     });
   }, [dropdownAcik, oneriler.length]);
 
@@ -151,6 +181,14 @@ export const HesapKoduInput = ({
     onChange(oneriKodu(oneri));
     setDropdownAcik(false);
     setTimeout(() => {
+      // Hesap seçildikten sonra açıklama alanına geç (varsa); yoksa borç.
+      const aciklamaInput = document.querySelector<HTMLInputElement>(
+        `[data-row="${rowIndex}"][data-col="aciklama"]`,
+      );
+      if (aciklamaInput) {
+        aciklamaInput.focus();
+        return;
+      }
       const borcInput = document.querySelector<HTMLInputElement>(
         `[data-row="${rowIndex}"][data-col="borc"]`,
       );
@@ -202,7 +240,21 @@ export const HesapKoduInput = ({
             onChange(e.target.value.trim());
             setDropdownAcik(true);
           }}
-          onFocus={() => setDropdownAcik(true)}
+          onFocus={(e) => {
+            // Input viewport'un altındaysa önce sayfayı kaydır (instant —
+            // smooth scroll dropdown'u kapatan listener'ı tetikler), sonra
+            // dropdown'u bir sonraki frame'de aç. Böylece dropdown daima
+            // input'un altında ve görünür alanda açılır.
+            const el = e.currentTarget;
+            const rect = el.getBoundingClientRect();
+            const altBosluk = window.innerHeight - rect.bottom;
+            if (altBosluk < 240) {
+              el.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+              requestAnimationFrame(() => setDropdownAcik(true));
+            } else {
+              setDropdownAcik(true);
+            }
+          }}
           onKeyDown={handleKey}
           placeholder={isPremium ? 'Kod / ad...' : 'Kod...'}
           data-row={rowIndex}
@@ -245,12 +297,13 @@ export const HesapKoduInput = ({
         createPortal(
           <div
             ref={dropdownRef}
-            className="autocomplete-dropdown bg-surface border border-ink/10 max-h-96 overflow-auto rounded-xl shadow-xl"
+            className="autocomplete-dropdown bg-surface border border-ink/10 overflow-auto rounded-xl shadow-xl"
             style={{
               position: 'fixed',
               top: dropdownPos.top,
               left: dropdownPos.left,
               width: dropdownPos.width,
+              maxHeight: dropdownPos.maxHeight,
               zIndex: 100,
             }}
           >

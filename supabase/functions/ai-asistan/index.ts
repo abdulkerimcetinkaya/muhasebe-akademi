@@ -301,7 +301,7 @@ Deno.serve(async (req) => {
     if (yetki instanceof Response) return yetki;
 
     const premium = await premiumKontrol(yetki.supabase, yetki.user.id);
-    const admin = adminKontrol(yetki.user);
+    const admin = await adminKontrol(yetki.supabase);
 
     // Free: günlük kontör artır; Premium/Admin: bypass
     let kalan: number | null = null;

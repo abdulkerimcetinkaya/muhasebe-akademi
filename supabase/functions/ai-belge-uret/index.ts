@@ -138,9 +138,9 @@ Deno.serve(async (req) => {
     const yetki = await kullaniciDogrula(req);
     if (yetki instanceof Response) return yetki;
 
-    if (!adminKontrol(yetki.user)) {
+    if (!(await adminKontrol(yetki.supabase, 'icerik'))) {
       return new Response(
-        JSON.stringify({ hata: 'Bu işlem admin yetkisi gerektirir' }),
+        JSON.stringify({ hata: 'Bu işlem admin yetkisi gerektirir (içerik rolü)' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
