@@ -237,17 +237,6 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
         );
       })()}
 
-      {altBaslik.sorular.length === 0 && (
-        <div className="bg-surface border border-dashed border-line-strong rounded-2xl px-6 py-10 text-center mb-6">
-          <div className="text-[10px] tracking-[0.22em] uppercase text-ink-quiet font-bold mb-2">
-            Sorular
-          </div>
-          <p className="text-sm text-ink-mute leading-relaxed max-w-sm mx-auto">
-            Bu atölyenin senaryoları henüz hazırlanmadı.
-          </p>
-        </div>
-      )}
-
       {/* Sayfa sonu navigasyon */}
       <div className="mt-8 pt-6 border-t border-line flex items-center justify-between gap-4 flex-wrap">
         <button

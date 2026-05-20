@@ -35,17 +35,18 @@ const satirlariParse = (json: string): YevmiyeSatir[] => {
 
 const satirlariStringify = (satirlar: YevmiyeSatir[]) => JSON.stringify(satirlar);
 
-const tutarSayi = (s: string): number => {
-  if (!s) return 0;
+const tutarSayi = (s: string | number): number => {
+  if (s === '' || s === null || s === undefined) return 0;
+  if (typeof s === 'number') return Number.isFinite(s) ? s : 0;
   // 50.000,00 → 50000.00, 50000 → 50000
-  const temiz = s.replace(/\./g, '').replace(',', '.');
+  const temiz = String(s).replace(/\./g, '').replace(',', '.');
   const n = parseFloat(temiz);
   return Number.isFinite(n) ? n : 0;
 };
 
-const tutarBicim = (s: string): string => {
+const tutarBicim = (s: string | number): string => {
   const n = tutarSayi(s);
-  if (n === 0 && !s) return '';
+  if (n === 0 && (s === '' || s === null || s === undefined)) return '';
   return n.toLocaleString('tr-TR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

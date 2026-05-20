@@ -5,6 +5,7 @@ import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { EmptyState } from '../../components/EmptyState';
 import { SkeletonSatirlar } from '../../components/Skeleton';
 import { supabase } from '../../lib/supabase';
+import { aiBelgeUret } from '../../lib/ai';
 import type {
   SoruDurum,
   SorularRow,
@@ -42,6 +43,9 @@ export const AdminSorularSayfasi = () => {
   const [zorlukFiltre, setZorlukFiltre] = useState<ZorlukFiltre>('hepsi');
   const [uniteFiltre, setUniteFiltre] = useState<string>('hepsi');
   const [konuFiltre, setKonuFiltre] = useState<KonuFiltre>('hepsi');
+  const [topluUretiliyor, setTopluUretiliyor] = useState(false);
+  const [topluProgress, setTopluProgress] = useState({ tamamlanan: 0, hedef: 0 });
+  const [topluHatalar, setTopluHatalar] = useState<{ id: string; mesaj: string }[]>([]);
 
   const yukle = async () => {
     setYukleniyor(true);
@@ -122,6 +126,79 @@ export const AdminSorularSayfasi = () => {
     });
   }, [sorular, arama, durumFiltre, zorlukFiltre, uniteFiltre, konuFiltre]);
 
+  const filtreliBelgesizler = useMemo(
+    () =>
+      filtreli.filter(
+        (s) => !Array.isArray(s.belgeler) || (s.belgeler as unknown[]).length === 0,
+      ),
+    [filtreli],
+  );
+
+  const topluBelgeUret = async () => {
+    const hedefler = filtreliBelgesizler;
+    if (hedefler.length === 0) {
+      alert('Filtrelenmiş sorularda zaten belge var.');
+      return;
+    }
+    if (
+      !confirm(
+        `${hedefler.length} soru için AI ile belge üretilecek. Devam et?\n\nİşlem birkaç dakika sürer ve AI maliyeti vardır.`,
+      )
+    ) {
+      return;
+    }
+
+    setTopluUretiliyor(true);
+    setTopluProgress({ tamamlanan: 0, hedef: hedefler.length });
+    setTopluHatalar([]);
+    const hatalar: { id: string; mesaj: string }[] = [];
+
+    for (const soru of hedefler) {
+      try {
+        const { data: cozumlerData } = await supabase
+          .from('cozumler')
+          .select('kod, borc, alacak')
+          .eq('soru_id', soru.id)
+          .order('sira');
+
+        if (!cozumlerData || cozumlerData.length === 0) {
+          hatalar.push({ id: soru.id, mesaj: 'Çözüm satırları bulunamadı' });
+          setTopluProgress((p) => ({ ...p, tamamlanan: p.tamamlanan + 1 }));
+          continue;
+        }
+
+        const { belgeler: yeniler } = await aiBelgeUret({
+          soruBaslik: soru.baslik,
+          senaryo: soru.senaryo,
+          aciklama: soru.aciklama ?? undefined,
+          cozum: cozumlerData,
+        });
+
+        if (!yeniler || yeniler.length === 0) {
+          hatalar.push({ id: soru.id, mesaj: 'AI belge üretemedi' });
+          setTopluProgress((p) => ({ ...p, tamamlanan: p.tamamlanan + 1 }));
+          continue;
+        }
+
+        const { error } = await supabase
+          .from('sorular')
+          .update({ belgeler: yeniler })
+          .eq('id', soru.id);
+
+        if (error) {
+          hatalar.push({ id: soru.id, mesaj: error.message });
+        }
+      } catch (e) {
+        hatalar.push({ id: soru.id, mesaj: (e as Error).message });
+      }
+      setTopluProgress((p) => ({ ...p, tamamlanan: p.tamamlanan + 1 }));
+    }
+
+    setTopluHatalar(hatalar);
+    setTopluUretiliyor(false);
+    await yukle();
+  };
+
   const sil = async (id: string, baslik: string) => {
     if (!confirm(`"${baslik}" silinecek. Çözümleri ve kullanıcı ilerlemesi de silinir. Emin misin?`)) {
       return;
@@ -145,14 +222,50 @@ export const AdminSorularSayfasi = () => {
               {filtreli.length} / {sorular.length} soru görüntüleniyor
             </p>
           </div>
-          <Link
-            to="/admin/sorular/yeni"
-            className="flex items-center gap-2 bg-ink text-bg px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 active:scale-[0.98] transition"
-          >
-            <Icon name="Plus" size={14} />
-            Yeni Soru
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={topluBelgeUret}
+              disabled={topluUretiliyor || filtreliBelgesizler.length === 0}
+              className="flex items-center gap-2 bg-surface border border-line-strong text-ink px-4 py-2 rounded-lg text-sm font-bold hover:border-ink active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Filtrelenmiş, belgesi olmayan sorular için AI ile belge üretir"
+            >
+              {topluUretiliyor ? (
+                <>
+                  <Icon name="Loader" size={14} className="animate-spin" />
+                  Üretiliyor {topluProgress.tamamlanan}/{topluProgress.hedef}
+                </>
+              ) : (
+                <>
+                  <Icon name="FileText" size={14} />
+                  Belgesizler için Üret ({filtreliBelgesizler.length})
+                </>
+              )}
+            </button>
+            <Link
+              to="/admin/sorular/yeni"
+              className="flex items-center gap-2 bg-ink text-bg px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 active:scale-[0.98] transition"
+            >
+              <Icon name="Plus" size={14} />
+              Yeni Soru
+            </Link>
+          </div>
         </div>
+
+        {topluHatalar.length > 0 && (
+          <div className="bg-danger-soft border border-danger-soft rounded-xl p-4 mb-4">
+            <div className="text-sm font-bold text-danger mb-2">
+              {topluHatalar.length} soruda hata oluştu
+            </div>
+            <ul className="text-xs text-ink-soft space-y-1 max-h-32 overflow-auto">
+              {topluHatalar.map((h, i) => (
+                <li key={i} className="font-mono">
+                  {h.id}: {h.mesaj}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Filtreler */}
         <div className="bg-surface border border-line rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center">
