@@ -10,8 +10,10 @@
 // olarak text segmentine bağlanır — yeni DB kolonu yok, mevcut `icerik` alanı
 // yeterli.
 
-import { BlockNoteSchema, defaultStyleSpecs } from '@blocknote/core';
+import { BlockNoteSchema, defaultBlockSpecs, defaultStyleSpecs } from '@blocknote/core';
 import { createReactStyleSpec } from '@blocknote/react';
+import { YevmiyeBlock } from './yevmiye-block';
+import { SahaNotuBlock } from './saha-notu-block';
 
 export const TermStyleSpec = createReactStyleSpec(
   {
@@ -30,6 +32,11 @@ export const TermStyleSpec = createReactStyleSpec(
 );
 
 export const ozelSema = BlockNoteSchema.create({
+  blockSpecs: {
+    ...defaultBlockSpecs,
+    yevmiye: YevmiyeBlock(),
+    sahanotu: SahaNotuBlock(),
+  },
   styleSpecs: {
     ...defaultStyleSpecs,
     term: TermStyleSpec,

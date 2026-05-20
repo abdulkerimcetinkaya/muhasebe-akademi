@@ -148,7 +148,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
           <div className="h-3 bg-surface-2 rounded w-5/6" />
         </div>
       ) : icerikVar ? (
-        <article className="bg-surface border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4 mb-6">
+        <article className="bg-bg border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4 mb-6">
           <IcerikGoruntuleyici icerik={icerik} />
         </article>
       ) : (
@@ -163,19 +163,25 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
         </div>
       )}
 
-      {/* Senaryo (soru) listesi */}
-      {altBaslik.sorular.length > 0 ? (
+      {/* Senaryo (soru) listesi — 2 kolay + 1 orta sabit set */}
+      {(() => {
+        const kolaylar = altBaslik.sorular.filter((s) => s.zorluk === 'kolay').slice(0, 2);
+        const ortalar = altBaslik.sorular.filter((s) => s.zorluk === 'orta').slice(0, 1);
+        const secilenler = [...kolaylar, ...ortalar];
+        const kalan = altBaslik.sorular.length - secilenler.length;
+        if (secilenler.length === 0) return null;
+        return (
         <section className="mb-6">
           <div className="flex items-baseline justify-between mb-4">
             <h2 className="font-display text-xl font-bold tracking-tight">
               Atanan Sorular
             </h2>
             <span className="text-xs text-ink-mute font-semibold">
-              {altBaslik.sorular.length} adet
+              {secilenler.length} adet
             </span>
           </div>
           <ul className="space-y-2">
-            {altBaslik.sorular.map((s, i) => {
+            {secilenler.map((s, i) => {
               const cozulmus = !!ilerleme.cozulenler[s.id];
               const yanlisSayi = ilerleme.yanlislar[s.id] || 0;
               return (
@@ -222,8 +228,16 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
               );
             })}
           </ul>
+          {kalan > 0 && (
+            <div className="mt-3 text-[11px] text-ink-quiet font-semibold tracking-wide">
+              + {kalan} ekstra pratik · Problemler sayfasında
+            </div>
+          )}
         </section>
-      ) : (
+        );
+      })()}
+
+      {altBaslik.sorular.length === 0 && (
         <div className="bg-surface border border-dashed border-line-strong rounded-2xl px-6 py-10 text-center mb-6">
           <div className="text-[10px] tracking-[0.22em] uppercase text-ink-quiet font-bold mb-2">
             Sorular

@@ -104,6 +104,25 @@ export const AdminYeniSoruSayfasi = () => {
       throw new Error('Çözüm eklenemedi: ' + cozErr.message);
     }
 
+    // Alt başlık seçildiyse atölye müfredatına da otomatik ekle (en sona).
+    // Junction sırası mevcut max + 1; admin sonra Atölye Soruları sayfasından
+    // sürükleyip yeniden sıralayabilir veya kaldırabilir.
+    if (d.alt_baslik_id) {
+      const { data: mevcut } = await supabase
+        .from('atolye_sorulari')
+        .select('sira')
+        .eq('alt_baslik_id', d.alt_baslik_id)
+        .order('sira', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const yeniSira = (mevcut?.sira ?? 0) + 1;
+      await supabase.from('atolye_sorulari').insert({
+        alt_baslik_id: d.alt_baslik_id,
+        soru_id: yeniId,
+        sira: yeniSira,
+      });
+    }
+
     // Public sayfaların güncel veriyi göstermesi için context cache'ini yenile
     await yenile();
     nav('/admin/sorular');

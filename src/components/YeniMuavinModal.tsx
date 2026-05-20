@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { HESAP_PLANI } from '../data/hesap-plani';
 import {
-  TIP_ETIKETLERI,
+  MUAVIN_SINIFLARI,
   TIP_LISTESI,
   muavinYarat,
   sonrakiMuavinKodu,
@@ -17,16 +17,11 @@ interface Props {
   onEklendi: (yeni: MuavinHesap) => void;
 }
 
+/** Ana hesap kodunun ilk 2 hanesinden TDHP grup kodunu türetir (120 → '12'). */
 const tipTahmini = (anaKod: string): MuavinTip => {
-  // 120, 220 → musteri | 320, 420 → tedarikci | 102 → banka | 100 → kasa
-  // 335, 196 → personel | 153, 150, 152 → stok | diğer → diger
-  if (anaKod === '120' || anaKod === '220') return 'musteri';
-  if (anaKod === '320' || anaKod === '420') return 'tedarikci';
-  if (anaKod === '102') return 'banka';
-  if (anaKod === '100') return 'kasa';
-  if (anaKod === '335' || anaKod === '196') return 'personel';
-  if (['150', '151', '152', '153'].includes(anaKod)) return 'stok';
-  return 'diger';
+  const prefix = anaKod.slice(0, 2);
+  if ((TIP_LISTESI as string[]).includes(prefix)) return prefix as MuavinTip;
+  return '10'; // fallback: Hazır Değerler
 };
 
 export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Props) => {
@@ -185,10 +180,14 @@ export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Prop
               required
               className="w-full px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink"
             >
-              {TIP_LISTESI.map((t) => (
-                <option key={t} value={t}>
-                  {TIP_ETIKETLERI[t]}
-                </option>
+              {MUAVIN_SINIFLARI.map((s) => (
+                <optgroup key={s.sinif} label={s.etiket}>
+                  {s.gruplar.map((g) => (
+                    <option key={g.kod} value={g.kod}>
+                      {g.etiket}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>

@@ -15,6 +15,27 @@ const FREE_GUNLUK_LIMIT = 3;
 const MEVZUAT_TOP_K = 5;             // OpenAI 3-small kaliteli, 5 chunk veriyoruz
 const MEVZUAT_MIN_BENZERLIK = 0.35;  // OpenAI cosine eşiği — HF e5'ten farklı dağılım
 
+/**
+ * Cache hash anahtarı: kullanıcı mesajı + bağlam normalize edilip SHA-256.
+ * Aynı soru aynı bağlamla geldiyse cache hit verir.
+ */
+async function sorguHash(
+  soru: string,
+  baglam?: { soruBaslik?: string; senaryo?: string },
+): Promise<string> {
+  const norm = (s?: string) => (s ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const key = JSON.stringify({
+    s: norm(soru),
+    b: norm(baglam?.soruBaslik),
+    sc: norm(baglam?.senaryo),
+  });
+  const buf = new TextEncoder().encode(key);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
 interface Istek {
   mesajlar: AnthropicMesaj[];
   baglam?: {
@@ -280,7 +301,7 @@ Deno.serve(async (req) => {
     if (yetki instanceof Response) return yetki;
 
     const premium = await premiumKontrol(yetki.supabase, yetki.user.id);
-    const admin = adminKontrol(yetki.user);
+    const admin = await adminKontrol(yetki.supabase);
 
     // Free: günlük kontör artır; Premium/Admin: bypass
     let kalan: number | null = null;
@@ -319,6 +340,95 @@ Deno.serve(async (req) => {
 
     // Güvenlik: son 10 mesajı tut, uzun konuşmaları kes
     const kesit = mesajlar.slice(-10);
+
+    const stream = new URL(req.url).searchParams.get('stream') === '1';
+
+    // ===========================================================
+    // CACHE LOOKUP — sık sorulan tek mesajlık sorular için lokal cache.
+    // Şartlar:
+    //   - Conversation tek mesajlık (multi-turn unique kabul edilir)
+    //   - Güncel veri sorgusu değil (Tavily tetiklenmiyor)
+    // Hit olursa AI'a hiç gitmiyoruz — token tasarrufu + anlık cevap.
+    // ===========================================================
+    const sonKullaniciMesaj = [...kesit].reverse().find((m) => m.role === 'user');
+    const sonKullaniciMetni = sonKullaniciMesaj?.content ?? '';
+    const guncelVeriHint = sonKullaniciMetni && guncelBilgiGerekiyor(sonKullaniciMetni);
+
+    let cacheHash: string | null = null;
+    if (kesit.length === 1 && !guncelVeriHint && sonKullaniciMetni) {
+      cacheHash = await sorguHash(sonKullaniciMetni, baglam);
+
+      const { data: cached } = await yetki.supabase
+        .from('ai_cevap_cache')
+        .select('cevap, kaynaklar')
+        .eq('soru_hash', cacheHash)
+        .maybeSingle();
+
+      if (cached) {
+        // Hit sayacı + log (her ikisi de arka planda, response'u bekletme)
+        yetki.supabase
+          .rpc('ai_cache_hit', { _hash: cacheHash })
+          .then(({ error }) => {
+            if (error) console.error('ai_cache_hit hata:', error.message);
+          });
+        yetki.supabase
+          .rpc('ai_log_yaz', {
+            _ozellik: 'asistan_cache',
+            _input_token: 0,
+            _output_token: 0,
+            _premium: premium || admin,
+          })
+          .then(({ error }) => {
+            if (error) console.error('ai_log_yaz hata:', error.message);
+          });
+
+        const cachedKaynaklar = (cached.kaynaklar as unknown[] | null) ?? [];
+
+        if (stream) {
+          const encoder = new TextEncoder();
+          const responseStream = new ReadableStream({
+            async start(controller) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({ type: 'meta', kalan, premium, cache: true })}\n\n`,
+                ),
+              );
+              const kelimeler = (cached.cevap as string).split(/(\s+)/);
+              for (const kelime of kelimeler) {
+                if (!kelime) continue;
+                controller.enqueue(
+                  encoder.encode(`data: ${JSON.stringify({ type: 'chunk', text: kelime })}\n\n`),
+                );
+                await new Promise((r) => setTimeout(r, 8));
+              }
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
+              controller.close();
+            },
+          });
+          return new Response(responseStream, {
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'text/event-stream; charset=utf-8',
+              'Cache-Control': 'no-cache, no-transform',
+              'X-Accel-Buffering': 'no',
+            },
+          });
+        }
+
+        return new Response(
+          JSON.stringify({
+            metin: cached.cevap,
+            token: 0,
+            kalan,
+            premium,
+            cache: true,
+            kaynaklar: cachedKaynaklar,
+            web_kaynaklar: [],
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+    }
 
     // ===========================================================
     // RAG — kullanıcının son user mesajını + soru bağlamını embed et,
@@ -448,7 +558,6 @@ kaynaklardan veri çekilemedi. **Spesifik sayı ASLA söyleme** — yukarıdaki
     // sonucu küçük parçalara bölerek SSE üzerinden gönder — UX bozulmasın,
     // kullanıcı yazıyor hissi devam etsin. Gerçek stream tekrar oturduğunda
     // geminiStream'e dönülebilir.
-    const stream = new URL(req.url).searchParams.get('stream') === '1';
     if (stream) {
       const encoder = new TextEncoder();
       const responseStream = new ReadableStream({
@@ -490,6 +599,33 @@ kaynaklardan veri çekilemedi. **Spesifik sayı ASLA söyleme** — yukarıdaki
               .then(({ error }) => {
                 if (error) console.error('ai_log_yaz hata:', error.message);
               });
+
+            // Cache write — sadece cache-uygun (tek mesajlık, güncel veri yok)
+            // sorgularda cacheHash dolar. Hit olmuş olsa zaten erkenden return
+            // ediyorduk, buraya inmemişti.
+            if (cacheHash && metin) {
+              yetki.supabase
+                .from('ai_cevap_cache')
+                .upsert(
+                  {
+                    soru_hash: cacheHash,
+                    soru_metni: sonKullaniciMetni,
+                    baglam: baglam ?? null,
+                    cevap: metin,
+                    kaynaklar: mevzuatChunklar.map((c) => ({
+                      kaynak: c.kaynak,
+                      baslik: c.baslik,
+                      madde_no: c.madde_no,
+                      url: c.url,
+                      benzerlik: Math.round(c.benzerlik * 100) / 100,
+                    })),
+                  },
+                  { onConflict: 'soru_hash' },
+                )
+                .then(({ error }) => {
+                  if (error) console.error('ai_cevap_cache upsert hata:', error.message);
+                });
+            }
           } catch (e) {
             console.error('Stream içinde non-stream çağrısı hatası:', (e as Error).message);
             controller.enqueue(
@@ -527,6 +663,31 @@ kaynaklardan veri çekilemedi. **Spesifik sayı ASLA söyleme** — yukarıdaki
       .then(({ error }) => {
         if (error) console.error('ai_log_yaz hata:', error.message);
       });
+
+    // Cache write — non-stream yolu
+    if (cacheHash && yanit.metin) {
+      yetki.supabase
+        .from('ai_cevap_cache')
+        .upsert(
+          {
+            soru_hash: cacheHash,
+            soru_metni: sonKullaniciMetni,
+            baglam: baglam ?? null,
+            cevap: yanit.metin,
+            kaynaklar: mevzuatChunklar.map((c) => ({
+              kaynak: c.kaynak,
+              baslik: c.baslik,
+              madde_no: c.madde_no,
+              url: c.url,
+              benzerlik: Math.round(c.benzerlik * 100) / 100,
+            })),
+          },
+          { onConflict: 'soru_hash' },
+        )
+        .then(({ error }) => {
+          if (error) console.error('ai_cevap_cache upsert hata:', error.message);
+        });
+    }
 
     return new Response(
       JSON.stringify({

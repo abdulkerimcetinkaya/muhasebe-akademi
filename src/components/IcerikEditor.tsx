@@ -6,13 +6,21 @@ import {
   FormattingToolbar,
   FormattingToolbarController,
   getFormattingToolbarItems,
+  SuggestionMenuController,
+  getDefaultReactSlashMenuItems,
+  type DefaultReactSuggestionItem,
 } from '@blocknote/react';
 import { BlockNoteView } from '@blocknote/mantine';
-import type { Block } from '@blocknote/core';
+import {
+  filterSuggestionItems,
+  insertOrUpdateBlockForSlashMenu,
+  type Block,
+} from '@blocknote/core';
 import '@blocknote/core/fonts/inter.css';
 import '@blocknote/mantine/style.css';
 import { supabase } from '../lib/supabase';
 import { ozelSema } from '../lib/blocknote-schema';
+import { HesapKodDataList } from '../lib/yevmiye-block';
 import { SozlukAdminModal } from './SozlukAdminModal';
 
 interface Props {
@@ -134,15 +142,55 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
     );
   }
 
+  // Slash menü öğeleri: varsayılan listeye "Yevmiye Kaydı" + "Saha Notu" ekle.
+  const slashMenuOgeleri = (query: string): DefaultReactSuggestionItem[] => {
+    const yevmiyeOgesi: DefaultReactSuggestionItem = {
+      title: 'Yevmiye Kaydı',
+      subtext: 'Klasik defter formatında borç/alacak satırları',
+      aliases: ['yevmiye', 'kayit', 'defter', 'borc', 'alacak', 'journal'],
+      group: 'Diğer',
+      icon: <YevmiyeGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'yevmiye',
+          props: { tarih: '', satirlar: '[]', aciklama: '' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
+    const sahaNotuOgesi: DefaultReactSuggestionItem = {
+      title: 'Saha Notu',
+      subtext: 'Uzman alıntısı — yazar ve unvan ile',
+      aliases: ['saha', 'not', 'alinti', 'quote', 'uzman', 'üstad', 'ustad'],
+      group: 'Diğer',
+      icon: <SahaNotuGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'sahanotu',
+          props: { alinti: '', yazar: '', unvan: '' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
+    return filterSuggestionItems(
+      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi],
+      query,
+    );
+  };
+
   return (
     <div className="bn-icerik">
       <BlockNoteView
         editor={editor}
         theme="light"
-        slashMenu
+        slashMenu={false}
         formattingToolbar={false}
         sideMenu
       >
+        <SuggestionMenuController
+          triggerCharacter="/"
+          getItems={async (query) => slashMenuOgeleri(query)}
+        />
         <FormattingToolbarController
           formattingToolbar={() => (
             <FormattingToolbar>
@@ -152,6 +200,8 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
           )}
         />
       </BlockNoteView>
+
+      <HesapKodDataList />
 
       <SozlukAdminModal
         acik={sozlukAcik}
@@ -164,6 +214,45 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
     </div>
   );
 };
+
+const YevmiyeGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 6h18" />
+    <path d="M3 12h18" />
+    <path d="M3 18h18" />
+    <path d="M8 9v6" />
+    <path d="M16 9v6" />
+  </svg>
+);
+
+const SahaNotuGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M7 7h4v4H7z" />
+    <path d="M13 7h4v4h-4z" />
+    <path d="M9 11c0 3-2 5-4 5" />
+    <path d="M15 11c0 3-2 5-4 5" />
+  </svg>
+);
 
 /**
  * Formatting toolbar'da yer alan özel "Sözlük" butonu.

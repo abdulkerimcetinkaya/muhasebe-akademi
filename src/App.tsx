@@ -43,6 +43,7 @@ const AdminModullerSayfasi = lazy(() => import('./pages/admin/AdminModullerSayfa
 const AdminModulIcerikSayfasi = lazy(() => import('./pages/admin/AdminModulIcerikSayfasi').then((m) => ({ default: m.AdminModulIcerikSayfasi })));
 const AdminAltBasliklarSayfasi = lazy(() => import('./pages/admin/AdminAltBasliklarSayfasi').then((m) => ({ default: m.AdminAltBasliklarSayfasi })));
 const AdminAltBaslikIcerikSayfasi = lazy(() => import('./pages/admin/AdminAltBaslikIcerikSayfasi').then((m) => ({ default: m.AdminAltBaslikIcerikSayfasi })));
+const AdminAtolyeSorulariSayfasi = lazy(() => import('./pages/admin/AdminAtolyeSorulariSayfasi').then((m) => ({ default: m.AdminAtolyeSorulariSayfasi })));
 const AdminMevzuatSayfasi = lazy(() => import('./pages/admin/AdminMevzuatSayfasi').then((m) => ({ default: m.AdminMevzuatSayfasi })));
 const AdminBildirimlerSayfasi = lazy(() => import('./pages/admin/AdminBildirimlerSayfasi').then((m) => ({ default: m.AdminBildirimlerSayfasi })));
 const AdminSozlukSayfasi = lazy(() => import('./pages/admin/AdminSozlukSayfasi').then((m) => ({ default: m.AdminSozlukSayfasi })));
@@ -607,6 +608,14 @@ const App = () => {
               element={
                 <ProtectedAdminRoute>
                   <AdminAltBaslikIcerikSayfasi />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar/:altId/sorular"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminAtolyeSorulariSayfasi />
                 </ProtectedAdminRoute>
               }
             />

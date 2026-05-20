@@ -3,8 +3,8 @@ import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { HESAP_PLANI } from '../../data/hesap-plani';
 import {
+  MUAVIN_SINIFLARI,
   TIP_ETIKETLERI,
-  TIP_LISTESI,
   muavinGuncelle,
   muavinSil,
   muavinYarat,
@@ -19,7 +19,7 @@ const bos = (): YeniMuavin => ({
   kod: '',
   ana_kod: '',
   ad: '',
-  tip: 'musteri',
+  tip: '10',
   aciklama: null,
   aktif: true,
 });
@@ -257,10 +257,14 @@ export const AdminMuavinHesaplarSayfasi = () => {
                     required
                     className="w-full px-3 py-2.5 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink"
                   >
-                    {TIP_LISTESI.map((t) => (
-                      <option key={t} value={t}>
-                        {TIP_ETIKETLERI[t]}
-                      </option>
+                    {MUAVIN_SINIFLARI.map((s) => (
+                      <optgroup key={s.sinif} label={s.etiket}>
+                        {s.gruplar.map((g) => (
+                          <option key={g.kod} value={g.kod}>
+                            {g.etiket}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
@@ -368,10 +372,14 @@ export const AdminMuavinHesaplarSayfasi = () => {
                   className="px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-[13px] font-medium outline-none focus:border-ink"
                 >
                   <option value="hepsi">Tüm tipler</option>
-                  {TIP_LISTESI.map((t) => (
-                    <option key={t} value={t}>
-                      {TIP_ETIKETLERI[t]}
-                    </option>
+                  {MUAVIN_SINIFLARI.map((s) => (
+                    <optgroup key={s.sinif} label={s.etiket}>
+                      {s.gruplar.map((g) => (
+                        <option key={g.kod} value={g.kod}>
+                          {g.etiket}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>

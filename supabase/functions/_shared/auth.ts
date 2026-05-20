@@ -47,10 +47,21 @@ export const premiumKontrol = async (supabase: any, userId: string): Promise<boo
   return new Date(data.premium_bitis) > new Date();
 };
 
-// Admin kontrolü — src/lib/admin.ts ile aynı listeyi tutar
-const ADMIN_EMAILS = ['kerim.cetinkayaa78@gmail.com'];
-export const adminKontrol = (user: any): boolean => {
-  const email = user?.email;
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(email);
+// Admin kontrolü — DB'deki public.adminler tablosuna bakar (is_admin RPC).
+// Tek kaynak: AdminYetkilileriSayfasi'ndan eklenen herkes burada da geçerli.
+// Opsiyonel _role parametresi (örn 'icerik', 'operasyon') belirli yetkiyi
+// ister; null geçilirse herhangi bir admin yeter ('super' rolü tüm rolleri
+// kapsar — is_admin() postgres tarafında).
+export const adminKontrol = async (
+  supabase: any,
+  _role?: string,
+): Promise<boolean> => {
+  const { data, error } = await supabase.rpc('is_admin', {
+    _role: _role ?? null,
+  });
+  if (error) {
+    console.error('[adminKontrol] is_admin RPC hatası:', error.message);
+    return false;
+  }
+  return data === true;
 };

@@ -14,6 +14,7 @@ import type {
 
 interface AltBaslikIstatistik extends ModulAltBaslikRow {
   soruSayisi: number;
+  atolyeSoruSayisi: number;
 }
 
 interface FormDurum {
@@ -41,7 +42,7 @@ export const AdminAltBasliklarSayfasi = () => {
   const yukle = async () => {
     if (!uniteId || !modulId) return;
     setYukleniyor(true);
-    const [uniteR, modulR, altR, soruR] = await Promise.all([
+    const [uniteR, modulR, altR, soruR, atolyeR] = await Promise.all([
       supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
       supabase.from('unite_modulleri').select('*').eq('id', modulId).maybeSingle(),
       supabase
@@ -50,6 +51,7 @@ export const AdminAltBasliklarSayfasi = () => {
         .eq('modul_id', modulId)
         .order('sira'),
       supabase.from('sorular').select('alt_baslik_id'),
+      supabase.from('atolye_sorulari').select('alt_baslik_id'),
     ]);
     if (uniteR.error) {
       setHata(uniteR.error.message);
@@ -78,10 +80,15 @@ export const AdminAltBasliklarSayfasi = () => {
     (soruR.data ?? []).forEach((r) => {
       if (r.alt_baslik_id) dagilim[r.alt_baslik_id] = (dagilim[r.alt_baslik_id] ?? 0) + 1;
     });
+    const atolyeDagilim: Record<string, number> = {};
+    (atolyeR.data ?? []).forEach((r) => {
+      atolyeDagilim[r.alt_baslik_id] = (atolyeDagilim[r.alt_baslik_id] ?? 0) + 1;
+    });
     setAltBasliklar(
       (altR.data ?? []).map((a) => ({
         ...(a as ModulAltBaslikRow),
         soruSayisi: dagilim[a.id] ?? 0,
+        atolyeSoruSayisi: atolyeDagilim[a.id] ?? 0,
       })),
     );
     setHata(null);
@@ -229,17 +236,17 @@ export const AdminAltBasliklarSayfasi = () => {
           />
         ) : (
           <div className="border border-line rounded-xl overflow-hidden bg-surface">
-            <div className="grid grid-cols-[64px_1fr_90px_80px_290px] gap-3 px-4 py-2.5 bg-bg-tint border-b border-line text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
+            <div className="grid grid-cols-[64px_1fr_90px_120px_360px] gap-3 px-4 py-2.5 bg-bg-tint border-b border-line text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
               <div>Sıra</div>
               <div>Alt Başlık</div>
               <div>Karma</div>
-              <div className="text-right">Senaryo</div>
+              <div className="text-right" title="Havuz: konu etiketli toplam soru / Müfredat: bu atölyede gösterilen">Havuz / Müfredat</div>
               <div className="text-right">İşlem</div>
             </div>
             {filtreli.map((a) => (
               <div
                 key={a.id}
-                className="grid grid-cols-[64px_1fr_90px_80px_290px] gap-3 px-4 py-3 items-center border-b border-line last:border-b-0 hover:bg-bg-tint/60 transition"
+                className="grid grid-cols-[64px_1fr_90px_120px_360px] gap-3 px-4 py-3 items-center border-b border-line last:border-b-0 hover:bg-bg-tint/60 transition"
               >
                 <div>
                   <input
@@ -283,9 +290,21 @@ export const AdminAltBasliklarSayfasi = () => {
                   </button>
                 </div>
                 <div className="text-right">
-                  <span className="font-mono text-[14px] font-bold text-ink-soft tabular-nums">
-                    {a.soruSayisi}
-                  </span>
+                  <div className="flex items-center justify-end gap-1.5 font-mono text-[13px] tabular-nums">
+                    <span
+                      className="font-bold text-ink-soft"
+                      title="Bu alt başlığa etiketli toplam soru (Problemler sayfası filtresi)"
+                    >
+                      {a.soruSayisi}
+                    </span>
+                    <span className="text-ink-quiet">/</span>
+                    <span
+                      className="font-bold text-blue-deep"
+                      title="Bu atölyenin müfredatında gösterilen soru sayısı"
+                    >
+                      {a.atolyeSoruSayisi}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex items-center justify-end gap-1.5">
                   <button
@@ -301,9 +320,21 @@ export const AdminAltBasliklarSayfasi = () => {
                     İçerik
                   </button>
                   <button
+                    onClick={() =>
+                      nav(
+                        `/admin/uniteler/${uniteId}/moduller/${modulId}/alt-basliklar/${a.id}/sorular`,
+                      )
+                    }
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-line hover:border-ink text-[11.5px] font-bold tracking-wide transition"
+                    title="Atölye müfredatını düzenle — havuzdan soru ekle/kaldır/sırala"
+                  >
+                    <Icon name="ListChecks" size={12} />
+                    Müfredat
+                  </button>
+                  <button
                     onClick={() => nav(`/admin/sorular/yeni?alt=${a.id}`)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink text-bg text-[11.5px] font-bold tracking-wide hover:opacity-90 transition"
-                    title="Bu alt başlığa yeni senaryo ekle"
+                    title="Bu alt başlığa yeni senaryo ekle (otomatik olarak müfredatın sonuna eklenir)"
                   >
                     <Icon name="PlusCircle" size={12} />
                     Senaryo

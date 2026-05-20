@@ -171,7 +171,7 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
           <div className="h-3 bg-surface-2 rounded w-5/6" />
         </div>
       ) : icerikVar ? (
-        <article className="bg-surface border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4 mb-6">
+        <article className="bg-bg border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4 mb-6">
           <IcerikGoruntuleyici icerik={icerik} />
         </article>
       ) : (

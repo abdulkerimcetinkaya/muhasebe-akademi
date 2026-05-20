@@ -272,7 +272,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
                   <div className="h-3 bg-surface-2 rounded w-5/6" />
                 </div>
               ) : anlatimVar ? (
-                <div className="bg-surface border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4">
+                <div className="bg-bg border border-line rounded-2xl px-2 py-2 sm:px-4 sm:py-4">
                   <IcerikGoruntuleyici key={konu.id} icerik={icerik} />
                 </div>
               ) : (

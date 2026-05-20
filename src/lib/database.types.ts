@@ -8,7 +8,23 @@ export type SoruDurum = 'taslak' | 'inceleme' | 'onayli' | 'arsiv';
 export type Zorluk = 'kolay' | 'orta' | 'zor';
 export type OdemeDurum = 'beklemede' | 'basarili' | 'iptal' | 'iade' | 'hata';
 export type OdemeDonem = 'aylik' | 'yillik';
-export type MuavinTip = 'musteri' | 'tedarikci' | 'banka' | 'personel' | 'kasa' | 'stok' | 'diger';
+// TDHP grup kodu — muavin'in bağlı olduğu hesap grubu (2 haneli).
+// Sınıf bilgisi (1-7) kodun ilk hanesinden türetilir; UI'da sadece etiket ayırıcı.
+export type MuavinTip =
+  // 1 — Dönen Varlıklar
+  | '10' | '11' | '12' | '13' | '15' | '17' | '18' | '19'
+  // 2 — Duran Varlıklar
+  | '22' | '23' | '24' | '25' | '26' | '27' | '28' | '29'
+  // 3 — Kısa Vadeli Yabancı Kaynaklar
+  | '30' | '32' | '33' | '34' | '35' | '36' | '37' | '38' | '39'
+  // 4 — Uzun Vadeli Yabancı Kaynaklar
+  | '40' | '42' | '43' | '44' | '47' | '48' | '49'
+  // 5 — Özkaynaklar
+  | '50' | '52' | '54' | '57' | '58' | '59'
+  // 6 — Gelir Tablosu Hesapları
+  | '60' | '61' | '62' | '63' | '64' | '65' | '66' | '67' | '68' | '69'
+  // 7 — Maliyet Hesapları
+  | '70' | '71' | '72' | '73' | '74' | '75' | '76' | '77' | '78';
 
 export type HesapPlaniRow = {
   kod: string;
@@ -30,6 +46,16 @@ export type MuavinHesapRow = {
   updated_at: string;
 };
 
+// 20260519000001 — atölye sorularını yönetmek için many-to-many junction.
+// sorular.alt_baslik_id artık "konu havuzu etiketi"; atölye müfredatı
+// burada belirlenir.
+export type AtolyeSoruRow = {
+  alt_baslik_id: string;
+  soru_id: string;
+  sira: number;
+  eklenme: string;
+};
+
 export type UnitesRow = {
   id: string;
   ad: string;
@@ -41,6 +67,13 @@ export type UnitesRow = {
   // 20260516000007 — aktif/pasif kontrolü (admin yönetir)
   aktif: boolean;
   created_at: string;
+};
+
+// Soruya özel muavin — her soru kendi muavin sözlüğünü taşır.
+// Global muavin_hesaplar tablosuna yazılmaz; bu listeden gelir.
+export type SoruMuavin = {
+  kod: string;
+  ad: string;
 };
 
 export type SorularRow = {
@@ -57,6 +90,10 @@ export type SorularRow = {
   kaynak: string | null;
   yayinlanma_tarihi: string | null;
   belgeler: unknown;
+  // Soruya özel muavinler — 20260519 migration (sorulara_muavin_listesi)
+  muavinler?: SoruMuavin[];
+  // Etiketler — kavram (sermaye-konulmasi) + hesap kodu (100, 500)
+  etiketler?: string[];
   // Katkıcı sistemi — 20260504000010 migration (yazar)
   ekleyen_id: string | null;
   created_at: string;
@@ -378,6 +415,15 @@ export type Database = {
           aktif?: boolean;
         };
         Update: Partial<MuavinHesapRow>;
+        Relationships: [];
+      };
+      atolye_sorulari: {
+        Row: AtolyeSoruRow;
+        Insert: Omit<AtolyeSoruRow, 'eklenme' | 'sira'> & {
+          sira?: number;
+          eklenme?: string;
+        };
+        Update: Partial<AtolyeSoruRow>;
         Relationships: [];
       };
       unites: {
