@@ -91,7 +91,9 @@ export type SorularRow = {
   yayinlanma_tarihi: string | null;
   belgeler: unknown;
   // Soruya özel muavinler — 20260519 migration (sorulara_muavin_listesi)
-  muavinler: SoruMuavin[];
+  muavinler?: SoruMuavin[];
+  // Etiketler — kavram (sermaye-konulmasi) + hesap kodu (100, 500)
+  etiketler?: string[];
   // Katkıcı sistemi — 20260504000010 migration (yazar)
   ekleyen_id: string | null;
   created_at: string;

@@ -3003,6 +3003,7 @@ input[type='number'] { -moz-appearance: textfield; }
   padding: 0.85rem 1.1rem 0.95rem;
   color: var(--ink);
   background: #faf9f5;
+  border-right: 3px solid var(--blue-deep);
   border-radius: 8px;
 }
 
@@ -3093,6 +3094,7 @@ input[type='number'] { -moz-appearance: textfield; }
 
 [data-tema='dark'] .bn-yevmiye-okur {
   background: rgba(var(--blue-rgb), 0.18);
+  border-right-color: var(--blue-mute);
 }
 [data-tema='dark'] .bn-yevmiye-tarih {
   color: var(--blue-soft);

@@ -44,9 +44,12 @@ export const HesapKoduInput = ({
         kod: m.kod,
         ad: m.ad,
         ana_kod: m.kod.includes('.') ? m.kod.split('.')[0] : m.kod,
-        tip: 'departman',
+        tip: m.kod.slice(0, 2) as MuavinHesap['tip'],
+        aciklama: null,
         aktif: true,
         sira: 0,
+        created_at: '',
+        updated_at: '',
       }),
     );
     const mevcutKodlar = new Set(muavinler.map((m) => m.kod));

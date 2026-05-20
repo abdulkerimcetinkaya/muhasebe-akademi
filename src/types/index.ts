@@ -164,6 +164,8 @@ export interface Soru {
   altBaslikId?: string | null;
   /** Bu soruya özel muavinler — HesapKoduInput dropdown'unda global ile birleşir. */
   muavinler?: SoruMuavin[];
+  /** Etiketler — kavram + hesap kodu kategorizasyonu (Problemler filtre/badge). */
+  etiketler?: string[];
   /** Katkıcı ekledi ise yazar user_id'si. Adı/unvanı ek sorguyla çekilir. */
   ekleyenId?: string | null;
 }

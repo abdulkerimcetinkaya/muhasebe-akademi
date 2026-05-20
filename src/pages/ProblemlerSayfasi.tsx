@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { Thiings } from '../components/Thiings';
 import { EmptyState } from '../components/EmptyState';
 import { useUniteler } from '../contexts/UnitelerContext';
-import { ZORLUK_AD, ZORLUK_PUAN, ZORLUK_SIRA, ZORLUK_STIL } from '../data/sabitler';
+import { ZORLUK_AD, ZORLUK_SIRA, ZORLUK_STIL } from '../data/sabitler';
 import type { Ilerleme, Zorluk } from '../types';
 
 interface Props {
@@ -12,10 +11,47 @@ interface Props {
 }
 
 type DurumFiltre = 'hepsi' | 'cozulen' | 'cozulmeyen';
-type SiralamaFld = 'sira' | 'zorluk' | 'unite' | 'durum';
+type SiralamaFld = 'sira' | 'zorluk' | 'durum';
 
 /** Bir sayfada gösterilecek soru sayısı */
 const SAYFA_BOYUT = 10;
+
+/* Etiket çipi — kavramlar chip, hesap kodları tek mono pill içinde birleşik.
+   Görsel hiyerarşi: kavramlar göz çeker (asıl kategori), hesap kodları sessiz
+   detay olarak yan durur. */
+const EtiketChipler = ({
+  etiketler,
+  maxKavram = 3,
+}: {
+  etiketler: string[];
+  maxKavram?: number;
+}) => {
+  if (etiketler.length === 0) return null;
+  const kavramlar = etiketler.filter((e) => !/^\d+$/.test(e));
+  const kodlar = etiketler.filter((e) => /^\d+$/.test(e));
+  const kavramGoster = kavramlar.slice(0, maxKavram);
+  const kavramFazla = kavramlar.length - kavramGoster.length;
+  return (
+    <>
+      {kavramGoster.map((e) => (
+        <span
+          key={e}
+          className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-bg-tint text-ink-soft border border-line"
+        >
+          {e.replace(/-/g, ' ')}
+        </span>
+      ))}
+      {kavramFazla > 0 && (
+        <span className="text-[10px] font-semibold text-ink-quiet">+{kavramFazla}</span>
+      )}
+      {kodlar.length > 0 && (
+        <span className="font-mono text-[10px] text-ink-quiet tracking-wide">
+          {kodlar.join(' · ')}
+        </span>
+      )}
+    </>
+  );
+};
 
 /* Sıralama oku — parent dışında tanımlı (her render'da yeniden oluşmasın) */
 const SirOk = ({
@@ -40,14 +76,35 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
   const [zorlukFiltre, setZorlukFiltre] = useState<'hepsi' | Zorluk>('hepsi');
   const [uniteFiltre, setUniteFiltre] = useState('hepsi');
   const [durumFiltre, setDurumFiltre] = useState<DurumFiltre>('hepsi');
+  const [etiketFiltre, setEtiketFiltre] = useState('hepsi');
+  // LeetCode tarzı global toggle — kapalıyken satırlarda etiket görünmez,
+  // butonla açıldığında her satırın altında chip'ler beliriverir.
+  const [etiketlerAcik, setEtiketlerAcik] = useState(false);
   const [siralamaFld, setSiralamaFld] = useState<SiralamaFld>('sira');
   const [siralamaYon, setSiralamaYon] = useState<'asc' | 'desc'>('asc');
   const [sayfa, setSayfa] = useState(1);
+
+  // Tüm benzersiz etiketler — dropdown options için. Kavramlar önce
+  // (alfabetik), sonra hesap kodları (sayısal sıralı).
+  const tumEtiketler = useMemo(() => {
+    const set = new Set<string>();
+    tumSorular.forEach((s) => (s.etiketler ?? []).forEach((e) => set.add(e)));
+    const liste = Array.from(set);
+    const kavramlar = liste
+      .filter((e) => !/^\d+$/.test(e))
+      .sort((a, b) => a.localeCompare(b, 'tr'));
+    const kodlar = liste
+      .filter((e) => /^\d+$/.test(e))
+      .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    return { kavramlar, kodlar };
+  }, [tumSorular]);
 
   const filtreli = useMemo(() => {
     let sonuc = [...tumSorular];
     if (zorlukFiltre !== 'hepsi') sonuc = sonuc.filter((s) => s.zorluk === zorlukFiltre);
     if (uniteFiltre !== 'hepsi') sonuc = sonuc.filter((s) => s.uniteId === uniteFiltre);
+    if (etiketFiltre !== 'hepsi')
+      sonuc = sonuc.filter((s) => (s.etiketler ?? []).includes(etiketFiltre));
     if (durumFiltre === 'cozulen') sonuc = sonuc.filter((s) => ilerleme.cozulenler[s.id]);
     if (durumFiltre === 'cozulmeyen') sonuc = sonuc.filter((s) => !ilerleme.cozulenler[s.id]);
     if (arama.trim()) {
@@ -62,19 +119,18 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
     sonuc.sort((a, b) => {
       let x = 0;
       if (siralamaFld === 'zorluk') x = ZORLUK_SIRA[a.zorluk] - ZORLUK_SIRA[b.zorluk];
-      else if (siralamaFld === 'unite') x = a.uniteAd.localeCompare(b.uniteAd, 'tr');
       else if (siralamaFld === 'durum')
         x = (ilerleme.cozulenler[a.id] ? 1 : 0) - (ilerleme.cozulenler[b.id] ? 1 : 0);
       return siralamaYon === 'asc' ? x : -x;
     });
     return sonuc;
-  }, [tumSorular, arama, zorlukFiltre, uniteFiltre, durumFiltre, siralamaFld, siralamaYon, ilerleme.cozulenler]);
+  }, [tumSorular, arama, zorlukFiltre, uniteFiltre, etiketFiltre, durumFiltre, siralamaFld, siralamaYon, ilerleme.cozulenler]);
 
   // Filtre veya sıralama değişince ilk sayfaya dön — kullanıcı yanlış sayfada
   // boş veri görmesin (örn. 20. sayfadayken filtre 3 soruya düşerse).
   useEffect(() => {
     setSayfa(1);
-  }, [arama, zorlukFiltre, uniteFiltre, durumFiltre, siralamaFld, siralamaYon]);
+  }, [arama, zorlukFiltre, uniteFiltre, etiketFiltre, durumFiltre, siralamaFld, siralamaYon]);
 
   const toplamSayfa = Math.max(1, Math.ceil(filtreli.length / SAYFA_BOYUT));
   const guvenliSayfa = Math.min(sayfa, toplamSayfa);
@@ -108,7 +164,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
       </div>
 
       <div className="mb-6 bg-surface border border-line p-4 rounded-xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
           <div className="relative md:col-span-1">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-quiet">
               <Icon name="Search" size={14} />
@@ -144,6 +200,31 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
             ))}
           </select>
           <select
+            value={etiketFiltre}
+            onChange={(e) => setEtiketFiltre(e.target.value)}
+            className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
+          >
+            <option value="hepsi">Tüm Etiketler</option>
+            {tumEtiketler.kavramlar.length > 0 && (
+              <optgroup label="Kavramlar">
+                {tumEtiketler.kavramlar.map((e) => (
+                  <option key={e} value={e}>
+                    {e.replace(/-/g, ' ')}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {tumEtiketler.kodlar.length > 0 && (
+              <optgroup label="Hesap Kodları">
+                {tumEtiketler.kodlar.map((e) => (
+                  <option key={e} value={e}>
+                    {e}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+          </select>
+          <select
             value={durumFiltre}
             onChange={(e) => setDurumFiltre(e.target.value as DurumFiltre)}
             className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
@@ -155,6 +236,24 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
         </div>
       </div>
 
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-[11px] font-semibold text-ink-mute">
+          {filtreli.length} sonuç
+        </div>
+        <button
+          onClick={() => setEtiketlerAcik((v) => !v)}
+          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11.5px] font-semibold transition ${
+            etiketlerAcik
+              ? 'bg-ink text-bg border-ink'
+              : 'bg-surface text-ink-soft border-line hover:border-ink-mute'
+          }`}
+          title="Her satırın altında etiketleri göster/gizle"
+        >
+          <Icon name="Tag" size={12} />
+          Etiketler
+        </button>
+      </div>
+
       <div className="bg-surface border border-line rounded-xl overflow-hidden">
         <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-3 border-b border-line bg-bg-tint text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
           <button
@@ -163,20 +262,13 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
           >
             Durum <SirOk fld="durum" aktifFld={siralamaFld} yon={siralamaYon} />
           </button>
-          <div className="col-span-5">Başlık</div>
-          <button
-            onClick={() => sirala('unite')}
-            className="col-span-3 text-left flex items-center gap-1 hover:text-ink"
-          >
-            Ünite <SirOk fld="unite" aktifFld={siralamaFld} yon={siralamaYon} />
-          </button>
+          <div className="col-span-9">Başlık</div>
           <button
             onClick={() => sirala('zorluk')}
             className="col-span-2 text-left flex items-center gap-1 hover:text-ink"
           >
             Zorluk <SirOk fld="zorluk" aktifFld={siralamaFld} yon={siralamaYon} />
           </button>
-          <div className="col-span-1 text-right">Puan</div>
         </div>
         {sayfadakiler.map((s) => {
           const cozulmus = !!ilerleme.cozulenler[s.id];
@@ -210,37 +302,34 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
                   <div className="text-xs text-ink-mute line-clamp-1 mt-0.5 font-medium">
                     {s.senaryo}
                   </div>
-                  <div className="flex items-center gap-2 mt-2 flex-wrap">
-                    <span className="flex items-center gap-1 text-[11px] text-ink-soft font-semibold">
-                      <Thiings name={s.uniteIcon} size={16} />
-                      <span className="truncate max-w-[140px]">{s.uniteAd}</span>
-                    </span>
+                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
                     <span
                       className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[s.zorluk]}`}
                     >
                       {ZORLUK_AD[s.zorluk]}
                     </span>
-                    <span className="text-[10px] font-mono font-bold text-ink-mute ml-auto">
-                      {ZORLUK_PUAN[s.zorluk]}p
-                    </span>
                   </div>
+                  {etiketlerAcik && (s.etiketler ?? []).length > 0 && (
+                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                      <EtiketChipler etiketler={s.etiketler ?? []} maxKavram={4} />
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Desktop (md+) — tablo */}
               <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-3 items-center">
                 <div className="col-span-1">{durumIkon}</div>
-                <div className="col-span-5">
+                <div className="col-span-9">
                   <div className="font-display text-base leading-tight font-bold">{s.baslik}</div>
                   <div className="text-xs text-ink-mute line-clamp-1 mt-0.5 font-medium">
                     {s.senaryo}
                   </div>
-                </div>
-                <div className="col-span-3 flex items-center gap-2 text-sm">
-                  <Thiings name={s.uniteIcon} size={24} />
-                  <span className="text-ink-soft truncate font-semibold">
-                    {s.uniteAd}
-                  </span>
+                  {etiketlerAcik && (s.etiketler ?? []).length > 0 && (
+                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                      <EtiketChipler etiketler={s.etiketler ?? []} maxKavram={6} />
+                    </div>
+                  )}
                 </div>
                 <div className="col-span-2">
                   <span
@@ -248,9 +337,6 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
                   >
                     {ZORLUK_AD[s.zorluk]}
                   </span>
-                </div>
-                <div className="col-span-1 text-right font-mono text-sm text-ink-mute font-bold">
-                  {ZORLUK_PUAN[s.zorluk]}
                 </div>
               </div>
             </button>

@@ -10,15 +10,15 @@ import type {
   Unite,
 } from '../types';
 
-// v13: sorular.muavinler jsonb kolonu eklendi — soruya özel muavin sözlüğü.
-// HesapKoduInput global muavinlerle birleştirip dropdown'da gösterir.
+// v14: sorular.etiketler text[] kolonu eklendi — kavram + hesap kodu etiketleri.
+// v13 not'u: soruya özel muavin sözlüğü.
 // v12 not'u: atölye soruları junction tablosundan yükleniyor.
 // v11 not'u: mevcut 213 soru arsive cekildi.
 // v10 not'u: `icerik` JSONB kolonları liste yüklemesinde çekilmiyor.
-const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v13';
+const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v14';
 
 interface OnbellekPaketi {
-  v: 13;
+  v: 14;
   ts: number;
   uniteler: Unite[];
 }
@@ -30,7 +30,7 @@ export interface UnitelerVerisi {
 
 // Liste yüklemesinde çekilen kolonlar — icerik/icerik_guncellendi YOK
 const SORU_LISTE_KOLONLARI =
-  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler';
+  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler';
 const MODUL_LISTE_KOLONLARI =
   'id, unite_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
 const ALT_BASLIK_LISTE_KOLONLARI = 'id, modul_id, sira, baslik, karma, aktif';
@@ -104,6 +104,10 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     const muavinler = Array.isArray(muavinlerRaw)
       ? (muavinlerRaw as { kod: string; ad: string }[])
       : [];
+    const etiketlerRaw = (s as { etiketler?: unknown }).etiketler;
+    const etiketler = Array.isArray(etiketlerRaw)
+      ? (etiketlerRaw as string[])
+      : [];
     const soru: Soru = {
       id: s.id,
       baslik: s.baslik,
@@ -117,6 +121,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       konuId: s.konu_id ?? null,
       altBaslikId,
       muavinler,
+      etiketler,
       ekleyenId: s.ekleyen_id ?? null,
     };
     soruById[s.id] = soru;
@@ -291,7 +296,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
     const raw = localStorage.getItem(UNITELER_CACHE_KEY);
     if (!raw) return null;
     const paket = JSON.parse(raw) as OnbellekPaketi;
-    if (paket.v !== 12 || !Array.isArray(paket.uniteler)) return null;
+    if (paket.v !== 14 || !Array.isArray(paket.uniteler)) return null;
     return { uniteler: paket.uniteler, tumSorular: duzleTumSorular(paket.uniteler) };
   } catch {
     return null;
@@ -300,7 +305,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
 
 export const uniteleriCacheeYaz = (uniteler: Unite[]): void => {
   try {
-    const paket: OnbellekPaketi = { v: 11, ts: Date.now(), uniteler };
+    const paket: OnbellekPaketi = { v: 14, ts: Date.now(), uniteler };
     localStorage.setItem(UNITELER_CACHE_KEY, JSON.stringify(paket));
   } catch {
     // ignore (quota)
