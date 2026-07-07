@@ -38,6 +38,7 @@ Her ADR *tek* bir mimari kararı, alındığı bağlamla birlikte dondurur. Ama�
 | [018](#adr-018) | Belge tiplerinin katalog tablosu olarak modellenmesi | Kabul Edildi |
 | [019](#adr-019) | Cevap anahtarı ile kullanıcı cevabının ayrıştırılması | Kabul Edildi |
 | [020](#adr-020) | Cevap anahtarı başlığının ayrı tablo olarak modellenmesi | Kabul Edildi |
+| [021](#adr-021) | Mevzuat maddelerinde kimlik ve versiyon ayrımı | Kabul Edildi |
 
 ---
 
@@ -724,6 +725,40 @@ Alternatif 3 seçildi. `cozum_basliklari` (yeni: olay_id NOT NULL, varyant, vary
 
 ---
 
+<a name="adr-021"></a>
+## ADR-021 — Mevzuat maddelerinde kimlik ve versiyon ayrımı
+
+**Durum:** Kabul Edildi (7 Temmuz 2026) · **İlişkili:** ADR-011, ADR-016, ADR-020 · **Yerini aldığı yaklaşım:** V2-VERI-MODELI §2.1 (tek-tablo `mevzuat_maddeleri` + `onceki_versiyon_id` zinciri)
+
+**Problem:**
+Mevzuat maddeleri zamanla değişir (oran, tevkifat, istisna sınırı). Bir çözümün resmî dayanağı ("bu kayıt KDVK md.9'a dayanır") bu değişimlerden sağlam kalmalı. V2-VERI-MODELI §2.1 maddeyi **tek tabloda** modellemişti: metin + versiyon + `effective_date`/`expire_date` + `onceki_versiyon_id` self-zinciri aynı satırda; `cozum_mevzuat.madde_id` → **belirli bir versiyon satırı**. Bu kırılgan: madde değişince yeni versiyon satırı doğar ama `cozum_mevzuat` hâlâ *eski* (yürürlükten kalkmış) versiyonu gösterir. Bağ, "madde" yerine "o anki metin"e pinlenir; etki analizi ("bu madde değişti, hangi çözümler etkilenir") versiyon zincirini izlemek zorunda kalır (V2-VERI-MODELI §12 C3).
+
+**Alternatifler:**
+1. **Tek tablo (§2.1):** Kimlik + versiyon aynı satırda, `onceki_versiyon_id` zinciri. Versiyon pinlemesi kırılgan.
+2. **Versiyonsuz tek metin:** Değişiklik takibi imkânsız — ADR-011'in "güncellik operasyonel süreç" vaadini bozar.
+3. **Kimlik/versiyon ayrımı (iki tablo):** `mevzuat_maddeleri` (stabil kimlik) + `mevzuat_madde_versiyonlari` (tarihli metin).
+
+**Neden Bu Karar Alındı:**
+Alternatif 3. `mevzuat_maddeleri` maddenin **stabil kimliğidir** (kaynak_id + madde_no; bir kez, değişmez). `mevzuat_madde_versiyonlari` tarihli metni tutar (baslik, metin, `effective_date not null`, `expire_date null=yürürlükte`, versiyon). `cozum_mevzuat.madde_id` ve `mevzuat_chunklar.madde_id` **kimliğe** bağlanır; hangi metnin geçerli olduğu okuma anında **tarihe göre** çözümlenir (`effective_date ≤ T < coalesce(expire_date, 'infinity')`, T = olayın `islem_tarihi`). Değişiklik = yeni versiyon satırı (kimlik aynı); eskiye `expire_date`, yeniye `effective_date`; metin asla mutasyona uğramaz (append-only). Böylece çözüm↔madde bağı madde değişse de sağlam kalır ve etki analizi kimlik üzerinden tek sorgudur.
+
+**Avantajları:**
+- Çözüm↔madde bağı stabil: madde güncellense de `cozum_mevzuat` kırılmaz.
+- Etki analizi sağlam ve basit: madde kimliğine bağlı tüm çözümler tek join.
+- "T tarihinde geçerli madde" doğal sorgu → ADR-011'in "canlı ekonomi / sınav yılı oranları" vizyonu bedavaya hazır.
+- Append-only versiyon → tam değişiklik geçmişi, denetlenebilir.
+
+**Dezavantajları:**
+- Tek tablo yerine iki tablo + okuma anında tarih-çözümleme join'i (küçük ek karmaşıklık).
+- Örtüşmeyen tarih aralığı (madde başına tek geçerli versiyon) disiplin ister — MVP'de doğrulama sorgusu; katı exclusion constraint v2.2.
+- V2-VERI-MODELI §2.1 güncellenmeli (bu ADR ile).
+
+**Gelecekteki Etkileri:**
+- M8 bu iki tabloyu kurar; madde metinleri kürasyonla girilir (AI taslak + insan onay, ADR-012) — kör toplu import yok.
+- `cozum_mevzuat` (cozum_basliklari ↔ madde kimliği) ve `mevzuat_chunklar.madde_id` köprüsü hep kimliğe bağlanır.
+- Beyanname motoru (v2.2) oran değişimini versiyon `effective_date`'iyle bağlar (oran değişti → beyanname etkisi).
+
+---
+
 ## Ek: ADR bağımlılık haritası
 
 ```
@@ -737,7 +772,7 @@ ADR-001 (DDD)
   ├── ADR-004 (Muavin zorunlu) ─── ADR-005 (Ana hesap yasağı)
   ├── ADR-006 (Defter/Mizan view) ─ ADR-010 (Simulation Engine)
   ├── ADR-009 (Learning Engine) ─── ADR-015 (Yetkinlik sistemi) ─── ADR-017 (Yetkinlik/etiket olay düzeyinde)
-  ├── ADR-011 (Mevzuat versiyonlama)
+  ├── ADR-011 (Mevzuat versiyonlama) ─── ADR-021 (Mevzuat kimlik/versiyon ayrımı)
   └── ADR-019 (Cevap anahtarı ≠ kullanıcı cevabı) ─── ADR-020 (Cevap anahtarı başlığı ayrı tablo)
 ```
 
@@ -758,4 +793,4 @@ Bu noktalar ilgili ADR'lerde "Dezavantajlar/Gelecek Etkiler" olarak işaretlendi
 
 ---
 
-**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-021+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 20 karara referansla ilerler.
+**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-022+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 21 karara referansla ilerler.
