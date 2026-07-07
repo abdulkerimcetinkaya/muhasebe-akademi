@@ -35,6 +35,7 @@ Her ADR *tek* bir mimari kararı, alındığı bağlamla birlikte dondurur. Ama�
 | [015](#adr-015) | Yetkinlik (Skill) sistemi | Kabul Edildi |
 | [016](#adr-016) | Çoktan çoğa ilişki mimarisi | Kabul Edildi |
 | [017](#adr-017) | Yetkinlik/etiket bağının olay düzeyine taşınması | Kabul Edildi |
+| [018](#adr-018) | Belge tiplerinin katalog tablosu olarak modellenmesi | Kabul Edildi |
 
 ---
 
@@ -616,6 +617,44 @@ Yetkinlik *olayın* öğrettiği beceridir, sorunun değil — "veresiye satış
 
 ---
 
+<a name="adr-018"></a>
+## ADR-018 — Belge tiplerinin katalog tablosu olarak modellenmesi
+
+**Durum:** Kabul Edildi (7 Temmuz 2026) · **İlişkili:** ADR-003, ADR-008, ADR-016 · **Yerini aldığı karar:** V2-VERI-MODELI §5 (`belge_tip` enum)
+
+**Problem:**
+Belge tipi (satış faturası, alış faturası, dekont, bordro…) modelde nasıl temsil edilmeli? V2-VERI-MODELI §5 bunu bir **enum** (`belge_tip`) olarak öngörmüş, gerekçesi "her belge tipi bir render şablonu gerektirir, yani kod değişikliği zaten şart" idi ve §5'in kendi karar kuralı belge tipini "sınırda" işaretlemişti. M6 (Belgeler Modülü) tasarımına gelindiğinde bu sınır kararı netleştirilmeliydi: enum mü, `soru_tipleri` gibi bir katalog tablosu mu?
+
+**Alternatifler:**
+1. **`belge_tip` enum (V2-VERI-MODELI §5):** Sabit değer kümesi. Yeni tip = `ALTER TYPE` migration. Metadata taşıyamaz.
+2. **`belge_tipleri` katalog tablosu:** id (text PK) + ad + kategori + varsayilan_yon + gerekli_alanlar + thiings_icon + aktif + sira. Yeni tip = satır ekleme.
+
+**Neden Bu Karar Alındı:**
+Belge tipi, `soru_tipleri` (ADR-008) ile *aynı doğaya* sahiptir: her tip bir render-plugin çiftine (görsel şablon + alan doğrulama) karşılık gelir ve renderer hazır olmadan tipin açılmaması gerekir — bu tam olarak `soru_tipleri.aktif` bayrağının çözdüğü problemdir. Ayrıca belge tipi **yapısal metadata** taşır: `kategori` (ticari/mali/resmi/bordro — gruplama, ikon), `varsayilan_yon` (satış→giden, bordro→ic), `gerekli_alanlar` (render + doğrulama ipucu) — enum bunların hiçbirini taşıyamaz. Son olarak belge tipleri **ürün kararıyla çoğaldı**: v1'de 5 (`fatura/perakende-fis/cek/senet/dekont`), V2 hedefinde 10+, M6'da ~13 (irsaliye, SMM makbuzu, gider pusulası, bordro, tahakkuk fişi, beyanname, amortisman listesi eklendi). Enum bu büyümeyi her seferinde migration'la öderken tablo satır ekler. `soru_tipleri`'nde aynı gerekçeyle tablo seçildiğinden, tutarlılık da tabloyu gerektirir.
+
+**Avantajları:**
+- `soru_tipleri` ile birebir tutarlı katalog mantığı (tek zihinsel model, tek RLS şablonu — Katalog).
+- `aktif` bayrağı: renderer hazır olmadan tip içerikte açılmaz (belge render şablonu = frontend plugin).
+- Tip başına metadata (kategori/ikon/varsayılan yön/gerekli alanlar) veride yaşar, kodda dağılmaz.
+- Yeni belge tipi eklemek migration değil seed satırıdır → içerik/katalog disipliniyle yönetilir.
+
+**Dezavantajları:**
+- Belge insert'inde `belge_tipi` FK lookup (enum sabitine göre mikro maliyet) — ihmal edilebilir.
+- Tip listesi artık veridir; katalog seed'i güncel tutulmalı (soru_tipleri ile aynı disiplin).
+- V2-VERI-MODELI §5'in "enum" kararı güncellenmeli (bu ADR ile yapıldı).
+
+**Gelecekteki Etkileri:**
+- `belge_tipleri` M6a'da kurulur ve seed'lenir; belge render şablonları (fatura/dekont/bordro görselleri) `aktif` bayrağıyla kademeli açılır.
+- OCR / AI belge analizi (gelecek) belge tipini bu katalogdan çözer; tip başına `gerekli_alanlar` OCR alan çıkarımını ve AI prompt şablonunu besler.
+- `belge_yon` **enum** olarak kalır (gelen/giden/ic) — o *domain doğası gereği* sabittir (§5 karar kuralı); yalnız *belge tipi* tabloya taşınır. `ic` değerinin eklenmesi ADR-003'ün "belge_yon='ic'" açık kararının kapanışıdır.
+
+**Ek karar (kapsam):**
+Belge verisinin normalize modele geçişi (mevcut `sorular.belgeler` jsonb → `belgeler` + `olay_belgeleri`) **M6a'da yapılmayacaktır.** M6a yalnız *yapıyı* kurar (`belge_tipleri`, `belgeler`, `olay_belgeleri`, RLS, index, belge tipi seed'i); mevcut jsonb veri kaybı olmadan yerinde kalır. Normalize geçiş **ayrı ve kontrollü bir migration'da (M6b)** yapılır: 28 sorudaki jsonb incelenir, normalize belgeye çevrilir, `olay_belgeleri` bağlanır, `cari_id` eşlemesi best-effort değil **raporlu** yürütülür. Gerekçe: M5'in etiket-backfill dersi — otomatik/kör taşıma yanıltıcıdır; yapı ile geçiş ayrıştırılır.
+
+**Netleştirme (`belgeler.satirlar` ≠ muhasebe fişi):** `belgeler.satirlar` jsonb'u belgenin **kalemleridir** (ürün/hizmet satırları: ad, miktar, birim fiyat, iskonto) — yalnız gösterim, JOIN yapılmaz (ADR-016 §6.1). Bu **muhasebe fişi satırı DEĞİLDİR.** Yevmiye kaydının borç/alacak satırları `cozum_satirlari`'dır (M7) ve `muavin_id` NOT NULL FK ile ana hesaba kayıt yasağına tabidir (ADR-005). İki kavram farklı katmanlardır ve karıştırılmamalıdır: belge satırı = *ne alındı/satıldı* (fatura kalemi); fiş satırı = *hangi hesaba borç/alacak yazıldı* (muhasebe kaydı).
+
+---
+
 ## Ek: ADR bağımlılık haritası
 
 ```
@@ -624,7 +663,8 @@ ADR-001 (DDD)
   │                             ├── ADR-008 (Question Engine)
   │                             └── ADR-016 (M2M mimarisi)
   ├── ADR-003 (Belge merkezli) ─┬── ADR-013 (Video yok)
-  │                             └── ADR-014 (Gerçek senaryo)
+  │                             ├── ADR-014 (Gerçek senaryo)
+  │                             └── ADR-018 (Belge tipleri katalog) ── ADR-008 (Question Engine kataloğu deseni)
   ├── ADR-004 (Muavin zorunlu) ─── ADR-005 (Ana hesap yasağı)
   ├── ADR-006 (Defter/Mizan view) ─ ADR-010 (Simulation Engine)
   ├── ADR-009 (Learning Engine) ─── ADR-015 (Yetkinlik sistemi) ─── ADR-017 (Yetkinlik/etiket olay düzeyinde)
@@ -648,4 +688,4 @@ Bu noktalar ilgili ADR'lerde "Dezavantajlar/Gelecek Etkiler" olarak işaretlendi
 
 ---
 
-**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-018+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 17 karara referansla ilerler.
+**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-019+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 18 karara referansla ilerler.
