@@ -36,6 +36,8 @@ Her ADR *tek* bir mimari kararı, alındığı bağlamla birlikte dondurur. Ama�
 | [016](#adr-016) | Çoktan çoğa ilişki mimarisi | Kabul Edildi |
 | [017](#adr-017) | Yetkinlik/etiket bağının olay düzeyine taşınması | Kabul Edildi |
 | [018](#adr-018) | Belge tiplerinin katalog tablosu olarak modellenmesi | Kabul Edildi |
+| [019](#adr-019) | Cevap anahtarı ile kullanıcı cevabının ayrıştırılması | Kabul Edildi |
+| [020](#adr-020) | Cevap anahtarı başlığının ayrı tablo olarak modellenmesi | Kabul Edildi |
 
 ---
 
@@ -655,6 +657,73 @@ Belge verisinin normalize modele geçişi (mevcut `sorular.belgeler` jsonb → `
 
 ---
 
+<a name="adr-019"></a>
+## ADR-019 — Cevap anahtarı ile kullanıcı cevabının ayrıştırılması
+
+**Durum:** Kabul Edildi (7 Temmuz 2026) · **İlişkili:** ADR-002, ADR-004, ADR-005, ADR-008, ADR-009
+
+**Problem:**
+M7 (Çözümler) tasarımında `cozumler`/`cozum_satirlari` tablolarının *ne olduğu* iki farklı kavramı barındıracak biçimde belirsizdi: (a) sistemin **cevap anahtarı** (bir olayın doğru yevmiye kaydı) mı, yoksa (b) **kullanıcının denemesi** (öğrencinin yazdığı kayıt) mi? Bu ikisi karışırsa üç ciddi hata doğar: kullanıcı-başına çözüm satırı → ölçek patlaması (10k kullanıcı × sorular × satırlar); `ilerleme` ile çift kayıt (aynı sonuç iki yerde); ve puanın yanlış katmanda (cevap anahtarında) tutulması. Bu, ileride sistemin en çok karışacak sınırıdır.
+
+**Alternatifler:**
+1. **Tek tablo, iki rol:** `cozumler` hem cevap anahtarını hem kullanıcı denemesini tutar (bir `user_id` bayrağıyla). Ölçek + çift kayıt felaketi.
+2. **Cevap anahtarı = `cozumler`; kullanıcı cevabı ayrı katman** (`ilerleme` soru modu, `yevmiye_*` simülasyon).
+
+**Neden Bu Karar Alındı:**
+`cozumler`/`cozum_satirlari` **yalnız cevap anahtarıdır** — olay aggregate'inin (ADR-002) parçası, içerik üreticisi tarafından yazılır, kullanıcı denemesi **asla** burada saklanmaz. Kullanıcının cevabı katmana göre ayrışır: **soru modu → `ilerleme`** (mevcut tablo: dogru_mu, süre), **simülasyon → `yevmiye_kayitlari`/`yevmiye_satirlari`** (M10, append-only). Kontrol (`kontrol.ts`) kullanıcının cevabını cevap anahtarına karşı **deterministik** doğrular (ADR-012, AI değil); sonuç `ilerleme`ye yazılır. Puan/XP **türetilir** (ADR-009: `ZORLUK_PUAN × olay_yetkinlikleri.agirlik`), cevap anahtarında saklanmaz. Bu ayrım ADR-008'in ("validator'lar tek kaynak `cozum_satirlari`'ndan beslenir") ve ADR-009'un ("türetilen saklanmaz") M7'deki doğrudan sonucudur.
+
+**Avantajları:**
+- Ölçek doğru yerde: cevap anahtarı **içerikle** büyür (küçük); kullanıcı verisi `ilerleme`/`yevmiye` katmanında (M10 partition stratejisi orada).
+- Çift kayıt yok: sonuç tek yerde (`ilerleme`); cevap anahtarı salt-okunur referans.
+- Aynı cevap anahtarı N tüketiciye hizmet eder: soru modu, simülasyon, çok kullanıcılı atölye, eğitmen değerlendirmesi, AI yanlış analizi.
+- M10 simülasyonu ve sınav modu bedavaya doğru modelde: aynı anahtar, ayrı kullanıcı-store.
+
+**Dezavantajları:**
+- İki kavramı ayrı tutmak disiplin ister; "kullanıcının çözümü" ifadesi kodda/dokümanda dikkatli kullanılmalı (hangi katman?).
+- Kullanıcı cevabı iki yerde (soru→ilerleme, sim→yevmiye) — birleşik "tüm denemelerim" görünümü join ister.
+
+**Gelecekteki Etkileri:**
+- M10 `yevmiye_satirlari` kullanıcı cevabını tutar ve `cozum_satirlari`'na karşı doğrulanır — ayrım burada kritik kazanç.
+- Eğitmen paneli / çok kullanıcılı atölye: öğrenci `ilerleme`/`yevmiye`'si cevap anahtarına karşı okunur; anahtar paylaşılan salt-okunur içerik.
+- AI çözüm analizi (`ai-yanlis-analizi`) girdisi = (kullanıcı cevabı, `cozum_satirlari`, `hata_kurallari`); AI müşteridir, anahtarı üretmez (ADR-012).
+- ADR-005'in açık kararı (`cozum_satirlari` denge + min-2-satır bütünlüğü) M7'de trigger'larla kapatılır — cevap anahtarı dengesiz olamaz (yoksa her öğrenci haksız "yanlış"a düşer).
+
+---
+
+<a name="adr-020"></a>
+## ADR-020 — Cevap anahtarı başlığının ayrı tablo olarak modellenmesi
+
+**Durum:** Kabul Edildi (7 Temmuz 2026) · **İlişkili:** ADR-002, ADR-019 · **Yerini aldığı yaklaşım:** V2-VERI-MODELI §2.2 (`cozumler` repurpose)
+
+**Problem:**
+Cevap anahtarı iki grain'den oluşur: **başlık** (bir çözüm/varyant — olay_id, varyant, muhasebe mantığı, beyanname_etkileri, hata_kurallari) ve **satır** (muavin_id + borç/alacak). Satırların bağlanacağı başlık nereye konmalı? V2-VERI-MODELI §2.2 mevcut `cozumler` tablosunu *başlık grain*'ine "yeniden yapılandırmayı" (repurpose) öngörüyordu. Ancak `cozumler` bugün *satır grain*'inde (256 satır; `soru_id/sira/kod` NOT NULL) ve `kontrol.ts` bu şekli okuyor. Aynı tabloya başlık satırları eklemek, legacy NOT NULL kısıtlarının gevşetilmesini ve tek tabloda iki grain'in (legacy satır + yeni başlık) yaşamasını gerektiriyordu.
+
+**Alternatifler:**
+1. **`cozumler`'i repurpose et (§2.2):** Başlık kolonlarını `cozumler`'e ekle, `soru_id/sira/kod` NOT NULL'ı gevşet. → mixed-grain + legacy semantik değişimi.
+2. **Başlıksız, satır doğrudan olaya bağlı:** varyant/mantık/beyanname/hata metadata'sı kaybolur (olaya konamaz — çok varyant; satıra konamaz — çözüm düzeyi). Reddedildi.
+3. **Ayrı başlık tablosu (`cozum_basliklari`):** Yeni temiz tablo; `cozumler`'e hiç dokunulmaz.
+
+**Neden Bu Karar Alındı:**
+Alternatif 3 seçildi. `cozum_basliklari` (yeni: olay_id NOT NULL, varyant, varyant_adi, aciklama, beyanname_etkileri, hata_kurallari) başlık grain'ini temiz tutar; `cozum_satirlari.baslik_id` buraya bağlanır. **Legacy `cozumler` tablosuna hiç dokunulmaz** — kolon eklenmez, NOT NULL gevşetilmez, semantik değişmez; `kontrol.ts` bozulmadan dual-read'e devam eder (M11'de drop). Alternatif 1'in bedeli (mixed-grain, NOT NULL gevşetme, legacy semantik kirliliği) alternatif 3'te tümüyle ortadan kalkar; karşılığında geçiş döneminde üç tablo (`cozumler` legacy + `cozum_basliklari` + `cozum_satirlari`) yaşar, M11'de legacy düşünce temiz `başlık + satır` ikilisi kalır.
+
+**Avantajları:**
+- Legacy `cozumler` **hiç değişmez** → `kontrol.ts` + 70 mevcut soru sıfır risk.
+- Mixed-grain yok; her tablo tek grain (temiz semantik, temiz kısıtlar).
+- `unique(olay_id, varyant)` düz constraint (partial index hackine gerek yok).
+- Başlık metadata'sı (varyant/mantık/beyanname/hata) doğru düzeyde, tek yerde.
+
+**Dezavantajları:**
+- Geçiş döneminde üç tablo (kavramsal yük); M11'e kadar legacy `cozumler` + yeni ikili birlikte.
+- V2-VERI-MODELI §2.2 güncellenmeli (bu ADR ile).
+- İsimlendirme: kalıcı `cozum_basliklari`; istenirse M11 sonrası `cozumler`'e rename edilebilir (zorunlu değil).
+
+**Gelecekteki Etkileri:**
+- M7b (karar/rapor) ve ileriye-dönük içerik `cozum_basliklari`/`cozum_satirlari`'na yazar; legacy `cozumler` yeni içerik almaz.
+- M11: legacy `cozumler` drop; opsiyonel `cozum_basliklari→cozumler` rename kararı orada verilir.
+- Bütünlük (denge + min-2-satır) `cozum_satirlari` üzerinde deferred constraint trigger ile (ADR-005 açık kararının kapanışı).
+
+---
+
 ## Ek: ADR bağımlılık haritası
 
 ```
@@ -668,7 +737,8 @@ ADR-001 (DDD)
   ├── ADR-004 (Muavin zorunlu) ─── ADR-005 (Ana hesap yasağı)
   ├── ADR-006 (Defter/Mizan view) ─ ADR-010 (Simulation Engine)
   ├── ADR-009 (Learning Engine) ─── ADR-015 (Yetkinlik sistemi) ─── ADR-017 (Yetkinlik/etiket olay düzeyinde)
-  └── ADR-011 (Mevzuat versiyonlama)
+  ├── ADR-011 (Mevzuat versiyonlama)
+  └── ADR-019 (Cevap anahtarı ≠ kullanıcı cevabı) ─── ADR-020 (Cevap anahtarı başlığı ayrı tablo)
 ```
 
 ## Ek: Açık kararlar (ADR'lere bağlı, henüz kesinleşmemiş)
@@ -688,4 +758,4 @@ Bu noktalar ilgili ADR'lerde "Dezavantajlar/Gelecek Etkiler" olarak işaretlendi
 
 ---
 
-**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-019+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 18 karara referansla ilerler.
+**Bu belge dondurulmuştur.** Herhangi bir ADR'den sapma, yeni bir ADR (ADR-021+) açmayı ve ilgili kararı `Yerini Aldı` olarak işaretlemeyi gerektirir. Kod, migration ve içerik üretimi bundan sonra bu 20 karara referansla ilerler.
