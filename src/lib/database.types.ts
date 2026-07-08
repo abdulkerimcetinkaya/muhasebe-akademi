@@ -875,6 +875,18 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      // M9 — doğru/yanlış çözüm kaydı + XP dağıtımı (olay_yetkinlikleri) atomik.
+      ilerleme_kaydet: {
+        Args: {
+          _soru_id: string;
+          _dogru_mu: boolean;
+          _sure_saniye?: number | null;
+          _kullanilan_ai?: boolean;
+          _cozum_gosterildi?: boolean;
+          _kazanilan_puan?: number;
+        };
+        Returns: string;
+      };
       premium_kontenjan_kalan: {
         Args: Record<string, never>;
         Returns: number;

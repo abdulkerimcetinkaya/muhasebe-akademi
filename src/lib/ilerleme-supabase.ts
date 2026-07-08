@@ -141,15 +141,17 @@ export const soruCozumKaydetSupabase = async (
   yardim: CozumYardim = {},
 ): Promise<void> => {
   const kazanilanPuan = puanHesapla(zorluk, yardim);
-  await supabase.from('ilerleme').insert({
-    user_id: userId,
-    soru_id: soruId,
-    dogru_mu: true,
-    kullanilan_ai: yardim.kullanilanAi ?? false,
-    cozum_gosterildi: yardim.cozumGosterildi ?? false,
-    kazanilan_puan: kazanilanPuan,
+  // M9 — doğru çözüm: ilerleme insert + XP dağıtımı (soru→olay→olay_yetkinlikleri)
+  // tek atomik RPC. Kullanıcı auth.uid()'den; kazanilan_puan motivasyon katmanı için.
+  const { error } = await supabase.rpc('ilerleme_kaydet', {
+    _soru_id: soruId,
+    _dogru_mu: true,
+    _kullanilan_ai: yardim.kullanilanAi ?? false,
+    _cozum_gosterildi: yardim.cozumGosterildi ?? false,
+    _kazanilan_puan: kazanilanPuan,
   });
-  // aktivite upsert: aynı (user_id, tarih) varsa cozulen_sayi'yı +1 yap
+  if (error) throw error;
+  // aktivite upsert (RPC aktivite yazmaz): aynı (user_id, tarih) varsa cozulen_sayi +1
   const { data: mevcut } = await supabase
     .from('aktivite')
     .select('cozulen_sayi')
@@ -187,7 +189,13 @@ export const gunlukGirisKaydetSupabase = async (
 };
 
 export const yanlisKaydetSupabase = async (userId: string, soruId: string): Promise<void> => {
-  await supabase.from('ilerleme').insert({ user_id: userId, soru_id: soruId, dogru_mu: false });
+  void userId; // RPC kullanıcıyı auth.uid()'den alır; imza App uyumu için korunur.
+  // M9 — yanlış çözüm: ilerleme (dogru_mu=false) + yetkinlik yanlis_sayisi++ (zayıf alan).
+  const { error } = await supabase.rpc('ilerleme_kaydet', {
+    _soru_id: soruId,
+    _dogru_mu: false,
+  });
+  if (error) throw error;
 };
 
 export const rozetKaydetSupabase = async (userId: string, rozetId: string): Promise<void> => {
