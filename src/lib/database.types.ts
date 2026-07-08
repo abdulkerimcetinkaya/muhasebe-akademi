@@ -9,7 +9,8 @@ export type Zorluk = 'kolay' | 'orta' | 'zor';
 export type OdemeDurum = 'beklemede' | 'basarili' | 'iptal' | 'iade' | 'hata';
 export type OdemeDonem = 'aylik' | 'yillik';
 // TDHP grup kodu — muavin'in bağlı olduğu hesap grubu (2 haneli).
-// Sınıf bilgisi (1-7) kodun ilk hanesinden türetilir; UI'da sadece etiket ayırıcı.
+// v2 (M4): artık SAKLANMAZ; ana_kod'un ilk 2 hanesinden türetilir (muavin.ts → grupTuret).
+// Yalnızca grup etiketi (TIP_ETIKETLERI) ve UI ayırıcı için kullanılır.
 export type MuavinTip =
   // 1 — Dönen Varlıklar
   | '10' | '11' | '12' | '13' | '15' | '17' | '18' | '19'
@@ -34,11 +35,40 @@ export type HesapPlaniRow = {
   sira: number;
 };
 
+// Cari kart tipleri (cari_tip enum — M3)
+export type CariTip = 'musteri' | 'tedarikci' | 'personel' | 'kamu' | 'banka' | 'diger';
+
+export type CariKartRow = {
+  id: string;
+  tip: CariTip;
+  unvan: string;
+  kisa_ad: string | null;
+  vkn: string | null;
+  tckn: string | null;
+  vergi_dairesi: string | null;
+  telefon: string | null;
+  eposta: string | null;
+  adres: string | null;
+  il: string | null;
+  iban: string | null;
+  meta: Record<string, unknown>;
+  isletme_id: string | null;
+  olusturan_user_id: string | null;
+  aktif: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+// muavin_hesaplar v2 (M4): uuid PK, cari_id/varsayilan/evren alanları, tip KALDIRILDI.
 export type MuavinHesapRow = {
+  id: string;
   kod: string;
   ana_kod: string;
   ad: string;
-  tip: MuavinTip;
+  cari_id: string | null;
+  varsayilan: boolean;
+  isletme_id: string | null;
+  olusturan_user_id: string | null;
   aciklama: string | null;
   sira: number;
   aktif: boolean;
@@ -94,6 +124,11 @@ export type SorularRow = {
   muavinler?: SoruMuavin[];
   // Etiketler — kavram (sermaye-konulmasi) + hesap kodu (100, 500)
   etiketler?: string[];
+  // V2 (M5): olay merkezli instance alanları
+  olay_id: string | null;
+  tip: string;
+  destek_seviyesi: DestekSeviyesi;
+  config: unknown;
   // Katkıcı sistemi — 20260504000010 migration (yazar)
   ekleyen_id: string | null;
   created_at: string;
@@ -148,6 +183,7 @@ export type ModulAltBaslikRow = {
   updated_at: string;
 };
 
+// Legacy cevap anahtarı (grain=satır). V2'de cozum_basliklari + cozum_satirlari.
 export type CozumlerRow = {
   id: string;
   soru_id: string;
@@ -155,6 +191,50 @@ export type CozumlerRow = {
   kod: string;
   borc: number;
   alacak: number;
+};
+
+// ---- V2 (M5–M7): olay merkezli içerik ----
+export type DestekSeviyesi = 'rehberli' | 'standart' | 'serbest';
+
+// muhasebe_olaylari (M5) — aggregate root
+export type MuhasebeOlayRow = {
+  id: string;
+  baslik: string;
+  senaryo: string;
+  islem_tarihi: string | null;
+  zorluk: Zorluk;
+  ipucu: string | null;
+  durum: SoruDurum;
+  kaynak: string | null;
+  ekleyen_id: string | null;
+  isletme_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+// cozum_basliklari (M7a) — cevap anahtarı başlığı (varyant)
+export type CozumBasligiRow = {
+  id: string;
+  olay_id: string;
+  varyant: number;
+  varyant_adi: string | null;
+  aciklama: string | null;
+  beyanname_etkileri: unknown;
+  hata_kurallari: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+// cozum_satirlari (M7a) — cevap anahtarı satırı (muavin_id NOT NULL)
+export type CozumSatiriRow = {
+  id: string;
+  baslik_id: string;
+  sira: number;
+  muavin_id: string;
+  borc: number;
+  alacak: number;
+  aciklama: string | null;
+  created_at: string;
 };
 
 export type RozetlerKatalogRow = {
@@ -405,9 +485,46 @@ export type Database = {
         Update: Partial<AdminRow>;
         Relationships: [];
       };
+      cari_kartlar: {
+        Row: CariKartRow;
+        Insert: Omit<
+          CariKartRow,
+          | 'id' | 'created_at' | 'updated_at' | 'kisa_ad' | 'vkn' | 'tckn'
+          | 'vergi_dairesi' | 'telefon' | 'eposta' | 'adres' | 'il' | 'iban'
+          | 'meta' | 'isletme_id' | 'olusturan_user_id' | 'aktif'
+        > & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          kisa_ad?: string | null;
+          vkn?: string | null;
+          tckn?: string | null;
+          vergi_dairesi?: string | null;
+          telefon?: string | null;
+          eposta?: string | null;
+          adres?: string | null;
+          il?: string | null;
+          iban?: string | null;
+          meta?: Record<string, unknown>;
+          isletme_id?: string | null;
+          olusturan_user_id?: string | null;
+          aktif?: boolean;
+        };
+        Update: Partial<CariKartRow>;
+        Relationships: [];
+      };
       muavin_hesaplar: {
         Row: MuavinHesapRow;
-        Insert: Omit<MuavinHesapRow, 'created_at' | 'updated_at' | 'aciklama' | 'sira' | 'aktif'> & {
+        Insert: Omit<
+          MuavinHesapRow,
+          | 'id' | 'created_at' | 'updated_at' | 'cari_id' | 'varsayilan'
+          | 'isletme_id' | 'olusturan_user_id' | 'aciklama' | 'sira' | 'aktif'
+        > & {
+          id?: string;
+          cari_id?: string | null;
+          varsayilan?: boolean;
+          isletme_id?: string | null;
+          olusturan_user_id?: string | null;
           created_at?: string;
           updated_at?: string;
           aciklama?: string | null;
@@ -439,13 +556,21 @@ export type Database = {
       };
       sorular: {
         Row: SorularRow;
-        Insert: Omit<SorularRow, 'created_at' | 'updated_at' | 'belgeler' | 'durum' | 'ekleyen_id' | 'alt_baslik_id'> & {
+        Insert: Omit<
+          SorularRow,
+          | 'created_at' | 'updated_at' | 'belgeler' | 'durum' | 'ekleyen_id'
+          | 'alt_baslik_id' | 'olay_id' | 'tip' | 'destek_seviyesi' | 'config'
+        > & {
           created_at?: string;
           updated_at?: string;
           belgeler?: unknown;
           durum?: SoruDurum;
           ekleyen_id?: string | null;
           alt_baslik_id?: string | null;
+          olay_id?: string | null;
+          tip?: string;
+          destek_seviyesi?: DestekSeviyesi;
+          config?: unknown;
         };
         Update: Partial<SorularRow>;
         Relationships: [];
@@ -469,6 +594,59 @@ export type Database = {
         Row: CozumlerRow;
         Insert: Omit<CozumlerRow, 'id'> & { id?: string };
         Update: Partial<CozumlerRow>;
+        Relationships: [];
+      };
+      muhasebe_olaylari: {
+        Row: MuhasebeOlayRow;
+        Insert: Omit<
+          MuhasebeOlayRow,
+          | 'islem_tarihi' | 'ipucu' | 'durum' | 'kaynak' | 'ekleyen_id'
+          | 'isletme_id' | 'created_at' | 'updated_at'
+        > & {
+          islem_tarihi?: string | null;
+          ipucu?: string | null;
+          durum?: SoruDurum;
+          kaynak?: string | null;
+          ekleyen_id?: string | null;
+          isletme_id?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<MuhasebeOlayRow>;
+        Relationships: [];
+      };
+      cozum_basliklari: {
+        Row: CozumBasligiRow;
+        Insert: Omit<
+          CozumBasligiRow,
+          | 'id' | 'varyant' | 'varyant_adi' | 'aciklama'
+          | 'beyanname_etkileri' | 'hata_kurallari' | 'created_at' | 'updated_at'
+        > & {
+          id?: string;
+          varyant?: number;
+          varyant_adi?: string | null;
+          aciklama?: string | null;
+          beyanname_etkileri?: unknown;
+          hata_kurallari?: unknown;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<CozumBasligiRow>;
+        Relationships: [];
+      };
+      cozum_satirlari: {
+        Row: CozumSatiriRow;
+        Insert: Omit<
+          CozumSatiriRow,
+          'id' | 'borc' | 'alacak' | 'aciklama' | 'created_at'
+        > & {
+          id?: string;
+          borc?: number;
+          alacak?: number;
+          aciklama?: string | null;
+          created_at?: string;
+        };
+        Update: Partial<CozumSatiriRow>;
         Relationships: [];
       };
       rozetler_katalog: {

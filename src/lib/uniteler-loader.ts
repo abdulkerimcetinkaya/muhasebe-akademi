@@ -10,15 +10,17 @@ import type {
   Unite,
 } from '../types';
 
-// v14: sorular.etiketler text[] kolonu eklendi — kavram + hesap kodu etiketleri.
+// v15: V2 dual-read — soru.cozum, olayının cozum_basliklari varsa yeni
+//      cozum_satirlari'ndan (muavin koduna map'li), yoksa legacy cozumler'den.
+// v14 not'u: sorular.etiketler text[] kolonu — kavram + hesap kodu etiketleri.
 // v13 not'u: soruya özel muavin sözlüğü.
 // v12 not'u: atölye soruları junction tablosundan yükleniyor.
 // v11 not'u: mevcut 213 soru arsive cekildi.
 // v10 not'u: `icerik` JSONB kolonları liste yüklemesinde çekilmiyor.
-const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v14';
+const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v15';
 
 interface OnbellekPaketi {
-  v: 14;
+  v: 15;
   ts: number;
   uniteler: Unite[];
 }
@@ -30,7 +32,7 @@ export interface UnitelerVerisi {
 
 // Liste yüklemesinde çekilen kolonlar — icerik/icerik_guncellendi YOK
 const SORU_LISTE_KOLONLARI =
-  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler';
+  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler, olay_id, tip';
 const MODUL_LISTE_KOLONLARI =
   'id, unite_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
 const ALT_BASLIK_LISTE_KOLONLARI = 'id, modul_id, sira, baslik, karma, aktif';
@@ -55,6 +57,9 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     sorularR,
     cozumlerR,
     atolyeSorulariR,
+    v2BasliklarR,
+    v2SatirlarR,
+    muavinKodR,
   ] = await Promise.all([
     supabase.from('unites').select('*').order('sira'),
     supabase.from('unite_konulari').select(KONU_LISTE_KOLONLARI).order('sira'),
@@ -69,12 +74,20 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       .eq('durum', 'onayli')
       .order('unite_id')
       .order('id'),
+    // Legacy cevap anahtarı — eski cozumler (grain=satır). V2 olmayan sorular için.
     supabase.from('cozumler').select('*').order('soru_id').order('sira'),
     supabase
       .from('atolye_sorulari')
       .select('alt_baslik_id, soru_id, sira')
       .order('alt_baslik_id')
       .order('sira'),
+    // V2 cevap anahtarı (flat — embed yerine; Relationships boş olduğundan flat tipleme sağlam).
+    supabase.from('cozum_basliklari').select('id, olay_id, varyant').eq('varyant', 1),
+    supabase
+      .from('cozum_satirlari')
+      .select('baslik_id, sira, muavin_id, borc, alacak')
+      .order('sira'),
+    supabase.from('muavin_hesaplar').select('id, kod'),
   ]);
 
   if (unitesR.error) throw new Error(`Ünites yüklenemedi: ${unitesR.error.message}`);
@@ -87,11 +100,40 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
   if (cozumlerR.error) throw new Error(`Çözümler yüklenemedi: ${cozumlerR.error.message}`);
   if (atolyeSorulariR.error)
     throw new Error(`Atölye soruları yüklenemedi: ${atolyeSorulariR.error.message}`);
+  if (v2BasliklarR.error)
+    throw new Error(`V2 çözüm başlıkları yüklenemedi: ${v2BasliklarR.error.message}`);
+  if (v2SatirlarR.error)
+    throw new Error(`V2 çözüm satırları yüklenemedi: ${v2SatirlarR.error.message}`);
+  if (muavinKodR.error)
+    throw new Error(`Muavin kodları yüklenemedi: ${muavinKodR.error.message}`);
 
+  // Legacy cevap anahtarı: soru_id → {kod,borc,alacak}[] (eski cozumler).
   const cozumById: Record<string, { kod: string; borc: number; alacak: number }[]> = {};
   (cozumlerR.data ?? []).forEach((c) => {
     if (!cozumById[c.soru_id]) cozumById[c.soru_id] = [];
     cozumById[c.soru_id].push({ kod: c.kod, borc: c.borc, alacak: c.alacak });
+  });
+
+  // V2 cevap anahtarı (flat join): baslik→olay + muavin→kod eşlemeleriyle satırları
+  // olaya grupla. kontrol.ts aynı {kod,borc,alacak} şeklini bekler (muavin_id → kod).
+  const olayByBaslik: Record<string, string> = {};
+  (v2BasliklarR.data ?? []).forEach((b) => {
+    olayByBaslik[b.id] = b.olay_id;
+  });
+  const kodByMuavin: Record<string, string> = {};
+  (muavinKodR.data ?? []).forEach((m) => {
+    kodByMuavin[m.id] = m.kod;
+  });
+  const v2CozumByOlay: Record<string, { kod: string; borc: number; alacak: number }[]> = {};
+  (v2SatirlarR.data ?? []).forEach((s) => {
+    const olayId = olayByBaslik[s.baslik_id];
+    const kod = kodByMuavin[s.muavin_id];
+    if (!olayId || !kod) return;
+    (v2CozumByOlay[olayId] ??= []).push({
+      kod,
+      borc: Number(s.borc) || 0,
+      alacak: Number(s.alacak) || 0,
+    });
   });
 
   const sorularByUnite: Record<string, Soru[]> = {};
@@ -108,6 +150,11 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     const etiketler = Array.isArray(etiketlerRaw)
       ? (etiketlerRaw as string[])
       : [];
+    // V2 dual-read: olayında yeni cevap anahtarı (cozum_basliklari) varsa onu,
+    // yoksa legacy cozumler'i kullan. kontrol.ts için ikisi de {kod,borc,alacak}.
+    const olayId = (s as { olay_id?: string | null }).olay_id ?? null;
+    const cozum =
+      (olayId && v2CozumByOlay[olayId]) ? v2CozumByOlay[olayId] : (cozumById[s.id] ?? []);
     const soru: Soru = {
       id: s.id,
       baslik: s.baslik,
@@ -115,7 +162,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       senaryo: s.senaryo,
       ipucu: s.ipucu ?? '',
       aciklama: s.aciklama ?? '',
-      cozum: cozumById[s.id] ?? [],
+      cozum,
       // belgeler liste yüklemesinde çekilmez — SoruEkrani lazy yükler
       belgeler: undefined,
       konuId: s.konu_id ?? null,
@@ -296,7 +343,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
     const raw = localStorage.getItem(UNITELER_CACHE_KEY);
     if (!raw) return null;
     const paket = JSON.parse(raw) as OnbellekPaketi;
-    if (paket.v !== 14 || !Array.isArray(paket.uniteler)) return null;
+    if (paket.v !== 15 || !Array.isArray(paket.uniteler)) return null;
     return { uniteler: paket.uniteler, tumSorular: duzleTumSorular(paket.uniteler) };
   } catch {
     return null;
@@ -305,7 +352,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
 
 export const uniteleriCacheeYaz = (uniteler: Unite[]): void => {
   try {
-    const paket: OnbellekPaketi = { v: 14, ts: Date.now(), uniteler };
+    const paket: OnbellekPaketi = { v: 15, ts: Date.now(), uniteler };
     localStorage.setItem(UNITELER_CACHE_KEY, JSON.stringify(paket));
   } catch {
     // ignore (quota)
