@@ -10,6 +10,9 @@ import type {
   Unite,
 } from '../types';
 
+// v16 not'u: 70 legacy soru arşive çekildi (TASK-CONTENT-001); stale client
+//      cache'lerini geçersiz kılmak için versiyon bump. Sadece onaylı KUR
+//      içerikleri (KUR-001, KUR-002) görünür.
 // v15: V2 dual-read — soru.cozum, olayının cozum_basliklari varsa yeni
 //      cozum_satirlari'ndan (muavin koduna map'li), yoksa legacy cozumler'den.
 // v14 not'u: sorular.etiketler text[] kolonu — kavram + hesap kodu etiketleri.
@@ -17,10 +20,10 @@ import type {
 // v12 not'u: atölye soruları junction tablosundan yükleniyor.
 // v11 not'u: mevcut 213 soru arsive cekildi.
 // v10 not'u: `icerik` JSONB kolonları liste yüklemesinde çekilmiyor.
-const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v15';
+const UNITELER_CACHE_KEY = 'mli_uniteler_cache_v16';
 
 interface OnbellekPaketi {
-  v: 15;
+  v: 16;
   ts: number;
   uniteler: Unite[];
 }
@@ -343,7 +346,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
     const raw = localStorage.getItem(UNITELER_CACHE_KEY);
     if (!raw) return null;
     const paket = JSON.parse(raw) as OnbellekPaketi;
-    if (paket.v !== 15 || !Array.isArray(paket.uniteler)) return null;
+    if (paket.v !== 16 || !Array.isArray(paket.uniteler)) return null;
     return { uniteler: paket.uniteler, tumSorular: duzleTumSorular(paket.uniteler) };
   } catch {
     return null;
@@ -352,7 +355,7 @@ export const uniteleriCachedenOku = (): UnitelerVerisi | null => {
 
 export const uniteleriCacheeYaz = (uniteler: Unite[]): void => {
   try {
-    const paket: OnbellekPaketi = { v: 15, ts: Date.now(), uniteler };
+    const paket: OnbellekPaketi = { v: 16, ts: Date.now(), uniteler };
     localStorage.setItem(UNITELER_CACHE_KEY, JSON.stringify(paket));
   } catch {
     // ignore (quota)
