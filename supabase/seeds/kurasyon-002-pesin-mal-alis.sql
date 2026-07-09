@@ -151,7 +151,7 @@ on conflict (baslik_id, madde_id) do nothing;
 -- ---------------------------------------------------------------------
 -- 9. Soru instance (tip=yevmiye_kaydi)
 -- ---------------------------------------------------------------------
-insert into public.sorular (id, unite_id, baslik, zorluk, senaryo, ipucu, durum, kaynak, olay_id, tip, destek_seviyesi)
+insert into public.sorular (id, unite_id, baslik, zorluk, senaryo, ipucu, aciklama, durum, kaynak, olay_id, tip, destek_seviyesi)
 values (
   'soru-pesin-mal-alis-001',
   'mal-alis-satis',
@@ -159,6 +159,31 @@ values (
   'kolay',
   'Atlas Market, Delta Tedarik Ltd. Şti.''den 40.000 TL tutarında ticari mal satın aldı. Faturada %20 KDV (8.000 TL) hesaplandı. Toplam 48.000 TL banka hesabından peşin ödendi. Alış faturasını yevmiyeye kaydediniz.',
   'Peşin ödemede satıcı borcu doğmaz; karşı hesap 102 Bankalar''dır.',
+  -- Çözüm ekranı "Resmi Çözüm" açıklaması (whitespace-pre-line render).
+  'OLAY
+Atlas Market, Delta Tedarik Ltd. Şti.''den 40.000 TL tutarında ticari mal aldı; faturada %20 KDV (8.000 TL). Toplam 48.000 TL işletmenin BANKA hesabından PEŞİN ödendi. Belge: ALS2026-000148 numaralı alış faturası.
+
+ANA MANTIK
+Bu da bir ALIŞ işlemidir; malın (153) ve KDV''nin (191) mantığı KUR-001 ile AYNIDIR. Tek fark ödeme şeklidir: burada ödeme anında ve banka üzerinden yapılır, dolayısıyla satıcıya borç DOĞMAZ.
+
+DOĞRU KAYIT
+- 153 Ticari Mallar → Borç 40.000
+- 191 İndirilecek KDV → Borç 8.000
+- 102 Bankalar (Türkiye İş Bankası) → Alacak 48.000
+
+SATIR SATIR
+- 153 Ticari Mallar (borç): Mal stoğa girer (varlık artışı) → borç. Sürekli envanterde alış doğrudan 153''e alınır. (KUR-001 ile aynı.)
+- 191 İndirilecek KDV (borç): Yüklenilen KDV indirilecek KDV''dir; maliyete eklenmez, ayrı izlenir (KDVK md.29/1). (KUR-001 ile aynı.)
+- 102 Bankalar (alacak): Ödeme banka hesabından yapıldığı için banka mevcudu azalır. Banka bir varlıktır; azaldığı için ALACAK çalışır. Ödenen 48.000 (mal + KDV) buradan çıkar.
+
+NEDEN DİĞER HESAPLAR YANLIŞ
+- 320 Satıcılar: Peşin ödemede satıcıya borç KALMAZ; ödeme anında yapıldı. 320 yalnızca ödeme ertelendiğinde (veresiye) kullanılır — o KUR-001''in konusuydu.
+- 100 Kasa: Ödeme nakit kasadan değil BANKA hesabından yapıldı. Olayda "banka" dendiği için karşı hesap 102 Bankalar''dır; 100 Kasa değil.
+- 391 Hesaplanan KDV: Satış KDV''sidir; alışta kullanılmaz. Alışta yüklenilen KDV 191 İndirilecek KDV''dir.
+- Borç/alacak yönü: Banka çıkışını yanlışlıkla borç yazma; para AZALDIĞI için 102 alacak çalışır.
+
+ÖĞRENME ÖZETİ
+Peşin (banka) alışta 153 ve 191 borç mantığı aynı kalır; satıcı borcu (320) yerine ödeme yapılan banka (102) alacak çalışır. Fark tamamen ödeme şeklinden gelir: kasa değil banka, veresiye değil peşin.',
   'onayli',
   'manuel',
   'olay-pesin-mal-alis-001',
@@ -167,7 +192,7 @@ values (
 )
 on conflict (id) do update set
   olay_id = excluded.olay_id, tip = excluded.tip, destek_seviyesi = excluded.destek_seviyesi,
-  durum = excluded.durum, senaryo = excluded.senaryo;
+  durum = excluded.durum, senaryo = excluded.senaryo, aciklama = excluded.aciklama;
 
 -- ---------------------------------------------------------------------
 -- 10. DOĞRULAMA

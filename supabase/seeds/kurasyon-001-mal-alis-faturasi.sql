@@ -154,7 +154,7 @@ on conflict (baslik_id, madde_id) do nothing;
 --    Zorunlu: id, unite_id, baslik, zorluk, senaryo. Legacy jsonb'lar (belgeler/
 --    muavinler/etiketler) BOŞ bırakılır — yeni içerik normalize yapıyı kullanır.
 -- ---------------------------------------------------------------------
-insert into public.sorular (id, unite_id, baslik, zorluk, senaryo, ipucu, durum, kaynak, olay_id, tip, destek_seviyesi)
+insert into public.sorular (id, unite_id, baslik, zorluk, senaryo, ipucu, aciklama, durum, kaynak, olay_id, tip, destek_seviyesi)
 values (
   'soru-mal-alis-veresiye-001',
   'mal-alis-satis',
@@ -162,6 +162,31 @@ values (
   'orta',
   'İşletme, Delta Tedarik Ltd. Şti.''den 50.000 TL tutarında ticari mal satın aldı. Faturada %20 KDV (10.000 TL) hesaplandı. Ödeme 30 gün vadeli (veresiye). Alış faturasını yevmiyeye kaydediniz.',
   'Alışta yüklenilen KDV *indirilecek* KDV''dir; veresiyede karşı hesap 320''dir.',
+  -- Çözüm ekranı "Resmi Çözüm" açıklaması (whitespace-pre-line render).
+  'OLAY
+Atlas Market, Delta Tedarik Ltd. Şti.''den 50.000 TL tutarında ticari mal aldı; faturada %20 KDV (10.000 TL) hesaplandı. Ödeme 30 gün vadeli (veresiye) — henüz yapılmadı. Belge: ALS2026-000147 numaralı alış faturası.
+
+ANA MANTIK
+Bu bir ALIŞ işlemidir ve ödeme YAPILMAMIŞTIR. Üç şeyi ayırt etmelisin: (1) malın bedeli, (2) yüklenilen KDV, (3) satıcıya doğan borç.
+
+DOĞRU KAYIT
+- 153 Ticari Mallar → Borç 50.000
+- 191 İndirilecek KDV → Borç 10.000
+- 320 Satıcılar (Delta Tedarik) → Alacak 60.000
+
+SATIR SATIR
+- 153 Ticari Mallar (borç): Alınan mal işletmenin stoğuna girer. Stok bir varlıktır; arttığı için borç çalışır. Atlas Market sürekli envanter yöntemi kullandığından alış doğrudan 153''e alınır (ayrı bir "alışlar" hesabı kullanılmaz).
+- 191 İndirilecek KDV (borç): Alışta yüklenilen KDV, devletten indirilecek bir alacaktır; mal maliyetine EKLENMEZ, ayrı izlenir (KDVK md.29/1). Bu yüzden 153''e 50.000, KDV''ye 10.000 ayrı yazılır.
+- 320 Satıcılar (alacak): Ödeme yapılmadığı için satıcıya borç doğar; bu borç 320 Satıcılar''da (Delta cari hesabı) alacak olarak izlenir. Toplam 60.000 (mal + KDV) buraya yazılır.
+
+NEDEN DİĞER HESAPLAR YANLIŞ
+- 100 Kasa / 102 Bankalar: Ödeme henüz yapılmadı; nakit/banka çıkışı YOK. Veresiyede karşı hesap satıcıdır, kasa/banka değil.
+- 391 Hesaplanan KDV: Bu bir SATIŞ KDV''sidir (müşteriden tahsil edilen). Alışta yüklenilen KDV 191 İndirilecek KDV''dir; yönü karıştırma.
+- 770/632 Gider hesapları: Satılmak üzere alınan ticari mal GİDER değil stoktur (153). Gidere ancak satıldığında (SMM) dönüşür.
+- Bu olayda SATIŞ ve satılan malın maliyeti (SMM/621) kaydı YOKTUR; yalnızca alış kaydedilir.
+
+ÖĞRENME ÖZETİ
+Veresiye alışta mal 153''e, KDV 191''e borç yazılır; ödeme yapılmadığı için toplam borç 320 Satıcılar''da alacak doğar. Kasa/banka bu işlemde çalışmaz.',
   'onayli',
   'manuel',
   'olay-mal-alis-veresiye-001',
@@ -170,7 +195,7 @@ values (
 )
 on conflict (id) do update set
   olay_id = excluded.olay_id, tip = excluded.tip, destek_seviyesi = excluded.destek_seviyesi,
-  durum = excluded.durum, senaryo = excluded.senaryo;
+  durum = excluded.durum, senaryo = excluded.senaryo, aciklama = excluded.aciklama;
 
 -- ---------------------------------------------------------------------
 -- 10. DOĞRULAMA

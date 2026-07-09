@@ -75,7 +75,7 @@ export const CozumModal = ({ soru, onKapat }: Props) => {
             <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-2 font-bold">
               Açıklama
             </div>
-            <p className="leading-relaxed font-medium">{soru.aciklama}</p>
+            <p className="leading-relaxed font-medium whitespace-pre-line">{soru.aciklama}</p>
           </div>
         </div>
       </div>
