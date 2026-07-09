@@ -1,12 +1,14 @@
 # CUR-001 — Muhasebe Akademisi Vizyonu
 
-**Durum:** Taslak v0.2
+**Durum:** Taslak v0.3
 
 ---
 
 # Amaç
 
-Muhasebe Akademisi, muhasebeyi yalnızca hesap kodları ve yevmiye kayıtları üzerinden öğreten bir platform değildir.
+Muhasebe Akademisi bir soru bankası değildir.
+
+Muhasebeyi yalnızca hesap kodları ve yevmiye kayıtları üzerinden öğreten bir alıştırma platformu da değildir.
 
 Amacı; kullanıcıya gerçek iş hayatındaki muhasebe süreçlerini deneyimleterek mesleki düşünme becerisi kazandırmaktır.
 
@@ -27,7 +29,7 @@ Kullanıcının;
 * mevzuatı doğru uygulayabilmesini,
 * muhasebe kayıtlarını oluşturabilmesini,
 * finansal etkileri analiz edebilmesini,
-* meslek hayatına hazır hale gelmesini sağlamak.
+* meslek hayatına hazır hâle gelmesini sağlamak.
 
 ---
 
@@ -47,37 +49,37 @@ Bunun yerine kullanıcıya **muhasebeci gibi düşünmeyi** öğretir.
 
 ## 1. Önce işletme olayı
 
-Her öğrenme gerçek bir işletme olayıyla başlar.
+Her öğrenme gerçek bir işletme olayıyla başlar. Kullanıcı soyut bir konuyla değil, somut bir iş durumuyla karşılaşır.
 
 ## 2. Gerçek belge
 
-Platformda kullanılan belgeler mümkün olduğunca gerçek resmî formatlara sadık hazırlanır.
+Platformda kullanılan belgeler mümkün olduğunca gerçek resmî formatlara sadık hazırlanır. Eğitim için basitleştirilmiş sahte belge kullanılmaz.
 
-## 3. Mevzuat öğrenmenin parçasıdır
+## 3. Mevzuat öğrenmenin doğal parçasıdır
 
 Mevzuat ayrı bir ders olarak değil, olayın doğal parçası olarak öğretilir.
 
-Kullanıcı mevzuatı okuyarak değil, yaşayarak öğrenir.
+Kullanıcı mevzuatı okuyarak değil, olay içinde yaşayarak öğrenir.
 
 ## 4. Doğru düşünme, doğru cevaptan önemlidir
 
-Platformun amacı cevabı göstermek değil, kullanıcının doğru sonuca ulaşmasını sağlamaktır.
+Platformun amacı cevabı göstermek değil, kullanıcının doğru sonuca kendi muhakemesiyle ulaşmasını sağlamaktır.
 
 ## 5. Meslek odaklı öğrenme
 
-Her olay sonunda kullanıcı yeni bir mesleki yetkinlik kazanır.
+Her olay sonunda kullanıcı yeni bir mesleki yetkinlik kazanır. Başarı, çözülen soru sayısıyla değil kazanılan yetkinlikle tanımlanır.
 
 ## 6. Dijital Mentor
 
-Platformun merkezinde yapay zekâ değil, dijital bir meslek mentoru bulunur.
+Platformun merkezinde bir teknoloji değil, dijital bir meslek mentoru bulunur.
 
 Mentor;
 
-* yanında olur,
-* düşündürür,
-* soru sorar,
-* yönlendirir,
-* mesleki tecrübelerini paylaşır.
+* cevap veren değil, düşündüren bir yol arkadaşıdır,
+* kullanıcıya güven verir,
+* soru sorarak yönlendirir,
+* mesleki tecrübesini paylaşır,
+* gerçek bir mali müşavir gibi davranır.
 
 ---
 
@@ -102,7 +104,7 @@ Başarı;
 
 Başarı;
 
-* kazanılan yetkinliklerle,
+* kazanılan mesleki yetkinliklerle,
 * doğru muhakeme kurabilme becerisiyle,
 * gerçek belgeleri yorumlayabilme becerisiyle,
 * mevzuatı doğru uygulayabilme becerisiyle

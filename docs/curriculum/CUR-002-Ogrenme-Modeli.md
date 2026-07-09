@@ -1,14 +1,14 @@
 # CUR-002 — Öğrenme Modeli
 
-**Durum:** Taslak v0.2
+**Durum:** Taslak v0.3
 
 ---
 
 # Öğrenme Felsefesi
 
-Muhasebe Akademisi, kullanıcıya doğru cevabı vermez.
+Muhasebe Akademisi, kullanıcıya doğru cevabı doğrudan vermez.
 
-Kullanıcının doğru sonuca ulaşmasını sağlar.
+Kullanıcının doğru sonuca kendi muhakemesiyle ulaşmasını sağlar.
 
 ---
 
@@ -18,34 +18,34 @@ Her muhasebe olayı aşağıdaki sırayla ilerler.
 
 1. İşletme Olayı
 2. Gerçek Belge
-3. Belgeyi İnceleme
-4. Mevzuatı Keşfetme
-5. Muhasebe Kaydını Oluşturma
+3. Belgeyi İncele
+4. Mevzuatı Keşfet
+5. Muhasebe Kaydı
 6. Finansal Etki
 7. Mesleki Not
 8. Bugün Ne Öğrendin?
 9. Yetkinlik Kazanımı
 10. Yeni Görev
 
+Bu akış bir döngüdür: her olay, kullanıcıyı bir sonraki göreve hazır hâle getirerek tamamlanır.
+
 ---
 
 # Gerçek Belge Yaklaşımı
 
-Platformda eğitim amaçlı sadeleştirilmiş belgeler kullanılmaz.
+Platformda eğitim amaçlı sadeleştirilmiş veya sahte belgeler kullanılmaz. Mümkün olduğunca gerçek GİB formatları esas alınır.
 
-Gerçek hayattaki resmî belge formatları esas alınır.
+Kullanıcı istediğinde **"Belgeyi İncele"** modunu açabilir. Bu modda belge üzerindeki alanlar etkileşimli hâle gelir.
 
-Kullanıcı isterse "Belgeyi İncele" modunu açabilir.
+Her belge alanı için;
 
-Bu modda belge üzerindeki alanlar etkileşimli hale gelir.
-
-Her alan için;
-
-* Muhasebe açıklaması
-* Mevzuat açıklaması
-* Mesleki açıklama
+* muhasebe açıklaması,
+* mevzuat açıklaması,
+* mesleki açıklama
 
 sunulur.
+
+Böylece kullanıcı belgeyi yalnızca görmez; alan alan ne anlama geldiğini kavrar.
 
 ---
 
@@ -57,6 +57,7 @@ Mentor;
 * güven veren bir dil kullanır,
 * doğrudan doğru cevabı söylemez,
 * düşündürür,
+* soru sorar,
 * ipucu verir,
 * yanlış düşünceyi düzeltir.
 
@@ -68,33 +69,31 @@ Mentorun amacı cevap vermek değil, kullanıcıyı geliştirmektir.
 
 Kullanıcı;
 
-* istediği kadar deneyebilir,
+* sınırsız kez deneyebilir,
 * istediği zaman ipucu alabilir,
-* istediği zaman çözümü inceleyebilir.
+* istediği zaman çözümü açabilir.
 
-Deneme sınırı yoktur.
+Deneme sınırı yoktur. Çözümü açmak öğrenmeyi engellemez; yalnızca ustalık XP'sini etkileyebilir.
 
 ---
 
 # XP Modeli
 
-Platform iki farklı ilerleme puanı kullanır.
+Platform iki katmanlı bir ilerleme modeli kullanır.
 
 ## Öğrenme XP
 
-Olay tamamlandığında kazanılır.
+Olay tamamlandığında kazanılır. Kullanıcı yardım alsa da öğrenme XP'sini kazanır.
 
 ## Ustalık XP
 
-Bağımsız problem çözme becerisini ödüllendirir.
-
-Çözümün açılması veya yoğun yardım kullanımı ustalık XP'sini azaltabilir ancak öğrenme XP'sini tamamen ortadan kaldırmaz.
+Bağımsız problem çözme becerisini ödüllendirir. Çözümün açılması veya yoğun yardım kullanımı ustalık XP'sini azaltabilir; ancak öğrenme XP'sini tamamen ortadan kaldırmaz.
 
 ---
 
 # Yetkinlik Modeli
 
-Platformun temel başarı ölçütü XP değildir.
+Platformun temel başarı ölçütü XP değildir; asıl amaç mesleki yetkinlik kazandırmaktır.
 
 Her olay sonunda kullanıcı;
 
@@ -108,20 +107,20 @@ görebilir.
 
 # Learning Engine
 
-Platform zamanla kullanıcıyı tanır.
+Platform zamanla kullanıcıyı tanır ve öğrenme yolunu kişiselleştirir.
 
-Analiz edilebilecek alanlar:
+Kullanıcı bazında analiz edilebilecek alanlar:
 
-* En çok zorlanılan hesaplar
-* En çok zorlanılan belge türleri
-* En çok yardım istenen mevzuatlar
-* Güçlü yetkinlikler
-* Gelişime açık yetkinlikler
-* Yardım kullanma alışkanlığı
-* Çözüm inceleme alışkanlığı
-* Tekrar gerektiren konular
+* en çok zorlanılan hesaplar,
+* en çok zorlanılan belge türleri,
+* en çok yardım alınan mevzuatlar,
+* güçlü yönler,
+* zayıf yönler,
+* yardım kullanım alışkanlığı,
+* çözüm inceleme alışkanlığı,
+* tekrar gerektiren konular.
 
-Bu veriler kullanıcının öğrenme yolunu kişiselleştirmek için kullanılır.
+Bu veriler, kullanıcıya özel öğrenme yolunu dinamik olarak şekillendirmek için kullanılır.
 
 ---
 
