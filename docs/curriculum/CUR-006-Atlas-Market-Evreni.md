@@ -30,6 +30,18 @@ Böylece her KUR içeriği aynı evreni referans alır; senaryolar birbiriyle tu
 
 İşletme gerçekçi fakat sade tutulmuştur; Beta'nın temel ticari işletme konularını kapsayacak kadar donanımlıdır, gereksiz karmaşıklık içermez.
 
+## Şirket Türü — Arka Plan Bilgisi
+
+Atlas Market'in Limited şirket olması, Beta başlangıcında bir **öğretim konusu değildir**. Şirket türü yalnızca belge, ticari unvan, vergi kimliği, cari ilişkiler ve senaryo tutarlılığı için gerekli **arka plan bilgisidir**.
+
+- **Ana modül:** Ticaret İşletmesi
+- **Referans işletme:** Atlas Market Ticaret Ltd. Şti.
+- **Öğretim odağı:** ticari işletme muhasebesi
+- **Şirket türü:** arka plan bilgisi (öğretilmez)
+- **Şirketler muhasebesi:** Beta dışında; ileride ayrı modül olarak ele alınır (kuruluş, sermaye, ortaklar, kâr dağıtımı vb.)
+
+**Neden Limited?** Şahıs işletmesi ticari işletme muhasebesini öğretmek için fazla dar kalır; anonim şirket fazla büyük ve kurumsaldır. Limited şirket, küçük/orta ölçekli bir ticaret işletmesi için en dengeli seçimdir. Bu nedenle şahıs işletmesi ve anonim şirket Beta'da ana işletme olarak kullanılmaz.
+
 ---
 
 # 3. Organizasyon
@@ -119,6 +131,7 @@ Beta kapsamı bilinçli olarak dardır. Aşağıdaki alanlar Beta'da **YOKTUR**:
 - Teknokent / Ar-Ge istisnaları
 - Çok şubeli yapı
 - Dövizli işlemler (temel modül kapsamında)
+- Şirketler muhasebesi (kuruluş, sermaye, ortaklar, kâr dağıtımı) — şirket türü yalnızca arka plan bilgisidir, öğretim konusu değildir
 
 Bu alanlar yol haritasına (ROADMAP) bırakılmıştır ve Beta içeriklerinde kullanılmaz.
 
