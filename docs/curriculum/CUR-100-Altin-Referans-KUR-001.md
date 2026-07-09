@@ -134,7 +134,7 @@ Mentor, bir mali müşavir gibi güven veren ve düşündüren bir dille konuşu
 
 # 9. Muhasebe Kaydı
 
-Doğru yevmiye kaydı (varyant: *Aralıklı envanter*, Σborç = Σalacak = 60.000 TL):
+Doğru yevmiye kaydı (varyant: *Sürekli envanter*, Σborç = Σalacak = 60.000 TL):
 
 | Hesap (ana) | Muavin | Açıklama | Borç | Alacak |
 |---|---|---|---:|---:|
@@ -180,7 +180,7 @@ Bu olaydan türetilebilecek varyasyon adayları (üretilmeyecek, yalnızca liste
 - Nakliye dahil alış
 - Kısmi ödeme (bir kısmı peşin, kalanı veresiye)
 - Vade farkı içeren alış
-- Sürekli envanter yöntemiyle kayıt (aynı olayın alternatif varyantı)
+- Aralıklı envanter karşılaştırması (ileri seviye / Beta dışı)
 
 ---
 
