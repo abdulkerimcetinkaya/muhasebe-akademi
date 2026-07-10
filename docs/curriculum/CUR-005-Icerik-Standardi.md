@@ -1,6 +1,6 @@
 # CUR-005 — İçerik Standardı
 
-**Durum:** Taslak v0.2
+**Durum:** Taslak v0.3
 
 ---
 
@@ -81,3 +81,32 @@ Her KUR içeriği aşağıdaki ilkelere uyar.
 - Kullanıcı sınırsız deneme yapabilir.
 - Aynı yetkinlik farklı varyasyonlarla pekiştirilir.
 - Her olay, gerçek hayattaki bir problemi çözer.
+
+---
+
+# İçerik Üretim ve Onay Süreci
+
+Bir KUR içeriği doğrudan yayına girmez; taslaktan onaya belirli bir akışla ilerler. Bu süreç, içerik çoğalmadan önce kalite ve onay standardını güvence altına alır.
+
+## Akış
+
+1. **Product Discovery** — Öğretilecek muhasebe olayı ve öğrenme ihtiyacı belirlenir.
+2. **Ürün kararı** — Product Owner içeriğin kapsamını ve önceliğini onaylar.
+3. **CUR standardına göre içerik taslağı** — İçerik, bu belgedeki şablon (13 bölüm) ve ilkelere göre planlanır.
+4. **Claude ilk taslak üretimi** — İlk taslak üretilir; bu taslak nihai değildir.
+5. **Product Owner Review** — İçerik ürün gözüyle incelenir; ara bilgiler, mentor yönlendirmeleri, belge analizi, mevzuat bağlantıları ve soruya yansıyan kurgu gözden geçirilir.
+6. **Revizyon** — Geri bildirimler uygulanır; gerekirse standardın kendisi de güncellenir.
+7. **Architect Review** — İçerik teknik ve mimari tutarlılık açısından incelenir.
+8. **Onay** — Nihai kabul verilir.
+9. **GitHub'a referans içerik olarak işlenmesi** — Onaylanan içerik referans içerik olarak saklanır.
+
+## İlkeler
+
+- Her yeni KUR içeriği ilk aşamada **taslaktır**.
+- Product Owner; içerikteki ara bilgileri, mentor yönlendirmelerini, belge analizini, mevzuat bağlantılarını ve soruya yansıyan kurguyu değiştirebilir.
+- Revizyon yalnızca tek içeriği düzeltmek için yapılmaz; gerekirse **CUR-005 standardı da güncellenir**.
+- Amaç, aynı kalite hatasının sonraki KUR içeriklerinde tekrar etmesini önlemektir.
+- Claude içerik üretirken içeriği nihai kabul etmez; Product Review sonrası revize edilecek **taslak** olarak üretir.
+- Nihai kabul **Architect Review** sonrası yapılır.
+- Onaylanan içerikler GitHub'da referans içerik olarak saklanır.
+- Onaylanmamış içerikler referans kabul edilmez.
