@@ -4,7 +4,9 @@ import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { HESAP_PLANI } from '../../data/hesap-plani';
 import {
   MUAVIN_SINIFLARI,
-  TIP_ETIKETLERI,
+  grupTuret,
+  grupEtiketi,
+  cariGerektirir,
   muavinGuncelle,
   muavinSil,
   muavinYarat,
@@ -13,13 +15,15 @@ import {
   type MuavinHesap,
   type YeniMuavin,
 } from '../../lib/muavin';
+import { aktifCarileriYukle, CARI_TIP_ETIKETLERI, type CariKart } from '../../lib/cari';
 import type { MuavinTip } from '../../lib/database.types';
 
 const bos = (): YeniMuavin => ({
   kod: '',
   ana_kod: '',
   ad: '',
-  tip: '10',
+  cari_id: null,
+  varsayilan: false,
   aciklama: null,
   aktif: true,
 });
@@ -30,14 +34,17 @@ export const AdminMuavinHesaplarSayfasi = () => {
   const [hata, setHata] = useState<string | null>(null);
   const [basarili, setBasarili] = useState<string | null>(null);
 
-  const [duzenlenen, setDuzenlenen] = useState<string | null>(null); // kod — null = yeni
+  const [duzenlenen, setDuzenlenen] = useState<string | null>(null); // id — null = yeni
   const [form, setForm] = useState<YeniMuavin>(bos());
   const [kodManuel, setKodManuel] = useState(false); // ana_kod seçildikten sonra otomatik üretilir
   const [kaydediliyor, setKaydediliyor] = useState(false);
+  const [cariler, setCariler] = useState<CariKart[]>([]);
 
-  // Filtre
+  // Filtre (grup = ana_kod'un ilk 2 hanesinden türetilir)
   const [tipFiltresi, setTipFiltresi] = useState<MuavinTip | 'hepsi'>('hepsi');
   const [arama, setArama] = useState('');
+
+  const formCariZorunlu = cariGerektirir(form.ana_kod);
 
   const yukle = async () => {
     setYukleniyor(true);
@@ -54,6 +61,11 @@ export const AdminMuavinHesaplarSayfasi = () => {
 
   useEffect(() => {
     yukle();
+    aktifCarileriYukle()
+      .then(setCariler)
+      .catch(() => {
+        // sessizce geç — cari yoksa seçici boş kalır
+      });
   }, []);
 
   const anaHesapDegisti = async (yeniAnaKod: string) => {
@@ -77,12 +89,13 @@ export const AdminMuavinHesaplarSayfasi = () => {
   };
 
   const duzenleBaslat = (m: MuavinHesap) => {
-    setDuzenlenen(m.kod);
+    setDuzenlenen(m.id);
     setForm({
       kod: m.kod,
       ana_kod: m.ana_kod,
       ad: m.ad,
-      tip: m.tip,
+      cari_id: m.cari_id,
+      varsayilan: m.varsayilan,
       aciklama: m.aciklama,
       sira: m.sira,
       aktif: m.aktif,
@@ -105,6 +118,10 @@ export const AdminMuavinHesaplarSayfasi = () => {
     }
     if (!form.kod.startsWith(form.ana_kod + '.')) {
       setHata(`Kod, ana hesap (${form.ana_kod}) ile başlamalı (örn: ${form.ana_kod}.001).`);
+      return;
+    }
+    if (formCariZorunlu && !form.cari_id) {
+      setHata(`Ana hesap ${form.ana_kod} cari gerektirir — bir cari kart seç.`);
       return;
     }
     setKaydediliyor(true);
@@ -132,21 +149,21 @@ export const AdminMuavinHesaplarSayfasi = () => {
 
   const aktifDegistir = async (m: MuavinHesap) => {
     try {
-      await muavinGuncelle(m.kod, { aktif: !m.aktif });
+      await muavinGuncelle(m.id, { aktif: !m.aktif });
       setList((p) =>
-        p.map((x) => (x.kod === m.kod ? { ...x, aktif: !x.aktif } : x)),
+        p.map((x) => (x.id === m.id ? { ...x, aktif: !x.aktif } : x)),
       );
     } catch (e) {
       alert(`Güncellenemedi: ${(e as Error).message}`);
     }
   };
 
-  const sil = async (kod: string) => {
-    if (!confirm(`"${kod}" muavin hesabını kalıcı olarak silmek istiyor musun?\n\nNot: Eski sorularda bu kod referansı varsa veriler bozulabilir. Silmek yerine pasif yapmayı tercih et.`)) return;
+  const sil = async (m: MuavinHesap) => {
+    if (!confirm(`"${m.kod}" muavin hesabını kalıcı olarak silmek istiyor musun?\n\nNot: Eski sorularda bu kod referansı varsa veriler bozulabilir. Silmek yerine pasif yapmayı tercih et.`)) return;
     try {
-      await muavinSil(kod);
-      setList((p) => p.filter((x) => x.kod !== kod));
-      if (duzenlenen === kod) yeniBaslat();
+      await muavinSil(m.id);
+      setList((p) => p.filter((x) => x.id !== m.id));
+      if (duzenlenen === m.id) yeniBaslat();
     } catch (e) {
       alert(`Silinemedi: ${(e as Error).message}`);
     }
@@ -154,7 +171,7 @@ export const AdminMuavinHesaplarSayfasi = () => {
 
   const filtreli = useMemo(() => {
     return list.filter((m) => {
-      if (tipFiltresi !== 'hepsi' && m.tip !== tipFiltresi) return false;
+      if (tipFiltresi !== 'hepsi' && grupTuret(m.ana_kod) !== tipFiltresi) return false;
       if (arama.trim()) {
         const q = arama.toLowerCase();
         if (
@@ -201,7 +218,7 @@ export const AdminMuavinHesaplarSayfasi = () => {
               {duzenlenen ? `Düzenle: ${form.kod}` : 'Yeni Muavin'}
             </h2>
             <form onSubmit={kaydet} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">
                     Ana Hesap
@@ -247,28 +264,31 @@ export const AdminMuavinHesaplarSayfasi = () => {
                   />
                 </div>
 
+              </div>
+
+              {formCariZorunlu && (
                 <div>
                   <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">
-                    Tip
+                    Cari Kart <span className="text-danger">*</span>
                   </label>
                   <select
-                    value={form.tip}
-                    onChange={(e) => setForm((f) => ({ ...f, tip: e.target.value as MuavinTip }))}
+                    value={form.cari_id ?? ''}
+                    onChange={(e) => setForm((f) => ({ ...f, cari_id: e.target.value || null }))}
                     required
                     className="w-full px-3 py-2.5 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink"
                   >
-                    {MUAVIN_SINIFLARI.map((s) => (
-                      <optgroup key={s.sinif} label={s.etiket}>
-                        {s.gruplar.map((g) => (
-                          <option key={g.kod} value={g.kod}>
-                            {g.etiket}
-                          </option>
-                        ))}
-                      </optgroup>
+                    <option value="">— cari seç —</option>
+                    {cariler.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.unvan} ({CARI_TIP_ETIKETLERI[c.tip]})
+                      </option>
                     ))}
                   </select>
+                  <p className="text-[11px] text-ink-mute mt-1">
+                    {form.ana_kod} cari kart bağı gerektirir (S0 #4).
+                  </p>
                 </div>
-              </div>
+              )}
 
               <div>
                 <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">
@@ -299,19 +319,36 @@ export const AdminMuavinHesaplarSayfasi = () => {
                 />
               </div>
 
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.aktif !== false}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, aktif: e.target.checked }))
-                  }
-                  className="w-4 h-4 rounded border-line-strong cursor-pointer"
-                />
-                <span className="text-sm font-medium">
-                  Aktif (yeni sorular için seçilebilir)
-                </span>
-              </label>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.aktif !== false}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, aktif: e.target.checked }))
+                    }
+                    className="w-4 h-4 rounded border-line-strong cursor-pointer"
+                  />
+                  <span className="text-sm font-medium">
+                    Aktif (yeni sorular için seçilebilir)
+                  </span>
+                </label>
+                {!formCariZorunlu && (
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={form.varsayilan === true}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, varsayilan: e.target.checked }))
+                      }
+                      className="w-4 h-4 rounded border-line-strong cursor-pointer"
+                    />
+                    <span className="text-sm font-medium">
+                      Varsayılan (bu ana hesapta otomatik seçilir)
+                    </span>
+                  </label>
+                )}
+              </div>
 
               {hata && (
                 <div className="flex items-start gap-2 p-3 bg-danger-soft border border-danger-soft rounded-lg text-[13px] text-danger font-medium">
@@ -397,18 +434,28 @@ export const AdminMuavinHesaplarSayfasi = () => {
               <div className="space-y-2">
                 {filtreli.map((m) => (
                   <div
-                    key={m.kod}
+                    key={m.id}
                     className={`flex items-start gap-3 p-4 bg-surface border border-line rounded-xl ${
  !m.aktif ? 'opacity-60' : ''
- } ${duzenlenen === m.kod ? 'ring-2 ring-blue-500/30' : ''}`}
+ } ${duzenlenen === m.id ? 'ring-2 ring-blue-500/30' : ''}`}
                   >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="font-mono font-bold text-[14px]">{m.kod}</span>
                         <span className="font-bold text-[14px]">{m.ad}</span>
                         <span className="text-[10px] tracking-wider uppercase font-mono font-bold text-ink-mute bg-surface-2 px-1.5 py-0.5 rounded">
-                          {TIP_ETIKETLERI[m.tip]}
+                          {grupEtiketi(m.ana_kod)}
                         </span>
+                        {m.cari_id && (
+                          <span className="text-[10px] tracking-wider uppercase font-mono font-bold text-brand dark:text-brand-mute bg-brand-soft px-1.5 py-0.5 rounded">
+                            Cari
+                          </span>
+                        )}
+                        {m.varsayilan && (
+                          <span className="text-[10px] tracking-wider uppercase font-mono font-bold text-success bg-success-soft px-1.5 py-0.5 rounded">
+                            Varsayılan
+                          </span>
+                        )}
                         {!m.aktif && (
                           <span className="text-[10px] tracking-wider uppercase font-mono font-bold text-premium-deep bg-premium-soft px-1.5 py-0.5 rounded">
                             Pasif
@@ -440,7 +487,7 @@ export const AdminMuavinHesaplarSayfasi = () => {
                         <Icon name="Pencil" size={14} />
                       </button>
                       <button
-                        onClick={() => sil(m.kod)}
+                        onClick={() => sil(m)}
                         title="Sil (kalıcı)"
                         className="p-2 hover:bg-danger-soft text-danger dark:text-danger rounded-lg transition"
                       >

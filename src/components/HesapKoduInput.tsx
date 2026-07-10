@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { HESAP_PLANI } from '../data/hesap-plani';
 import { useIsPremium } from '../contexts/AuthContext';
 import { Icon } from './Icon';
-import { TIP_ETIKETLERI, type MuavinHesap } from '../lib/muavin';
+import { grupEtiketi, type MuavinHesap } from '../lib/muavin';
 import { YeniMuavinModal } from './YeniMuavinModal';
 import type { Hesap } from '../types';
 
@@ -35,19 +35,23 @@ export const HesapKoduInput = ({
   yeniMuavinEkleyebilir = false,
   onMuavinEklendi,
 }: Props) => {
-  // Soruya özel muavinleri MuavinHesap formatına yükselt — global ile birleşir.
+  // Soruya özel muavinleri MuavinHesap (v2) formatına yükselt — global ile birleşir.
   // ana_kod muavin kodunun ilk parçasından türetilir (örn 100.001 → 100).
-  // tip: 'departman' default (etiket bilgisi yoksa).
+  // Grup etiketi ana_kod'dan türetilir (tip kolonu yok); id sentetik (DB satırı değil).
   const birlesikMuavinler = useMemo<MuavinHesap[]>(() => {
     const soruyaOzelMuavinHesaplar: MuavinHesap[] = soruyaOzelMuavinler.map(
       (m) => ({
+        id: `soru:${m.kod}`,
         kod: m.kod,
         ad: m.ad,
         ana_kod: m.kod.includes('.') ? m.kod.split('.')[0] : m.kod,
-        tip: m.kod.slice(0, 2) as MuavinHesap['tip'],
+        cari_id: null,
+        varsayilan: false,
+        isletme_id: null,
+        olusturan_user_id: null,
         aciklama: null,
-        aktif: true,
         sira: 0,
+        aktif: true,
         created_at: '',
         updated_at: '',
       }),
@@ -356,7 +360,7 @@ export const HesapKoduInput = ({
                   </span>
                   <span className="flex-1">{o.muavin.ad}</span>
                   <span className="text-[9px] tracking-widest uppercase font-semibold text-ink-mute">
-                    {TIP_ETIKETLERI[o.muavin.tip]}
+                    {grupEtiketi(o.muavin.ana_kod)}
                   </span>
                 </button>
               ),

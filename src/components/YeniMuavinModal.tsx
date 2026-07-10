@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { HESAP_PLANI } from '../data/hesap-plani';
 import {
-  MUAVIN_SINIFLARI,
-  TIP_LISTESI,
   muavinYarat,
   sonrakiMuavinKodu,
+  cariGerektirir,
   type MuavinHesap,
 } from '../lib/muavin';
-import type { MuavinTip } from '../lib/database.types';
+import { aktifCarileriYukle, CARI_TIP_ETIKETLERI, type CariKart } from '../lib/cari';
 
 interface Props {
   /** Modal açıldığında ön-seçili olacak ana hesap kodu (örn: 120). */
@@ -17,30 +16,34 @@ interface Props {
   onEklendi: (yeni: MuavinHesap) => void;
 }
 
-/** Ana hesap kodunun ilk 2 hanesinden TDHP grup kodunu türetir (120 → '12'). */
-const tipTahmini = (anaKod: string): MuavinTip => {
-  const prefix = anaKod.slice(0, 2);
-  if ((TIP_LISTESI as string[]).includes(prefix)) return prefix as MuavinTip;
-  return '10'; // fallback: Hazır Değerler
-};
-
 export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Props) => {
   const [anaKod, setAnaKod] = useState(anaKodInit);
   const [kod, setKod] = useState('');
   const [ad, setAd] = useState('');
-  const [tip, setTip] = useState<MuavinTip>(tipTahmini(anaKodInit));
+  const [cariId, setCariId] = useState('');
+  const [cariler, setCariler] = useState<CariKart[]>([]);
   const [aciklama, setAciklama] = useState('');
   const [hata, setHata] = useState<string | null>(null);
   const [kaydediliyor, setKaydediliyor] = useState(false);
 
-  // Ana hesap değişince kod ve tipi yeniden öner
+  const cariZorunlu = cariGerektirir(anaKod);
+
+  // Cari kartları bir kez yükle (cari seçici için)
+  useEffect(() => {
+    aktifCarileriYukle()
+      .then(setCariler)
+      .catch(() => {
+        // sessizce geç — cari yoksa seçici boş kalır
+      });
+  }, []);
+
+  // Ana hesap değişince kodu yeniden öner
   useEffect(() => {
     let iptal = false;
     if (!anaKod) {
       setKod('');
       return;
     }
-    setTip(tipTahmini(anaKod));
     sonrakiMuavinKodu(anaKod)
       .then((onerilen) => {
         if (!iptal) setKod(onerilen);
@@ -76,6 +79,10 @@ export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Prop
       setHata(`Kod, ana hesap (${anaKod}) ile başlamalı.`);
       return;
     }
+    if (cariZorunlu && !cariId) {
+      setHata(`Ana hesap ${anaKod} cari gerektirir — bir cari kart seç.`);
+      return;
+    }
     setKaydediliyor(true);
     setHata(null);
     try {
@@ -83,7 +90,7 @@ export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Prop
         kod,
         ana_kod: anaKod,
         ad: ad.trim(),
-        tip,
+        cari_id: cariId || null,
         aciklama: aciklama.trim() || null,
       });
       onEklendi(yeni);
@@ -170,27 +177,29 @@ export const YeniMuavinModal = ({ anaKod: anaKodInit, onKapat, onEklendi }: Prop
             />
           </div>
 
-          <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">
-              Tip
-            </label>
-            <select
-              value={tip}
-              onChange={(e) => setTip(e.target.value as MuavinTip)}
-              required
-              className="w-full px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink"
-            >
-              {MUAVIN_SINIFLARI.map((s) => (
-                <optgroup key={s.sinif} label={s.etiket}>
-                  {s.gruplar.map((g) => (
-                    <option key={g.kod} value={g.kod}>
-                      {g.etiket}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </div>
+          {cariZorunlu && (
+            <div>
+              <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">
+                Cari Kart <span className="text-danger">*</span>
+              </label>
+              <select
+                value={cariId}
+                onChange={(e) => setCariId(e.target.value)}
+                required
+                className="w-full px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink"
+              >
+                <option value="">— cari seç —</option>
+                {cariler.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.unvan} ({CARI_TIP_ETIKETLERI[c.tip]})
+                  </option>
+                ))}
+              </select>
+              <p className="text-[11px] text-ink-mute mt-1">
+                Bu ana hesap ({anaKod}) cari kart bağı gerektirir.
+              </p>
+            </div>
+          )}
 
           <div>
             <label className="block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5">

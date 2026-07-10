@@ -122,6 +122,32 @@ export const TIP_LISTESI: MuavinTip[] = MUAVIN_SINIFLARI.flatMap((s) =>
   s.gruplar.map((g) => g.kod),
 );
 
+/** Muavinin ait olduğu TDHP grup kodunu ana_kod'un ilk 2 hanesinden türetir (v2: tip saklanmaz). */
+export const grupTuret = (anaKod: string): MuavinTip => {
+  const prefix = anaKod.slice(0, 2);
+  return (TIP_LISTESI as string[]).includes(prefix)
+    ? (prefix as MuavinTip)
+    : '10'; // fallback: Hazır Değerler
+};
+
+/** Grup etiketini doğrudan ana_kod'dan verir. */
+export const grupEtiketi = (anaKod: string): string =>
+  TIP_ETIKETLERI[grupTuret(anaKod)] ?? anaKod.slice(0, 2);
+
+// M1 (hesap_plani.cari_gerektirir) frontend aynası — cari kart zorunlu ana hesaplar.
+// Gerçek zorlama DB trigger'ında (muavin_cari_zorunlu); bu liste yalnız UX içindir
+// (cari seçiciyi göster/zorunlu kıl). DB tek doğruluk kaynağıdır.
+export const CARI_GEREKTIREN_ANA_KODLAR = new Set<string>([
+  '102','120','121','126','127','128','131','132','133','135','136','138','159','195','196',
+  '220','221','226','231','232','233','235','236',
+  '300','303','320','321','326','329','331','332','333','335','336','340','349','360','361','368','369',
+  '400','420','421','426','429','431','432','433','436','438',
+]);
+
+/** Bu ana hesabın muavini cari kart gerektirir mi? (UX; DB trigger asıl gate). */
+export const cariGerektirir = (anaKod: string): boolean =>
+  CARI_GEREKTIREN_ANA_KODLAR.has(anaKod);
+
 const TABLO = 'muavin_hesaplar';
 
 /** Admin için — aktif/pasif tüm muavinler, kod sırasına göre. */
@@ -161,7 +187,10 @@ export type YeniMuavin = {
   kod: string;
   ana_kod: string;
   ad: string;
-  tip: MuavinTip;
+  /** Cari kart bağı — cari_gerektirir ana hesaplarda zorunlu (DB trigger). */
+  cari_id?: string | null;
+  /** Otomatik-seçim hesaplarında varsayılan muavin (ana_kod başına bir tane). */
+  varsayilan?: boolean;
   aciklama?: string | null;
   sira?: number;
   aktif?: boolean;
@@ -178,15 +207,15 @@ export const muavinYarat = async (input: YeniMuavin): Promise<MuavinHesap> => {
 };
 
 export const muavinGuncelle = async (
-  kod: string,
+  id: string,
   patch: Partial<YeniMuavin>,
 ): Promise<void> => {
-  const { error } = await supabase.from(TABLO).update(patch).eq('kod', kod);
+  const { error } = await supabase.from(TABLO).update(patch).eq('id', id);
   if (error) throw error;
 };
 
-export const muavinSil = async (kod: string): Promise<void> => {
-  const { error } = await supabase.from(TABLO).delete().eq('kod', kod);
+export const muavinSil = async (id: string): Promise<void> => {
+  const { error } = await supabase.from(TABLO).delete().eq('id', id);
   if (error) throw error;
 };
 
