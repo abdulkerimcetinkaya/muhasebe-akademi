@@ -76,6 +76,40 @@ export type MuavinHesapRow = {
   updated_at: string;
 };
 
+// 20260718000001 — Keşfet öğrenme yapısı: kart → bölüm → item (LeetCode Explore).
+export type KesfetKartRow = {
+  id: string;
+  slug: string;
+  ad: string;
+  aciklama: string;
+  ikon: string;
+  kategori: string;
+  durum: 'acik' | 'yakinda';
+  sira: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type KesfetBolumRow = {
+  id: string;
+  kart_id: string;
+  ad: string;
+  sira: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type KesfetItemRow = {
+  id: string;
+  bolum_id: string;
+  ad: string;
+  tip: 'ders' | 'alistirma';
+  sira: number;
+  soru_id: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 // 20260519000001 — atölye sorularını yönetmek için many-to-many junction.
 // sorular.alt_baslik_id artık "konu havuzu etiketi"; atölye müfredatı
 // burada belirlenir.
@@ -511,6 +545,45 @@ export type Database = {
           aktif?: boolean;
         };
         Update: Partial<CariKartRow>;
+        Relationships: [];
+      };
+      kesfet_kartlar: {
+        Row: KesfetKartRow;
+        Insert: Omit<KesfetKartRow, 'id' | 'created_at' | 'updated_at' | 'aciklama' | 'ikon' | 'kategori' | 'durum' | 'sira'> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          aciklama?: string;
+          ikon?: string;
+          kategori?: string;
+          durum?: 'acik' | 'yakinda';
+          sira?: number;
+        };
+        Update: Partial<KesfetKartRow>;
+        Relationships: [];
+      };
+      kesfet_bolumler: {
+        Row: KesfetBolumRow;
+        Insert: Omit<KesfetBolumRow, 'id' | 'created_at' | 'updated_at' | 'sira'> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          sira?: number;
+        };
+        Update: Partial<KesfetBolumRow>;
+        Relationships: [];
+      };
+      kesfet_itemler: {
+        Row: KesfetItemRow;
+        Insert: Omit<KesfetItemRow, 'id' | 'created_at' | 'updated_at' | 'tip' | 'sira' | 'soru_id'> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+          tip?: 'ders' | 'alistirma';
+          sira?: number;
+          soru_id?: string | null;
+        };
+        Update: Partial<KesfetItemRow>;
         Relationships: [];
       };
       muavin_hesaplar: {

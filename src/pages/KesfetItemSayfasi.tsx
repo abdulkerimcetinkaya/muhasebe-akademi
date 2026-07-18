@@ -1,0 +1,174 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Icon } from '../components/Icon';
+import { itemBul, kartBul, kartItemlari, type KesfetKart } from '../data/kesfet';
+import { tumKartlariYukle } from '../lib/kesfet';
+import { itemTamamla, tamamlananSet } from '../lib/kesfet-ilerleme';
+
+/**
+ * Keşfet item ekranı — editorial/ledger dili. Sol TOC + okuma sütunu + İleri.
+ * İSKELET — içerik alanı placeholder.
+ */
+
+export const KesfetItemSayfasi = () => {
+  const nav = useNavigate();
+  const { kart: slug, item: itemId } = useParams();
+  const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
+  const [tamamlanan, setTamamlanan] = useState<Set<string>>(() => tamamlananSet());
+
+  useEffect(() => {
+    tumKartlariYukle().then(setKartlar).catch(() => setKartlar([]));
+  }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [itemId]);
+
+  if (!kartlar) {
+    return (
+      <div className="flex items-center justify-center py-32">
+        <Icon name="Loader2" size={22} className="animate-spin text-ink-mute" />
+      </div>
+    );
+  }
+
+  const kart = kartBul(kartlar, slug);
+  if (!kart) {
+    return (
+      <main className="max-w-[820px] mx-auto px-5 py-20 text-center">
+        <p className="text-ink-soft">Bu kart bulunamadı.</p>
+        <button onClick={() => nav('/kesfet')} className="mt-4 text-brand-deep font-semibold text-sm">
+          Keşfet'e dön
+        </button>
+      </main>
+    );
+  }
+
+  const hepsi = kartItemlari(kart);
+  const mevcut = itemBul(kart, itemId);
+
+  if (!mevcut) {
+    return (
+      <main className="max-w-[820px] mx-auto px-5 py-20 text-center">
+        <p className="text-ink-soft">Bu içerik bulunamadı.</p>
+        <button
+          onClick={() => nav(`/kesfet/${kart.slug}`)}
+          className="mt-4 text-brand-deep font-semibold text-sm"
+        >
+          Karta dön
+        </button>
+      </main>
+    );
+  }
+
+  const onceki = mevcut.sira > 0 ? hepsi[mevcut.sira - 1] : null;
+  const sonraki = mevcut.sira < hepsi.length - 1 ? hepsi[mevcut.sira + 1] : null;
+  const bitti = tamamlanan.has(mevcut.item.id);
+  const ders = mevcut.item.tip === 'ders';
+
+  const tamamlaVeIlerle = () => {
+    itemTamamla(mevcut.item.id);
+    setTamamlanan(tamamlananSet());
+    if (sonraki) nav(`/kesfet/${kart.slug}/${sonraki.item.id}`);
+    else nav(`/kesfet/${kart.slug}`);
+  };
+
+  return (
+    <div className="max-w-[1120px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
+      <nav className="flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase text-ink-mute mb-8 flex-wrap">
+        <button onClick={() => nav('/kesfet')} className="hover:text-ink transition">Keşfet</button>
+        <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
+        <button onClick={() => nav(`/kesfet/${kart.slug}`)} className="hover:text-ink transition">
+          {kart.ad}
+        </button>
+        <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
+        <span className="text-ink-soft">{mevcut.bolum.ad}</span>
+      </nav>
+
+      <div className="grid lg:grid-cols-[248px_1fr] gap-10">
+        <aside className="hidden lg:block">
+          <div className="sticky top-24 flex flex-col gap-6">
+            {kart.bolumler.map((bolum) => (
+              <div key={bolum.id}>
+                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-quiet mb-2.5 pl-3">
+                  {bolum.ad}
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  {bolum.itemlar.map((it) => {
+                    const aktif = it.id === mevcut.item.id;
+                    const done = tamamlanan.has(it.id);
+                    return (
+                      <button
+                        key={it.id}
+                        onClick={() => nav(`/kesfet/${kart.slug}/${it.id}`)}
+                        className={`flex items-center gap-2.5 pl-3 pr-2 py-2 rounded-r-lg text-left transition border-l-2 ${
+                          aktif
+                            ? 'border-brand bg-brand-soft/60'
+                            : 'border-transparent hover:bg-surface-2'
+                        }`}
+                      >
+                        <Icon
+                          name={done ? 'CheckCircle2' : 'Circle'}
+                          size={15}
+                          className={`flex-none ${done ? 'text-success' : 'text-ink-quiet'}`}
+                        />
+                        <span
+                          className={`text-[13px] leading-snug ${
+                            aktif ? 'text-brand-deep font-semibold' : 'text-ink-soft'
+                          }`}
+                        >
+                          {it.ad}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        <article className="min-w-0 max-w-[660px]">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="chip">{ders ? 'Ders' : 'Alıştırma'}</span>
+            {bitti && <span className="chip chip-success">Tamamlandı</span>}
+          </div>
+          <h1 className="font-display text-[30px] sm:text-[38px] leading-[1.08] font-bold tracking-[-0.02em] text-ink mb-8 text-balance">
+            {mevcut.item.ad}
+          </h1>
+
+          <div className="relative bg-surface border border-line rounded-[18px] px-6 py-16 text-center overflow-hidden">
+            <div className="absolute inset-x-0 top-0 h-px bg-line" />
+            <div className="absolute inset-x-0 top-[3px] h-px bg-line-soft" />
+            <span className="w-14 h-14 rounded-2xl bg-surface-2 text-ink-quiet grid place-items-center mx-auto mb-5">
+              <Icon name={ders ? 'BookOpen' : 'Pencil'} size={24} />
+            </span>
+            <p className="font-display text-[19px] font-bold text-ink">İçerik yakında</p>
+            <p className="text-[14px] text-ink-mute mt-2 max-w-sm mx-auto leading-relaxed">
+              Bu {ders ? 'dersin anlatımı' : 'alıştırma'} henüz eklenmedi. Şimdilik yapının iskeletini
+              geziyorsun; içerik sonra doldurulacak.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 mt-10 pt-6 border-t border-line-soft">
+            <button
+              onClick={() => onceki && nav(`/kesfet/${kart.slug}/${onceki.item.id}`)}
+              disabled={!onceki}
+              className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft disabled:opacity-30 disabled:cursor-not-allowed hover:text-ink transition"
+            >
+              <Icon name="ArrowLeft" size={16} /> Önceki
+            </button>
+
+            <span className="font-mono text-[11px] tracking-wide text-ink-mute tnum">
+              {String(mevcut.sira + 1).padStart(2, '0')} / {String(hepsi.length).padStart(2, '0')}
+            </span>
+
+            <button onClick={tamamlaVeIlerle} className="btn btn-primary">
+              {sonraki ? (bitti ? 'İleri' : 'Tamamla ve İleri') : bitti ? 'Karta dön' : 'Tamamla ve Bitir'}
+              <Icon name="ArrowRight" size={16} className="ml-1" />
+            </button>
+          </div>
+        </article>
+      </div>
+    </div>
+  );
+};

@@ -18,7 +18,8 @@ const linkler: MenuItem[] = [
   { to: '/admin', etiket: 'Genel Bakış', icon: 'LayoutDashboard', end: true, rol: null },
   { to: '/admin/istatistikler', etiket: 'İstatistikler', icon: 'BarChart3', end: true, rol: null },
   // İçerik
-  { to: '/admin/uniteler', etiket: 'Üniteler', icon: 'LayoutGrid', end: true, rol: 'icerik' },
+  { to: '/admin/uniteler', etiket: 'İşletmeler', icon: 'LayoutGrid', end: true, rol: 'icerik' },
+  { to: '/admin/kesfet', etiket: 'Keşfet', icon: 'Search', end: false, rol: 'icerik' },
   { to: '/admin/sorular', etiket: 'Sorular', icon: 'FileText', end: true, rol: 'icerik' },
   { to: '/admin/sorular/yeni', etiket: 'Yeni Soru', icon: 'PlusCircle', end: true, rol: 'icerik' },
   { to: '/admin/sorular/toplu-ekle', etiket: 'Toplu Ekle (JSON)', icon: 'Upload', end: true, rol: 'icerik' },

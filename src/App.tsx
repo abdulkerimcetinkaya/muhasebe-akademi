@@ -64,6 +64,12 @@ const KonuSayfasi = lazy(() => import('./pages/KonuSayfasi').then((m) => ({ defa
 const ModulSayfasi = lazy(() => import('./pages/ModulSayfasi').then((m) => ({ default: m.ModulSayfasi })));
 const AltBaslikSayfasi = lazy(() => import('./pages/AltBaslikSayfasi').then((m) => ({ default: m.AltBaslikSayfasi })));
 const DashboardSayfasi = lazy(() => import('./pages/DashboardSayfasi').then((m) => ({ default: m.DashboardSayfasi })));
+const MuhasebeyeGirisSayfasi = lazy(() => import('./pages/MuhasebeyeGirisSayfasi').then((m) => ({ default: m.MuhasebeyeGirisSayfasi })));
+const KesfetSayfasi = lazy(() => import('./pages/KesfetSayfasi').then((m) => ({ default: m.KesfetSayfasi })));
+const KesfetKartSayfasi = lazy(() => import('./pages/KesfetKartSayfasi').then((m) => ({ default: m.KesfetKartSayfasi })));
+const KesfetItemSayfasi = lazy(() => import('./pages/KesfetItemSayfasi').then((m) => ({ default: m.KesfetItemSayfasi })));
+const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));
+const AdminKesfetKartSayfasi = lazy(() => import('./pages/admin/AdminKesfetKartSayfasi').then((m) => ({ default: m.AdminKesfetKartSayfasi })));
 
 const SayfaYukleniyor = () => (
   <div className="min-h-[60vh] flex items-center justify-center text-ink-quiet text-sm">
@@ -478,6 +484,10 @@ const App = () => {
             <Route path="/liderlik" element={<LiderlikSayfasi />} />
             <Route path="/sozluk" element={<SozlukSayfasi />} />
             <Route path="/sozluk/:slug" element={<SozlukTerimSayfasi />} />
+            <Route path="/muhasebeye-giris" element={<MuhasebeyeGirisSayfasi />} />
+            <Route path="/kesfet" element={<KesfetSayfasi />} />
+            <Route path="/kesfet/:kart" element={<KesfetKartSayfasi />} />
+            <Route path="/kesfet/:kart/:item" element={<KesfetItemSayfasi />} />
             <Route path="/premium" element={<PremiumSayfasi />} />
             <Route path="/premium/sonuc" element={<PremiumSonucSayfasi />} />
             <Route path="/premium/kurum-odeme" element={<KurumOdemeSayfasi />} />
@@ -640,6 +650,22 @@ const App = () => {
               element={
                 <ProtectedAdminRoute>
                   <AdminSozlukSayfasi />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/admin/kesfet"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminKesfetSayfasi />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/admin/kesfet/:kartId"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminKesfetKartSayfasi />
                 </ProtectedAdminRoute>
               }
             />
