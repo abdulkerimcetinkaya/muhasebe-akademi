@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  MuhasebeAkademi sitemap.
+  NOT: Site şu an HashRouter (#/) kullanıyor; Google hash fragment'larını ayrı
+  URL saymadığından yalnızca ana sayfa indekslenebilir bir URL'dir. BrowserRouter'a
+  geçildiğinde (uniteler/problemler/sozluk vb.) buraya gerçek yollar eklenmelidir.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://muhasebeakademi.com/</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
