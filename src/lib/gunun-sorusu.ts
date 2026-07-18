@@ -52,6 +52,8 @@ export const gununSorusu = (
     if (!konuId && !altBaslikId) continue;
 
     const ayniKonudan = cozulmemis.filter((s) => {
+      // Yanlış yapılan sorunun kendisi değil, aynı konudan FARKLI bir soru
+      if (s.id === yanlisId) return false;
       if (altBaslikId && s.altBaslikId === altBaslikId) return true;
       if (konuId && s.konuId === konuId) return true;
       return false;
