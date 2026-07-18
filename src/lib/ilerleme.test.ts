@@ -129,7 +129,7 @@ describe('istatistikHesapla', () => {
     expect(s.puan).toBe(15);
   });
 
-  it('tüm soruları çözülen üniteyi tamamlanmış işaretler', () => {
+  it('tüm soruları çözülen işletmeyi tamamlanmış işaretler', () => {
     const i: Ilerleme = {
       ...varsayilanIlerleme(),
       cozulenler: {
@@ -142,7 +142,7 @@ describe('istatistikHesapla', () => {
     expect(s.uniteTamamlanmis).toEqual({ u1: true, u2: true });
   });
 
-  it('sorusu olmayan üniteyi tamamlanmış saymaz', () => {
+  it('sorusu olmayan işletmeyi tamamlanmış saymaz', () => {
     const bosUniteler: Unite[] = [{ id: 'u3', ad: 'U3', thiingsIcon: 'i', aciklama: '', aktif: true, sorular: [] }];
     const s = istatistikHesapla(varsayilanIlerleme(), bosUniteler, []);
     expect(s.uniteTamamlanmis).toEqual({ u3: false });

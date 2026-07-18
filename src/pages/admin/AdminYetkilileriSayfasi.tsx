@@ -20,7 +20,7 @@ const ROL_ETIKETLERI: Record<AdminRol, { ad: string; aciklama: string }> = {
   },
   icerik: {
     ad: 'İçerik',
-    aciklama: 'Sorular, üniteler, mevzuat, sözlük, hesap planı',
+    aciklama: 'Sorular, işletmeler, mevzuat, sözlük, hesap planı',
   },
   operasyon: {
     ad: 'Operasyon',

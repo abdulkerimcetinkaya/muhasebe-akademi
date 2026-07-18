@@ -11,7 +11,7 @@ const KURUM_EMAIL = 'kurum@muhasebeakademi.com';
 
 const UCRETSIZ_OZELLIKLER = [
   'Tüm soruları sınırsız çöz',
-  '213 soru · 15 ünite',
+  '213 soru · 15 işletme',
   '272 hesap planı + 20 mali terim',
   'Puan, streak ve rozet sistemi',
   'Günde 3 AI sorgu hakkı',
@@ -31,7 +31,7 @@ const SSS: { soru: string; cevap: string }[] = [
   {
     soru: 'Ücretsiz hesapla nereye kadar gidebilirim?',
     cevap:
-      'Tüm soruları sınırsız çözebilir, üniteleri tamamlayabilir, puan ve rozet kazanabilirsin. Premium sadece AI rehberliği ve ileri seviye araçları açar — ücretsiz tarafta hiçbir soru kilitli değil.',
+      'Tüm soruları sınırsız çözebilir, işletmeleri tamamlayabilir, puan ve rozet kazanabilirsin. Premium sadece AI rehberliği ve ileri seviye araçları açar — ücretsiz tarafta hiçbir soru kilitli değil.',
   },
   {
     soru: 'Premium’u istediğim zaman iptal edebilir miyim?',

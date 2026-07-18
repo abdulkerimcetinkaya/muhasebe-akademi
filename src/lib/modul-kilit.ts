@@ -83,7 +83,7 @@ export const modulIlerlemeYuzde = (modul: Modul, ilerleme: Ilerleme): number => 
 };
 
 /**
- * Ünitedeki tüm modüller arası ilerleme:
+ * İşletmedeki tüm modüller arası ilerleme:
  * { tamamAltBaslik, toplamAltBaslik, yuzde }
  */
 export const uniteModulIlerleme = (

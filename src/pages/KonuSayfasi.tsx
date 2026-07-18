@@ -21,7 +21,7 @@ interface Props {
  * DergiPark-tarzı akademik makale layout'u — konu detay sayfası.
  * - Üst koyu banner: konu başlığı, meta, CTA butonları
  * - Sol ana içerik: öz, anahtar kelimeler, içerik, ilgili sorular, ayrıntılar
- * - Sağ sticky sidebar: ünite konuları, ilerleme, paylaş
+ * - Sağ sticky sidebar: işletme konuları, ilerleme, paylaş
  * - Mobil: sidebar hamburger ile açılır (overlay)
  */
 export const KonuSayfasi = ({ ilerleme }: Props) => {
@@ -86,7 +86,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
 
   const tahminiOkumaSuresi = anlatimVar ? '~10-15 dk' : null;
 
-  // Anahtar kelimeler — konu adı + ünite adından parse, ileride hesap kodları eklenir
+  // Anahtar kelimeler — konu adı + işletme adından parse, ileride hesap kodları eklenir
   const anahtarKelimeler = [unite.ad, konu.ad].filter(Boolean);
 
   return (
@@ -102,7 +102,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
               onClick={() => nav('/uniteler')}
               className="hover:text-bg transition font-semibold"
             >
-              Üniteler
+              İşletmeler
             </button>
             <Icon name="ChevronRight" size={11} className="opacity-60" />
             <button
@@ -192,12 +192,12 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
                   className="inline-flex items-center gap-2 border border-brand-soft hover:bg-brand-deep/40 px-4 py-2.5 text-[12px] tracking-[0.2em] uppercase font-bold rounded-lg transition"
                 >
                   <Icon name="ArrowLeft" size={12} />
-                  Üniteye Dön
+                  İşletmeye Dön
                 </button>
               </div>
             </div>
 
-            {/* Sağ: ünite ikonu */}
+            {/* Sağ: işletme ikonu */}
             <div className="hidden md:flex flex-shrink-0 items-center justify-center w-[100px] h-[140px] rounded-lg bg-brand-deep/40 border border-brand-soft">
               <Thiings name={unite.thiingsIcon} size={56} />
             </div>
@@ -349,7 +349,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
             <section>
               <SectionTitle>Ayrıntılar</SectionTitle>
               <div className="rounded-2xl bg-surface border border-line overflow-hidden">
-                <DetayRow etiket="Ünite" deger={unite.ad} />
+                <DetayRow etiket="İşletme" deger={unite.ad} />
                 <DetayRow
                   etiket="Konu Sırası"
                   deger={`${aktifIndex + 1} / ${konular.length}`}

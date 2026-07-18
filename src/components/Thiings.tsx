@@ -16,7 +16,7 @@ interface Props {
  */
 
 const ICON_MAP: Record<string, string> = {
-  // Yeni 15 ünite (Yevmiye Kayıt Müfredatı)
+  // Yeni 15 işletme (Yevmiye Kayıt Müfredatı)
   acilis: 'Rocket',
   'hazir-degerler': 'Wallet',
   'mal-alis': 'Package',

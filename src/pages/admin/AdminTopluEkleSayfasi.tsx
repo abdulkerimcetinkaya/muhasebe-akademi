@@ -333,7 +333,7 @@ export const AdminTopluEkleSayfasi = () => {
                 <tr className="text-left text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
                   <th className="px-4 py-2 w-10">#</th>
                   <th className="px-4 py-2">Başlık</th>
-                  <th className="px-4 py-2">Ünite</th>
+                  <th className="px-4 py-2">İşletme</th>
                   <th className="px-4 py-2">Durum</th>
                 </tr>
               </thead>

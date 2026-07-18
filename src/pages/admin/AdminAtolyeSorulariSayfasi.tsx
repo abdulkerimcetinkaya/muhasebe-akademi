@@ -75,7 +75,7 @@ export const AdminAtolyeSorulariSayfasi = () => {
       return;
     }
     if (!uniteR.data || !modulR.data || !altR.data) {
-      setHata('Ünite, modül veya alt başlık bulunamadı.');
+      setHata('İşletme, modül veya alt başlık bulunamadı.');
       setYukleniyor(false);
       return;
     }
@@ -367,7 +367,7 @@ export const AdminAtolyeSorulariSayfasi = () => {
                           : 'text-ink-mute hover:text-ink'
                       }`}
                     >
-                      Bu Ünite
+                      Bu İşletme
                     </button>
                     <button
                       onClick={() => setKapsam('tumu')}
@@ -430,7 +430,7 @@ export const AdminAtolyeSorulariSayfasi = () => {
                   baslik="Uygun soru yok"
                   aciklama={
                     havuz.length === 0
-                      ? 'Bu ünitede henüz soru yok veya hepsi atanmış.'
+                      ? 'Bu işletmede henüz soru yok veya hepsi atanmış.'
                       : 'Filtreleri değiştirmeyi dene.'
                   }
                 />

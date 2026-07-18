@@ -192,7 +192,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
             onChange={(e) => setUniteFiltre(e.target.value)}
             className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
           >
-            <option value="hepsi">Tüm Üniteler</option>
+            <option value="hepsi">Tüm İşletmeler</option>
             {uniteler.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.ad}
@@ -346,7 +346,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
           <EmptyState
             ikon="Search"
             baslik="Filtreyle eşleşen soru yok"
-            aciklama="Aramayı temizleyebilir veya farklı bir zorluk/ünite seçebilirsin."
+            aciklama="Aramayı temizleyebilir veya farklı bir zorluk/işletme seçebilirsin."
             cta={{
               label: 'Filtreleri Temizle',
               icon: 'RefreshCw',

@@ -64,7 +64,7 @@ export const AdminAltBasliklarSayfasi = () => {
       return;
     }
     if (!uniteR.data || !modulR.data) {
-      setHata('Ünite veya modül bulunamadı');
+      setHata('İşletme veya modül bulunamadı');
       setYukleniyor(false);
       return;
     }
@@ -116,7 +116,7 @@ export const AdminAltBasliklarSayfasi = () => {
     if (a.soruSayisi > 0) {
       if (
         !confirm(
-          `"${a.baslik}" alt başlığında ${a.soruSayisi} soru bağlı. Sildiğinde sorular ünite seviyesinde kalır (alt_baslik_id null olur). Devam edelim mi?`,
+          `"${a.baslik}" alt başlığında ${a.soruSayisi} soru bağlı. Sildiğinde sorular işletme seviyesinde kalır (alt_baslik_id null olur). Devam edelim mi?`,
         )
       ) {
         return;

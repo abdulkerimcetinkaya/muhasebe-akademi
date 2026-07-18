@@ -385,7 +385,7 @@ const KullaniciPaneli = ({ ilerleme, stat }: Props) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line">
           {[
-            { yol: '/uniteler', baslik: 'Üniteler', alt: 'Konu konu pratik', icon: 'LayoutGrid' },
+            { yol: '/uniteler', baslik: 'İşletmeler', alt: 'Konu konu pratik', icon: 'LayoutGrid' },
             { yol: '/problemler', baslik: 'Tüm Sorular', alt: 'Filtrele, ara', icon: 'ListChecks' },
             { yol: '/profil', baslik: 'Profil', alt: 'Rozet · İstatistik', icon: 'User' },
           ].map((l) => (
@@ -431,7 +431,7 @@ const YETENEKLER = [
     no: '02',
     baslik: 'Konuyu uygulayarak pekiştir',
     aciklama:
-      'Her ünitede teori + bol soru. Aynı kavramı farklı senaryolarda görerek kalıcı öğren.',
+      'Her işletmede teori + bol soru. Aynı kavramı farklı senaryolarda görerek kalıcı öğren.',
   },
   {
     no: '03',

@@ -13,7 +13,7 @@ interface Props {
 
 /**
  * Read-only BlockNote viewer. UniteSayfasi'nda kullanıcı tarafında
- * üniteye ait konu anlatımını gösterir. Boşsa null döner — caller boş
+ * işletmeye ait konu anlatımını gösterir. Boşsa null döner — caller boş
  * durumu (örn. "İçerik henüz hazırlanmadı") kendi karar versin.
  *
  * Özel "term" inline style ile işaretlenmiş kelimeler `span.bn-term` olarak

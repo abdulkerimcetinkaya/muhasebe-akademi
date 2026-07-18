@@ -93,7 +93,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     supabase.from('muavin_hesaplar').select('id, kod'),
   ]);
 
-  if (unitesR.error) throw new Error(`Ünites yüklenemedi: ${unitesR.error.message}`);
+  if (unitesR.error) throw new Error(`İşletmeler yüklenemedi: ${unitesR.error.message}`);
   if (konularR.error) throw new Error(`Konular yüklenemedi: ${konularR.error.message}`);
   if (modullerR.error)
     throw new Error(`Modüller yüklenemedi: ${modullerR.error.message}`);
@@ -227,7 +227,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     });
   });
 
-  // Modülleri ünitelere bağla
+  // Modülleri işletmelere bağla
   const modullerByUnite: Record<string, Modul[]> = {};
   (modullerR.data ?? []).forEach((m) => {
     if (!modullerByUnite[m.unite_id]) modullerByUnite[m.unite_id] = [];

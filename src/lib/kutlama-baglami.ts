@@ -163,13 +163,13 @@ export const kutlamaBaglamiUret = ({
     baslik = `${modulProgress.modulAd} · ${cozulen}/${toplam}`;
     altMetin = oranAciklamasi(cozulen, toplam);
   } else if (modulProgress.toplam > 0) {
-    // Modül adı yok (eski yapı) — sadece ünite + sayı
+    // Modül adı yok (eski yapı) — sadece işletme + sayı
     const cozulen = modulProgress.cozulenSonra;
     const toplam = modulProgress.toplam;
     baslik = `${soru.uniteAd} · ${cozulen}/${toplam}`;
     altMetin = oranAciklamasi(cozulen, toplam);
   } else {
-    // Fallback — modül/ünite ilerleme verisi yok
+    // Fallback — modül/işletme ilerleme verisi yok
     baslik = soru.uniteAd;
     altMetin = eskidenCozulmus ? 'Tekrar doğru çözdün.' : 'Doğru kaydedildi.';
   }
@@ -202,7 +202,7 @@ interface ModulIlerlemesi {
 /**
  * Sorunun bağlı olduğu modülün ilerlemesini hesaplar.
  * Yeni yapıda soru → altBaslikId → AltBaslik → modulId → Modul.
- * Eski yapıda soru direkt ünite altında → modul null döner.
+ * Eski yapıda soru direkt işletme altında → modul null döner.
  */
 function modulIlerlemesi(
   soru: SoruWithUnite,
@@ -242,7 +242,7 @@ function modulIlerlemesi(
     };
   }
 
-  // Eski yapı fallback — ünite seviyesinde
+  // Eski yapı fallback — işletme seviyesinde
   const uniteSoruIds = unite.sorular.map((s) => s.id);
   const cozulenOnce = uniteSoruIds.filter((id) => !!ilerleme.cozulenler[id]).length;
   const cozulenSonra = eskidenCozulmus ? cozulenOnce : cozulenOnce + 1;

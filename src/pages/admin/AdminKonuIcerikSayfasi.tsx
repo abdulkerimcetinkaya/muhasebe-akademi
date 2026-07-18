@@ -66,7 +66,7 @@ export const AdminKonuIcerikSayfasi = () => {
         return;
       }
       if (!uniteR.data || !konuR.data) {
-        setYuklemeHata('Konu veya ünite bulunamadı.');
+        setYuklemeHata('Konu veya işletme bulunamadı.');
         setYukleniyor(false);
         return;
       }

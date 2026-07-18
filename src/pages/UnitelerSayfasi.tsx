@@ -1,6 +1,6 @@
-// Üniteler ana sayfası — İşletme türü kartları, DB'den dinamik.
+// İşletmeler ana sayfası — İşletme türü kartları, DB'den dinamik.
 //
-// Her ünite bir işletme türü kartı olarak çıkar. `aktif` bayrağı kullanıcının
+// Her işletme bir işletme türü kartı olarak çıkar. `aktif` bayrağı kullanıcının
 // karta tıklayıp tıklayamayacağını belirler. Pasif kartlar "Yakında" rozetiyle
 // görünür. Admin DB üzerinden aktif/pasif kontrol eder.
 
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useUniteler } from '../contexts/UnitelerContext';
 
-// Ünite ID → Lucide ikon eşlemesi. DB'deki thiings_icon alanı eski sistem
+// İşletme ID → Lucide ikon eşlemesi. DB'deki thiings_icon alanı eski sistem
 // için (Thiings 3D PNG'leri); kart görünümünde Lucide tercih ediyoruz.
 const UNITE_ICON: Record<string, string> = {
   'mal-alis-satis': 'Store',

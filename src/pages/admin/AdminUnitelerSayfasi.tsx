@@ -73,7 +73,7 @@ export const AdminUnitelerSayfasi = () => {
 
   useEffect(() => {
     yukle().catch((e) => {
-      console.error('Üniteler yüklenemedi', e);
+      console.error('İşletmeler yüklenemedi', e);
       setHata(String(e));
       setYukleniyor(false);
     });
@@ -93,11 +93,11 @@ export const AdminUnitelerSayfasi = () => {
   const sil = async (u: UnitesRow, soruSayisi: number) => {
     if (soruSayisi > 0) {
       alert(
-        `"${u.ad}" ünitesinde ${soruSayisi} soru var. Önce bu soruları başka üniteye taşı veya sil, sonra tekrar dene.`,
+        `"${u.ad}" işletmesinde ${soruSayisi} soru var. Önce bu soruları başka işletmeye taşı veya sil, sonra tekrar dene.`,
       );
       return;
     }
-    if (!confirm(`"${u.ad}" ünitesini silmek istediğinden emin misin?`)) return;
+    if (!confirm(`"${u.ad}" işletmesini silmek istediğinden emin misin?`)) return;
     const r = await supabase.from('unites').delete().eq('id', u.id);
     if (r.error) {
       alert('Silme hatası: ' + r.error.message);
@@ -122,17 +122,17 @@ export const AdminUnitelerSayfasi = () => {
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
-          <h1 className="font-display text-3xl font-bold tracking-tight">Üniteler</h1>
+          <h1 className="font-display text-3xl font-bold tracking-tight">İşletmeler</h1>
           <button
             onClick={() => setForm({ acik: true, duzenleniyor: null })}
             className="btn btn-primary"
           >
             <Icon name="PlusCircle" size={14} />
-            Yeni Ünite
+            Yeni İşletme
           </button>
         </div>
         <p className="text-sm text-ink-soft font-medium mb-6">
-          Üniteleri ekle, düzenle, sil ve sıralarını değiştir. Sorular bağlı olan üniteler
+          İşletmeleri ekle, düzenle, sil ve sıralarını değiştir. Sorular bağlı olan işletmeler
           silinemez.
         </p>
 
@@ -163,15 +163,15 @@ export const AdminUnitelerSayfasi = () => {
         ) : filtreli.length === 0 ? (
           <EmptyState
             ikon="Package"
-            baslik="Ünite bulunamadı"
-            aciklama={arama ? 'Aramana uygun ünite yok.' : 'Henüz hiç ünite yok. Yeni Ünite ile başla.'}
+            baslik="İşletme bulunamadı"
+            aciklama={arama ? 'Aramana uygun işletme yok.' : 'Henüz hiç işletme yok. Yeni İşletme ile başla.'}
           />
         ) : (
           <div className="border border-line rounded-xl overflow-hidden bg-surface">
             <div className="grid grid-cols-[64px_56px_1fr_120px_240px] gap-3 px-4 py-2.5 bg-bg-tint border-b border-line text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
               <div>Sıra</div>
               <div>İkon</div>
-              <div>Ünite</div>
+              <div>İşletme</div>
               <div className="text-right">Soru</div>
               <div className="text-right">İşlem</div>
             </div>
@@ -231,7 +231,7 @@ export const AdminUnitelerSayfasi = () => {
                   <button
                     onClick={() => nav(`/admin/uniteler/${u.id}/icerik`)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink text-bg text-[11.5px] font-bold tracking-wide hover:opacity-90 transition"
-                    title="Notion-tarzı ünite içerik editörü"
+                    title="Notion-tarzı işletme içerik editörü"
                   >
                     <Icon name="FileText" size={12} />
                     İçerik
@@ -297,7 +297,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
 
   const kaydet = async () => {
     if (!ad.trim()) {
-      setHata('Ünite adı zorunlu');
+      setHata('İşletme adı zorunlu');
       return;
     }
     if (yeni && !idGecerli) {
@@ -340,7 +340,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
               {yeni ? 'Yeni' : 'Düzenle'}
             </div>
             <h2 className="font-display text-xl font-bold tracking-tight">
-              {yeni ? 'Yeni Ünite' : duzenleniyor.ad}
+              {yeni ? 'Yeni İşletme' : duzenleniyor.ad}
             </h2>
           </div>
           <button
@@ -357,7 +357,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
             yardim={
               yeni
                 ? 'URL\'de ve veritabanında kullanılır. Sonradan değiştirilemez. Örnek: hazir-degerler'
-                : 'Mevcut ünitenin ID\'si — değiştirilemez.'
+                : 'Mevcut işletmenin ID\'si — değiştirilemez.'
             }
           >
             <input
@@ -369,7 +369,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
             />
           </Alan>
 
-          <Alan etiket="Ünite Adı *">
+          <Alan etiket="İşletme Adı *">
             <input
               value={ad}
               onChange={(e) => setAd(e.target.value)}
@@ -378,7 +378,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
             />
           </Alan>
 
-          <Alan etiket="Açıklama" yardim="Üniteler sayfasında satır altında görünür.">
+          <Alan etiket="Açıklama" yardim="İşletmeler sayfasında satır altında görünür.">
             <textarea
               value={aciklama}
               onChange={(e) => setAciklama(e.target.value)}
@@ -426,7 +426,7 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
             <span className="text-[13px] leading-snug">
               <span className="font-semibold text-ink">Aktif</span>
               <span className="block text-[11.5px] text-ink-mute mt-0.5">
-                Pasif ünite kullanıcı tarafında "Yakında" rozetiyle gösterilir
+                Pasif işletme kullanıcı tarafında "Yakında" rozetiyle gösterilir
                 ve tıklanamaz. Modül/alt başlık/soru içerikleri silinmez.
               </span>
             </span>

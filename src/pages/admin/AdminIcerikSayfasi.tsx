@@ -59,7 +59,7 @@ export const AdminIcerikSayfasi = () => {
           return;
         }
         if (!data) {
-          setYuklemeHata('Ünite bulunamadı.');
+          setYuklemeHata('İşletme bulunamadı.');
           setYukleniyor(false);
           return;
         }
@@ -133,7 +133,7 @@ export const AdminIcerikSayfasi = () => {
                 className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
               >
                 <Icon name="ArrowLeft" size={12} />
-                Üniteler
+                İşletmeler
               </button>
 
               {yukleniyor ? (
@@ -147,7 +147,7 @@ export const AdminIcerikSayfasi = () => {
                   {unite.thiings_icon && <Thiings name={unite.thiings_icon} size={48} />}
                   <div className="min-w-0">
                     <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold mb-1">
-                      Ünite içeriği
+                      İşletme içeriği
                     </div>
                     <h1 className="font-display text-[28px] sm:text-[34px] font-bold tracking-tight text-ink leading-tight">
                       {unite.ad}

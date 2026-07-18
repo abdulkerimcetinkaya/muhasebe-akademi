@@ -41,7 +41,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
     }
 
     // Akıllı yönlendirme (Yaklaşım C):
-    // Modül yapısı varsa redirect kapalı — kullanıcı her zaman ünite overview'unda
+    // Modül yapısı varsa redirect kapalı — kullanıcı her zaman işletme overview'unda
     // başlasın ve modül kartlarını görsün.
     if (overviewIstendi) return;
     if ((unite.moduller?.length ?? 0) > 0) return;
@@ -101,7 +101,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
         className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-6 font-semibold"
       >
         <Icon name="ArrowLeft" size={14} />
-        <span>Tüm Üniteler</span>
+        <span>Tüm İşletmeler</span>
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-12">
@@ -110,7 +110,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
             <Thiings name={unite.thiingsIcon} size={64} />
             <div>
               <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-1 font-bold">
-                Ünite
+                İşletme
               </div>
               <h1 className="font-display text-4xl md:text-5xl tracking-tight font-bold leading-none">
                 {unite.ad}

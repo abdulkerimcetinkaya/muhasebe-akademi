@@ -74,7 +74,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
           className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-6 font-semibold"
         >
           <Icon name="ArrowLeft" size={14} />
-          <span>Tüm Üniteler</span>
+          <span>Tüm İşletmeler</span>
         </button>
         <div className="bg-surface border border-line rounded-2xl p-10 text-center">
           <p className="text-sm text-ink-mute font-medium">Alt başlık bulunamadı.</p>

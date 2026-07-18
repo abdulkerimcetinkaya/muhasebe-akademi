@@ -84,7 +84,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
     setMuavinler((p) => [...p, yeni].sort((a, b) => a.kod.localeCompare(b.kod)));
   };
 
-  // Ünite değişince modülleri + alt başlıkları yükle. alt_baslik_id ünite ile uyumsuzsa sıfırla.
+  // İşletme değişince modülleri + alt başlıkları yükle. alt_baslik_id işletme ile uyumsuzsa sıfırla.
   useEffect(() => {
     if (!d.unite_id) {
       setModuller([]);
@@ -153,7 +153,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
 
   const dogrula = (): string | null => {
     if (duzenleme && !d.id.trim()) return 'ID gerekli.';
-    if (!d.unite_id) return 'Ünite seç.';
+    if (!d.unite_id) return 'İşletme seç.';
     if (!d.baslik.trim()) return 'Başlık gerekli.';
     if (!d.senaryo.trim()) return 'Senaryo gerekli.';
     const dolular = d.cozumler.filter((c) => c.kod.trim());
@@ -213,7 +213,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
           )}
           <div>
             <label className="block text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-2">
-              Ünite *
+              İşletme *
             </label>
             <select
               value={d.unite_id}
@@ -260,10 +260,10 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
           >
             <option value="">
               {!d.unite_id
-                ? '— Önce ünite seç —'
+                ? '— Önce işletme seç —'
                 : moduller.length === 0
-                  ? '— Bu ünitede modül yok —'
-                  : '— Alt başlık seçme (ünite seviyesinde kalsın) —'}
+                  ? '— Bu işletmede modül yok —'
+                  : '— Alt başlık seçme (işletme seviyesinde kalsın) —'}
             </option>
             {moduller.map((m) => {
               const modulAltlari = altBasliklar.filter((a) => a.modul_id === m.id);

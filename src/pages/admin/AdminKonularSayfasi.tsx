@@ -19,7 +19,7 @@ interface FormDurum {
 }
 
 /**
- * Bir ünitenin alt-konularını yönetir (CRUD + sıralama).
+ * Bir işletmenin alt-konularını yönetir (CRUD + sıralama).
  * URL: /admin/uniteler/:uniteId/konular
  */
 export const AdminKonularSayfasi = () => {
@@ -48,7 +48,7 @@ export const AdminKonularSayfasi = () => {
       return;
     }
     if (!uniteR.data) {
-      setHata('Ünite bulunamadı');
+      setHata('İşletme bulunamadı');
       setYukleniyor(false);
       return;
     }
@@ -97,7 +97,7 @@ export const AdminKonularSayfasi = () => {
     if (k.soruSayisi > 0) {
       if (
         !confirm(
-          `"${k.ad}" konusunda ${k.soruSayisi} soru bağlı. Sildiğinde sorular ünite seviyesinde kalır (konu_id null olur). Devam edelim mi?`,
+          `"${k.ad}" konusunda ${k.soruSayisi} soru bağlı. Sildiğinde sorular işletme seviyesinde kalır (konu_id null olur). Devam edelim mi?`,
         )
       ) {
         return;
@@ -134,7 +134,7 @@ export const AdminKonularSayfasi = () => {
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >
           <Icon name="ArrowLeft" size={12} />
-          Üniteler
+          İşletmeler
         </button>
 
         <div className="flex items-start justify-between gap-4 flex-wrap mb-2">
@@ -145,7 +145,7 @@ export const AdminKonularSayfasi = () => {
                 Konular
               </div>
               <h1 className="font-display text-3xl font-bold tracking-tight">
-                {unite?.ad ?? 'Ünite'}
+                {unite?.ad ?? 'İşletme'}
               </h1>
             </div>
           </div>
@@ -159,7 +159,7 @@ export const AdminKonularSayfasi = () => {
         </div>
 
         <p className="text-sm text-ink-soft font-medium mb-6 mt-3 max-w-3xl">
-          Üniteyi mikro alt-konulara böl. Her konunun kendi anlatımı (BlockNote) ve
+          İşletmeyi mikro alt-konulara böl. Her konunun kendi anlatımı (BlockNote) ve
           sıralı soruları olur. Sol navigasyon kullanıcı tarafında bunu listeler.
         </p>
 
@@ -194,7 +194,7 @@ export const AdminKonularSayfasi = () => {
             aciklama={
               arama
                 ? 'Aramana uygun konu yok.'
-                : 'Bu ünite için henüz alt-konu yok. "Yeni Konu" ile başla.'
+                : 'Bu işletme için henüz alt-konu yok. "Yeni Konu" ile başla.'
             }
           />
         ) : (

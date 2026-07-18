@@ -1,10 +1,10 @@
-// Ünite/zorluk bazlı yetkinlik (mastery) hesaplaması.
+// İşletme/zorluk bazlı yetkinlik (mastery) hesaplaması.
 //
 // Yetkinlik formülü — ağırlıklı puan / mevcut maksimum:
 //   her çözülen soru zorluk puanı kadar katkı yapar (kolay 5, orta 10, zor 20)
-//   payda: ünitedeki tüm soruların zorluk puanları toplamı
-// Sonuç: 0–100 arası tam sayı. Ünitenin "kaç puanı vermeye hazır olduğu" yerine
-// "öğrencinin o üniteden kaç puan toplayabildiği" gösterir — yani fairer.
+//   payda: işletmedeki tüm soruların zorluk puanları toplamı
+// Sonuç: 0–100 arası tam sayı. İşletmenin "kaç puanı vermeye hazır olduğu" yerine
+// "öğrencinin o işletmeden kaç puan toplayabildiği" gösterir — yani fairer.
 import { ZORLUK_PUAN } from '../data/sabitler';
 import type { Ilerleme, Unite, Zorluk } from '../types';
 
@@ -33,18 +33,18 @@ export interface ModulYetkinligi {
   uniteId: string;
   uniteAd: string;
   modulSira: number;
-  uniteSira: number; // sıralama için (ünitenin yer aldığı işletme grubunun sırası)
+  uniteSira: number; // sıralama için (işletmenin yer aldığı grubun sırası)
   cozulen: number;
   toplam: number;
   yuzde: number; // 0..100
 }
 
 /**
- * Tüm ünitelerin modüllerini düzleştirir, her birinin ilerlemesini hesaplar.
+ * Tüm işletmelerin modüllerini düzleştirir, her birinin ilerlemesini hesaplar.
  * Modülün soruları AltBaslik.sorular üzerinden gelir (yeni atölye yapısı).
  * Boş modüller (henüz soru yok) yuzde=0, toplam=0 olarak döner.
  *
- * Sıralama: ünite (işletme türü) → modül.sira
+ * Sıralama: işletme türü → modül.sira
  */
 export const modulYetkinlikleri = (
   uniteler: Unite[],

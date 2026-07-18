@@ -177,7 +177,7 @@ export interface SoruWithUnite extends Soru {
 }
 
 /**
- * Ünite alt-konusu — LeetCode-tarzı mikro yapı.
+ * İşletme alt-konusu — LeetCode-tarzı mikro yapı.
  * Her konu kendi BlockNote içeriğine ve sıralı sorularına sahip.
  */
 export interface Konu {
@@ -203,9 +203,9 @@ export interface Unite {
   /** Aktif değilse kullanıcı tarafında "Yakında" rozetiyle görünür, tıklanamaz. */
   aktif: boolean;
   sorular: Soru[];
-  /** Alt-konular — sırayla. Boşsa eski yapı (sorular doğrudan ünitede). */
+  /** Alt-konular — sırayla. Boşsa eski yapı (sorular doğrudan işletmede). */
   konular?: Konu[];
-  /** Yeni atölye yapısı — modüller. Boşsa bu ünite henüz modüllenmedi. */
+  /** Yeni atölye yapısı — modüller. Boşsa bu işletme henüz modüllenmedi. */
   moduller?: Modul[];
 }
 
@@ -216,7 +216,7 @@ export interface Unite {
 export type ModulZorluk = 'baslangic' | 'orta' | 'ileri' | 'sinav';
 
 /**
- * Atölye modülü — bir ünitenin altında sıralı çalışma birimi.
+ * Atölye modülü — bir işletmenin altında sıralı çalışma birimi.
  * Modül 1 → 9 ilerleyişi, her modül kendi alt başlıkları üzerinden tamamlanır.
  */
 export interface Modul {
@@ -323,7 +323,7 @@ export interface Rozet {
   icon: string;
   kontrol: (s: Istatistik) => boolean;
   /** Sayısal hedefli rozetlerde "ne kadar yakınım" göstergesi.
-   *  Binary rozetlerde (ünite tamamla vb.) tanımlanmaz. */
+   *  Binary rozetlerde (işletme tamamla vb.) tanımlanmaz. */
   ilerleme?: (s: Istatistik) => { mevcut: number; hedef: number };
 }
 

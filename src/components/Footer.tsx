@@ -23,7 +23,7 @@ export const Footer = () => {
 
         <nav className="flex flex-wrap items-center gap-x-5 gap-y-1">
           <button onClick={() => nav('/uniteler')} className={linkClass}>
-            Üniteler
+            İşletmeler
           </button>
           <button onClick={() => nav('/problemler')} className={linkClass}>
             Sorular

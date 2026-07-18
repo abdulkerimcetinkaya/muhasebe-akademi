@@ -27,8 +27,8 @@ interface SiradakiAdres {
 }
 
 /**
- * Aktif (devam edilecek) ünite ve konu — ilk tamamlanmamış noktayı bulur.
- * Konu yapısı olmayan ünitelerde aktif konu null döner; o zaman ilk
+ * Aktif (devam edilecek) işletme ve konu — ilk tamamlanmamış noktayı bulur.
+ * Konu yapısı olmayan işletmelerde aktif konu null döner; o zaman ilk
  * çözülmemiş soruya yönlendirme yapılır.
  */
 const aktifNoktaBul = (
@@ -157,7 +157,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
                   className="mx-auto mb-2 text-brand dark:text-brand-mute"
                 />
                 <div className="font-display text-lg font-bold text-brand-deep dark:text-bg-tint mb-1">
-                  Tüm üniteleri tamamladın
+                  Tüm işletmeleri tamamladın
                 </div>
                 <p className="text-[13px] text-brand-deep/80 dark:text-brand-soft/80">
                   Pratik için bir soruyu tekrar çözmeye ne dersin?
@@ -387,11 +387,11 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
         </div>
       </section>
 
-      {/* Üniteler özet — aktif vurgulu + diğerleri kompakt divide-y liste */}
+      {/* İşletmeler özet — aktif vurgulu + diğerleri kompakt divide-y liste */}
       <section>
         <div className="flex items-baseline justify-between mb-4">
           <div className="flex items-baseline gap-3">
-            <h2 className="font-display text-2xl font-bold tracking-tight">Üniteler</h2>
+            <h2 className="font-display text-2xl font-bold tracking-tight">İşletmeler</h2>
             <span className="text-[10px] tracking-[0.22em] uppercase text-ink-mute font-bold">
               Tüm yol haritası
             </span>
@@ -406,7 +406,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-4">
-          {/* Aktif ünite — vurgulu büyük kart */}
+          {/* Aktif işletme — vurgulu büyük kart */}
           {aktif ? (
             (() => {
               const u = aktif.unite;
@@ -422,7 +422,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
                   <div className="flex items-center gap-1.5 mb-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-deep animate-pulse" />
                     <span className="text-[10px] tracking-[0.25em] uppercase font-bold text-brand-deep dark:text-brand-mute">
-                      Aktif Ünite
+                      Aktif İşletme
                     </span>
                   </div>
                   <div className="flex items-start gap-4">
@@ -461,13 +461,13 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
                   className="mx-auto mb-2 text-ink-quiet"
                 />
                 <p className="text-[13px] text-ink-mute font-medium">
-                  Tüm üniteler tamam.
+                  Tüm işletmeler tamam.
                 </p>
               </div>
             </div>
           )}
 
-          {/* Diğer üniteler — divide-y kompakt liste */}
+          {/* Diğer işletmeler — divide-y kompakt liste */}
           <div className="border border-line rounded-2xl bg-surface overflow-hidden">
             <ul className="divide-y divide-stone-200">
               {uniteler

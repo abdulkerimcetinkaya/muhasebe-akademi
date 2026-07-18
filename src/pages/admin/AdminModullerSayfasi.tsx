@@ -25,7 +25,7 @@ interface FormDurum {
 }
 
 /**
- * Bir ünitenin atölye modüllerini yönetir (CRUD + sıralama).
+ * Bir işletmenin atölye modüllerini yönetir (CRUD + sıralama).
  * URL: /admin/uniteler/:uniteId/moduller
  */
 export const AdminModullerSayfasi = () => {
@@ -55,7 +55,7 @@ export const AdminModullerSayfasi = () => {
       return;
     }
     if (!uniteR.data) {
-      setHata('Ünite bulunamadı');
+      setHata('İşletme bulunamadı');
       setYukleniyor(false);
       return;
     }
@@ -118,7 +118,7 @@ export const AdminModullerSayfasi = () => {
     if (m.altBaslikSayisi > 0) {
       if (
         !confirm(
-          `"${m.baslik}" modülünde ${m.altBaslikSayisi} alt başlık var. Sildiğinde alt başlıklar ve bağlı soru ilişkileri silinir (sorular ünitede kalır). Devam edelim mi?`,
+          `"${m.baslik}" modülünde ${m.altBaslikSayisi} alt başlık var. Sildiğinde alt başlıklar ve bağlı soru ilişkileri silinir (sorular işletmede kalır). Devam edelim mi?`,
         )
       ) {
         return;
@@ -156,7 +156,7 @@ export const AdminModullerSayfasi = () => {
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >
           <Icon name="ArrowLeft" size={12} />
-          Üniteler
+          İşletmeler
         </button>
 
         <div className="flex items-start justify-between gap-4 flex-wrap mb-2">
@@ -167,7 +167,7 @@ export const AdminModullerSayfasi = () => {
                 Atölye Modülleri
               </div>
               <h1 className="font-display text-3xl font-bold tracking-tight">
-                {unite?.ad ?? 'Ünite'}
+                {unite?.ad ?? 'İşletme'}
               </h1>
             </div>
           </div>
@@ -181,7 +181,7 @@ export const AdminModullerSayfasi = () => {
         </div>
 
         <p className="text-sm text-ink-soft font-medium mb-6 mt-3 max-w-3xl">
-          Üniteyi sıralı modüllere böl. Her modülde 1+ alt başlık olur, her alt başlığa senaryolar
+          İşletmeyi sıralı modüllere böl. Her modülde 1+ alt başlık olur, her alt başlığa senaryolar
           bağlanır. Modül 1 her zaman açık, sonraki modüller kilitle açılır. Opsiyonel modüller
           (örn. ileri vakalar) kilit akışında atlanır.
         </p>
@@ -217,7 +217,7 @@ export const AdminModullerSayfasi = () => {
             aciklama={
               arama
                 ? 'Aramana uygun modül yok.'
-                : 'Bu ünite için henüz modül yok. "Yeni Modül" ile başla.'
+                : 'Bu işletme için henüz modül yok. "Yeni Modül" ile başla.'
             }
           />
         ) : (

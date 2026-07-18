@@ -11,7 +11,7 @@ interface Props {
 }
 
 /**
- * Akademik karne — ünite × zorluk yetkinlik haritası ve 12 aylık aktivite.
+ * Akademik karne — işletme × zorluk yetkinlik haritası ve 12 aylık aktivite.
  */
 export const YetkinlikView = ({ ilerleme, uniteler }: Props) => {
   const nav = useNavigate();
@@ -52,7 +52,7 @@ export const YetkinlikView = ({ ilerleme, uniteler }: Props) => {
             Yetkinlik Haritası
           </h2>
           <span className="text-[10px] tracking-[0.22em] uppercase text-ink-mute font-bold">
-            Ünite × Zorluk
+            İşletme × Zorluk
           </span>
         </div>
 

@@ -172,7 +172,7 @@ export const GenelView = ({ ilerleme, stat, onYetkinligeGit }: Props) => {
             />
           </div>
           <div className="text-[10.5px] text-ink-mute font-medium mt-1">
-            {uniteler.length} ünite üzerinden
+            {uniteler.length} işletme üzerinden
           </div>
         </button>
       </section>
@@ -232,14 +232,14 @@ export const GenelView = ({ ilerleme, stat, onYetkinligeGit }: Props) => {
           <Rekor
             ikon="Trophy"
             ikonRenk="text-premium-deep"
-            etiket="Bitirilen ünite"
+            etiket="Bitirilen işletme"
             deger={`${
               uniteler.filter((u) => {
                 if (u.sorular.length === 0) return false;
                 return u.sorular.every((s) => ilerleme.cozulenler[s.id]);
               }).length
             }`}
-            altMetin={`/ ${uniteler.length} ünite`}
+            altMetin={`/ ${uniteler.length} işletme`}
           />
         </div>
       </section>

@@ -474,7 +474,7 @@ const KarneDoc = ({ ilerleme, stat, uniteler, profil, qrDataUrl, karneId }: Karn
     year: 'numeric',
   });
 
-  // Modülleri ünite (işletme türü) bazında grupla — CV "Experience" gibi
+  // Modülleri işletme türü bazında grupla — CV "Experience" gibi
   const modulGruplari = moduller.reduce<Record<string, typeof moduller>>((acc, m) => {
     (acc[m.uniteAd] = acc[m.uniteAd] ?? []).push(m);
     return acc;

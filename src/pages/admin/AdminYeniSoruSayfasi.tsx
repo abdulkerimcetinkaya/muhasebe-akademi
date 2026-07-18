@@ -36,8 +36,8 @@ export const AdminYeniSoruSayfasi = () => {
   const { yenile } = useUniteler();
   const [baslangic, setBaslangic] = useState<SoruFormDegerleri | null>(null);
 
-  // URL ?alt=<alt-baslik-id> ile geldiyse, o alt başlığın ünitesini bulup
-  // formu pre-fill et. (Alt başlık → modül → ünite zinciri ile.)
+  // URL ?alt=<alt-baslik-id> ile geldiyse, o alt başlığın işletmesini bulup
+  // formu pre-fill et. (Alt başlık → modül → işletme zinciri ile.)
   useEffect(() => {
     const altId = params.get('alt');
     if (!altId) {

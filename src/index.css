@@ -1152,7 +1152,7 @@ input[type='number'] { -moz-appearance: textfield; }
 }
 
 /* ---------------------------------------------------------------
-   Pilier ünite tab seçici
+   Pilier işletme tab seçici
 --------------------------------------------------------------- */
 
 .pilier-tab {
@@ -2795,7 +2795,7 @@ input[type='number'] { -moz-appearance: textfield; }
 .radar-wave-2 { animation-delay: 1.3s; }
 .radar-wave-3 { animation-delay: 2.6s; }
 
-/* Yörünge — orbital ünite ikonu */
+/* Yörünge — orbital işletme ikonu */
 .orbit-item {
   position: absolute;
   top: 50%;

@@ -93,13 +93,13 @@ export const AdminSorularSayfasi = () => {
     return m;
   }, [konular]);
 
-  // Ünite filtresi seçiliyse o ünitenin konuları, değilse tüm konular
+  // İşletme filtresi seçiliyse o işletmenin konuları, değilse tüm konular
   const konuSecenekleri = useMemo(() => {
     if (uniteFiltre === 'hepsi') return konular;
     return konular.filter((k) => k.unite_id === uniteFiltre);
   }, [konular, uniteFiltre]);
 
-  // Ünite değişince konu filtresi geçersizse sıfırla
+  // İşletme değişince konu filtresi geçersizse sıfırla
   useEffect(() => {
     if (konuFiltre === 'hepsi' || konuFiltre === 'baglanti-yok') return;
     if (!konuSecenekleri.some((k) => k.id === konuFiltre)) {
@@ -312,7 +312,7 @@ export const AdminSorularSayfasi = () => {
             onChange={(e) => setUniteFiltre(e.target.value)}
             className="px-3 py-2 bg-bg-tint border border-line-strong outline-none text-sm rounded-lg font-medium"
           >
-            <option value="hepsi">Tüm üniteler</option>
+            <option value="hepsi">Tüm işletmeler</option>
             {uniteler.map((u) => (
               <option key={u.id} value={u.id}>
                 {u.ad}
@@ -359,7 +359,7 @@ export const AdminSorularSayfasi = () => {
               <thead className="bg-bg-tint border-b border-line">
                 <tr className="text-left text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
                   <th className="px-4 py-3">Başlık</th>
-                  <th className="px-4 py-3">Ünite</th>
+                  <th className="px-4 py-3">İşletme</th>
                   <th className="px-4 py-3">Konu</th>
                   <th className="px-4 py-3">Zorluk</th>
                   <th className="px-4 py-3">Durum</th>
