@@ -106,6 +106,8 @@ export type KesfetItemRow = {
   tip: 'ders' | 'alistirma';
   sira: number;
   soru_id: string | null;
+  icerik: unknown | null;
+  icerik_guncellendi: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -575,13 +577,15 @@ export type Database = {
       };
       kesfet_itemler: {
         Row: KesfetItemRow;
-        Insert: Omit<KesfetItemRow, 'id' | 'created_at' | 'updated_at' | 'tip' | 'sira' | 'soru_id'> & {
+        Insert: Omit<KesfetItemRow, 'id' | 'created_at' | 'updated_at' | 'tip' | 'sira' | 'soru_id' | 'icerik' | 'icerik_guncellendi'> & {
           id?: string;
           created_at?: string;
           updated_at?: string;
           tip?: 'ders' | 'alistirma';
           sira?: number;
           soru_id?: string | null;
+          icerik?: unknown | null;
+          icerik_guncellendi?: string | null;
         };
         Update: Partial<KesfetItemRow>;
         Relationships: [];

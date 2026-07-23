@@ -10,6 +10,8 @@ export interface KesfetItem {
   ad: string;
   tip: ItemTip;
   soru_id?: string | null;
+  /** Ders içeriği — BlockNote blok dizisi (özel yevmiye/sahanotu blokları dahil). */
+  icerik?: unknown | null;
 }
 
 export interface KesfetBolum {

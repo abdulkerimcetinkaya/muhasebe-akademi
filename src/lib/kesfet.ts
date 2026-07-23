@@ -40,7 +40,13 @@ export const tumKartlariYukle = async (): Promise<KesfetKart[]> => {
         sira: b.sira,
         itemlar: itemler
           .filter((it) => it.bolum_id === b.id)
-          .map((it) => ({ id: it.id, ad: it.ad, tip: it.tip, soru_id: it.soru_id })),
+          .map((it) => ({
+            id: it.id,
+            ad: it.ad,
+            tip: it.tip,
+            soru_id: it.soru_id,
+            icerik: it.icerik,
+          })),
       })),
   }));
 };
@@ -133,4 +139,63 @@ export const itemGuncelle = async (
 export const itemSil = async (id: string): Promise<void> => {
   const { error } = await supabase.from('kesfet_itemler').delete().eq('id', id);
   if (error) throw error;
+};
+
+// ── Admin: Item içeriği (BlockNote) ─────────────────────────────────────────
+
+/** Tek item'ın başlık + içeriğini yükler (editör açılışında). */
+export const itemIcerikYukle = async (
+  id: string,
+): Promise<{ ad: string; tip: 'ders' | 'alistirma'; icerik: unknown | null } | null> => {
+  const { data, error } = await supabase
+    .from('kesfet_itemler')
+    .select('ad, tip, icerik')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) return null;
+  return { ad: data.ad, tip: data.tip, icerik: data.icerik ?? null };
+};
+
+/** Item içeriğini kaydeder (BlockNote blok dizisi). */
+export const itemIcerikKaydet = async (id: string, icerik: unknown): Promise<void> => {
+  const { error } = await supabase
+    .from('kesfet_itemler')
+    .update({ icerik, icerik_guncellendi: new Date().toISOString() })
+    .eq('id', id);
+  if (error) throw error;
+};
+
+// ── Admin: Eski içerik havuzu (geçiş dönemi) ────────────────────────────────
+// unite_modulleri → modul_alt_basliklari sisteminden Keşfet'e taşınacak dolu
+// içerikler. "Eski içerikten aktar" seçicisi bunları listeler. Eski sistem
+// emekli edilince bu fonksiyon da kaldırılır.
+
+export type EskiIcerik = {
+  kaynak: 'modul' | 'alt';
+  id: string;
+  baslik: string;
+  icerik: unknown;
+};
+
+/** Eski sistemdeki dolu içerikleri (modül genel bakış + alt başlık) getirir. */
+export const eskiIceriklerYukle = async (): Promise<EskiIcerik[]> => {
+  const [modR, altR] = await Promise.all([
+    supabase.from('unite_modulleri').select('id, baslik, icerik'),
+    supabase.from('modul_alt_basliklari').select('id, baslik, icerik'),
+  ]);
+  if (modR.error) throw modR.error;
+  if (altR.error) throw altR.error;
+
+  const dolu = (icerik: unknown): boolean => Array.isArray(icerik) && icerik.length > 0;
+
+  const moduller: EskiIcerik[] = ((modR.data ?? []) as { id: string; baslik: string; icerik: unknown }[])
+    .filter((r) => dolu(r.icerik))
+    .map((r) => ({ kaynak: 'modul', id: r.id, baslik: `${r.baslik} (Genel Bakış)`, icerik: r.icerik }));
+
+  const altlar: EskiIcerik[] = ((altR.data ?? []) as { id: string; baslik: string; icerik: unknown }[])
+    .filter((r) => dolu(r.icerik))
+    .map((r) => ({ kaynak: 'alt', id: r.id, baslik: r.baslik, icerik: r.icerik }));
+
+  return [...moduller, ...altlar];
 };

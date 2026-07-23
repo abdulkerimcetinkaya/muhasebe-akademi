@@ -208,6 +208,21 @@ export const AdminKesfetKartSayfasi = () => {
                               {it.ad}
                             </button>
                           )}
+                          <button
+                            onClick={() => nav(`/admin/kesfet/${kart.id}/item/${it.id}`)}
+                            className="inline-flex items-center gap-1.5 text-[12px] font-semibold px-2.5 py-1 rounded-md border border-line-strong text-ink-soft hover:text-ink hover:border-ink transition flex-none"
+                            title="İçeriği düzenle"
+                          >
+                            <Icon
+                              name={
+                                Array.isArray(it.icerik) && it.icerik.length > 0
+                                  ? 'FileCheck'
+                                  : 'FilePlus'
+                              }
+                              size={13}
+                            />
+                            İçerik
+                          </button>
                           <select
                             value={it.tip}
                             onChange={(e) => itemTipDegistir(it, e.target.value as 'ders' | 'alistirma')}

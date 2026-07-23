@@ -22,9 +22,23 @@ export const KesfetKartSayfasi = () => {
 
   if (!kartlar) {
     return (
-      <div className="flex items-center justify-center py-32">
-        <Icon name="Loader2" size={22} className="animate-spin text-ink-mute" />
-      </div>
+      <main className="max-w-[860px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
+        <div className="h-3 w-40 bg-surface-2 rounded animate-pulse mb-8" />
+        <div className="flex items-start gap-4 mb-7">
+          <div className="w-12 h-12 rounded-xl bg-surface-2 animate-pulse flex-none" />
+          <div className="flex-1">
+            <div className="h-9 w-2/3 bg-surface-2 rounded animate-pulse mb-3" />
+            <div className="h-4 w-full bg-surface-2 rounded animate-pulse" />
+          </div>
+        </div>
+        <div className="hairline my-10" />
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div key={i} className="mb-8">
+            <div className="h-4 w-32 bg-surface-2 rounded animate-pulse mb-3" />
+            <div className="h-24 bg-surface-2 rounded-[16px] animate-pulse" />
+          </div>
+        ))}
+      </main>
     );
   }
 
@@ -94,7 +108,7 @@ export const KesfetKartSayfasi = () => {
           {sirada && (
             <button
               onClick={() => nav(`/kesfet/${kart.slug}/${sirada.item.id}`)}
-              className="btn btn-primary btn-lg"
+              className="btn btn-primary btn-lg active:scale-[0.98]"
             >
               {biten === 0 ? 'Başla' : biten === toplam ? 'Tekrar Et' : 'Devam Et'}
               <Icon name="ArrowRight" size={16} className="ml-1" />
@@ -130,7 +144,7 @@ export const KesfetKartSayfasi = () => {
                     <button
                       key={item.id}
                       onClick={() => nav(`/kesfet/${kart.slug}/${item.id}`)}
-                      className={`group w-full flex items-center gap-4 px-4 sm:px-5 py-4 text-left hover:bg-bg-tint transition ${
+                      className={`group w-full flex items-center gap-4 px-4 sm:px-5 py-4 text-left hover:bg-bg-tint transition active:scale-[0.99] ${
                         ii > 0 ? 'border-t border-line-soft' : ''
                       }`}
                     >

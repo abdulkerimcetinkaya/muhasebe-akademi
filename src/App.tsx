@@ -70,6 +70,7 @@ const KesfetKartSayfasi = lazy(() => import('./pages/KesfetKartSayfasi').then((m
 const KesfetItemSayfasi = lazy(() => import('./pages/KesfetItemSayfasi').then((m) => ({ default: m.KesfetItemSayfasi })));
 const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));
 const AdminKesfetKartSayfasi = lazy(() => import('./pages/admin/AdminKesfetKartSayfasi').then((m) => ({ default: m.AdminKesfetKartSayfasi })));
+const AdminKesfetItemIcerikSayfasi = lazy(() => import('./pages/admin/AdminKesfetItemIcerikSayfasi').then((m) => ({ default: m.AdminKesfetItemIcerikSayfasi })));
 
 const SayfaYukleniyor = () => (
   <div className="min-h-[60vh] flex items-center justify-center text-ink-quiet text-sm">
@@ -666,6 +667,14 @@ const App = () => {
               element={
                 <ProtectedAdminRoute>
                   <AdminKesfetKartSayfasi />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/admin/kesfet/:kartId/item/:itemId"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminKesfetItemIcerikSayfasi />
                 </ProtectedAdminRoute>
               }
             />
