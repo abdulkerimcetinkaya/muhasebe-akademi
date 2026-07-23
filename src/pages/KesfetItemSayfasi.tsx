@@ -29,15 +29,15 @@ export const KesfetItemSayfasi = () => {
   // Yükleniyor — layout'a oturan skeleton
   if (!kartlar) {
     return (
-      <div className="max-w-[1120px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
+      <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
         <div className="h-3 w-44 bg-surface-2 rounded animate-pulse mb-8" />
-        <div className="grid lg:grid-cols-[248px_1fr] gap-10">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-12">
           <div className="hidden lg:flex flex-col gap-2">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-8 bg-surface-2 rounded animate-pulse" />
             ))}
           </div>
-          <div className="max-w-[660px] w-full">
+          <div className="max-w-[820px] w-full">
             <div className="h-4 w-24 bg-surface-2 rounded animate-pulse mb-4" />
             <div className="h-9 w-3/4 bg-surface-2 rounded animate-pulse mb-8" />
             <div className="h-48 bg-surface-2 rounded-[18px] animate-pulse" />
@@ -130,7 +130,7 @@ export const KesfetItemSayfasi = () => {
   ));
 
   return (
-    <div className="max-w-[1120px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
+    <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
       <nav className="flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase text-ink-mute mb-6 flex-wrap">
         <button onClick={() => nav('/kesfet')} className="hover:text-ink transition">Keşfet</button>
         <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
@@ -167,12 +167,12 @@ export const KesfetItemSayfasi = () => {
         )}
       </div>
 
-      <div className="grid lg:grid-cols-[248px_1fr] gap-10">
+      <div className="grid lg:grid-cols-[260px_1fr] gap-12">
         <aside className="hidden lg:block">
           <div className="sticky top-24 flex flex-col gap-6">{tocIcerik}</div>
         </aside>
 
-        <article className="min-w-0 max-w-[660px]">
+        <article className="min-w-0 max-w-[820px] w-full">
           <div className="flex items-center gap-3 mb-4">
             <span className="chip">{ders ? 'Ders' : 'Alıştırma'}</span>
             {bitti && <span className="chip chip-success">Tamamlandı</span>}
