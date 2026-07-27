@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-label="Kafe, fincan ve defter — muhasebeye giriş illüstrasyonu">
+  <!-- MuhasebeLab flat illüstrasyon dili · palet: lacivert/mavi + kâğıt + bakır -->
+  <defs>
+    <clipPath id="canvas"><rect width="1200" height="460" rx="0"/></clipPath>
+  </defs>
+  <g clip-path="url(#canvas)">
+    <!-- zemin -->
+    <rect width="1200" height="460" fill="#faf9f5"/>
+    <circle cx="1050" cy="70" r="130" fill="#d8e3f0" opacity="0.45"/>
+    <circle cx="130" cy="420" r="170" fill="#d8e3f0" opacity="0.35"/>
+    <!-- zemin çizgisi -->
+    <rect x="80" y="368" width="1040" height="3" rx="1.5" fill="#1d3a5f"/>
+
+    <!-- == SOL: kafe cephesi == -->
+    <g>
+      <!-- gövde -->
+      <rect x="140" y="150" width="240" height="218" fill="#ffffff"/>
+      <rect x="140" y="150" width="240" height="218" fill="none" stroke="#1d3a5f" stroke-width="3"/>
+      <!-- tente -->
+      <g>
+        <rect x="124" y="118" width="272" height="18" fill="#1d3a5f"/>
+        <g>
+          <path d="M124 136h34v14a17 17 0 0 1-34 0z" fill="#2c4f7c"/>
+          <path d="M158 136h34v14a17 17 0 0 1-34 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="2"/>
+          <path d="M192 136h34v14a17 17 0 0 1-34 0z" fill="#2c4f7c"/>
+          <path d="M226 136h34v14a17 17 0 0 1-34 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="2"/>
+          <path d="M260 136h34v14a17 17 0 0 1-34 0z" fill="#2c4f7c"/>
+          <path d="M294 136h34v14a17 17 0 0 1-34 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="2"/>
+          <path d="M328 136h34v14a17 17 0 0 1-34 0z" fill="#2c4f7c"/>
+          <path d="M362 136h34v14a17 17 0 0 1-34 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="2"/>
+        </g>
+      </g>
+      <!-- tabela -->
+      <rect x="205" y="88" width="110" height="26" rx="13" fill="#2c4f7c"/>
+      <circle cx="228" cy="101" r="5" fill="#faf9f5"/>
+      <rect x="242" y="97" width="58" height="8" rx="4" fill="#faf9f5"/>
+      <!-- kapı -->
+      <rect x="166" y="220" width="70" height="148" fill="#2c4f7c"/>
+      <rect x="166" y="220" width="70" height="148" fill="none" stroke="#1d3a5f" stroke-width="3"/>
+      <circle cx="222" cy="298" r="5" fill="#faf9f5"/>
+      <!-- vitrin -->
+      <rect x="260" y="220" width="96" height="86" fill="#d8e3f0"/>
+      <rect x="260" y="220" width="96" height="86" fill="none" stroke="#1d3a5f" stroke-width="3"/>
+      <path d="M268 298l52-70M292 306l58-78" stroke="#ffffff" stroke-width="7" opacity="0.75"/>
+      <!-- vitrin altı saksı -->
+      <rect x="284" y="330" width="48" height="24" fill="#a47339"/>
+      <path d="M296 330c0-12 6-20 12-24 6 4 12 12 12 24" fill="#2c4f7c"/>
+    </g>
+
+    <!-- ok 1 -->
+    <g stroke="#a47339" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 12">
+      <path d="M430 262c46-38 96-38 148-12" fill="none"/>
+    </g>
+    <path d="M584 244l14 12-18 5z" fill="#a47339"/>
+
+    <!-- == ORTA: fincan == -->
+    <g>
+      <!-- buhar -->
+      <g stroke="#2c4f7c" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.55">
+        <path d="M652 148c-8 14 8 22 0 38"/>
+        <path d="M688 136c-8 14 8 22 0 38"/>
+        <path d="M724 148c-8 14 8 22 0 38"/>
+      </g>
+      <!-- tabak -->
+      <ellipse cx="688" cy="352" rx="112" ry="14" fill="#d8e3f0"/>
+      <!-- kulp -->
+      <path d="M776 232h20a34 34 0 0 1 0 68h-16" fill="none" stroke="#1d3a5f" stroke-width="10"/>
+      <!-- gövde -->
+      <path d="M600 210h176v72a72 72 0 0 1-72 72h-32a72 72 0 0 1-72-72z" fill="#ffffff" stroke="#1d3a5f" stroke-width="4"/>
+      <!-- kahve -->
+      <path d="M612 222h152v20H612z" fill="#a47339"/>
+      <!-- fincan şeridi -->
+      <rect x="600" y="300" width="176" height="10" fill="#2c4f7c" opacity="0.18"/>
+    </g>
+
+    <!-- ok 2 -->
+    <g stroke="#a47339" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 12">
+      <path d="M816 252c48-26 92-30 142-12" fill="none"/>
+    </g>
+    <path d="M962 234l14 11-17 6z" fill="#a47339"/>
+
+    <!-- == SAĞ: defter kartı + bakır paralar == -->
+    <g>
+      <!-- kart -->
+      <rect x="922" y="150" width="180" height="218" rx="10" fill="#ffffff" stroke="#1d3a5f" stroke-width="3"/>
+      <!-- başlık şeridi -->
+      <rect x="922" y="150" width="180" height="34" rx="10" fill="#2c4f7c"/>
+      <rect x="922" y="172" width="180" height="12" fill="#2c4f7c"/>
+      <rect x="952" y="163" width="120" height="8" rx="4" fill="#faf9f5"/>
+      <!-- T çizgisi -->
+      <path d="M940 214h144M1012 214v128" stroke="#1d3a5f" stroke-width="3"/>
+      <!-- satırlar -->
+      <g fill="#d8e3f0">
+        <rect x="948" y="232" width="44" height="8" rx="4"/>
+        <rect x="948" y="254" width="52" height="8" rx="4"/>
+        <rect x="948" y="276" width="38" height="8" rx="4"/>
+        <rect x="1026" y="232" width="52" height="8" rx="4"/>
+        <rect x="1026" y="254" width="40" height="8" rx="4"/>
+      </g>
+      <!-- paralar -->
+      <g>
+        <ellipse cx="890" cy="356" rx="34" ry="10" fill="#855d2c"/>
+        <rect x="856" y="330" width="68" height="26" rx="10" fill="#a47339"/>
+        <ellipse cx="890" cy="330" rx="34" ry="10" fill="#e8dfcc"/>
+        <ellipse cx="890" cy="330" rx="20" ry="6" fill="none" stroke="#a47339" stroke-width="2.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

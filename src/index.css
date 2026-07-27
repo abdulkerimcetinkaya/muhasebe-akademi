@@ -2884,7 +2884,7 @@ input[type='number'] { -moz-appearance: textfield; }
 .bn-icerik.bn-okunur [data-content-type='bulletListItem'],
 .bn-icerik.bn-okunur [data-content-type='numberedListItem'],
 .bn-icerik.bn-okunur [data-content-type='quote'] {
-  max-width: 68ch;
+  max-width: 92ch;
 }
 
 .bn-icerik h1,
@@ -3258,6 +3258,107 @@ input[type='number'] { -moz-appearance: textfield; }
   border-color: var(--blue-mute);
 }
 [data-tema='dark'] .bn-th-bakiye strong {
+  color: var(--blue-soft);
+}
+
+/* ===== Bilanço (iki taraflı mali durum) ===== */
+.bn-bilanco {
+  margin: 1.7rem 0;
+  max-width: 640px;
+}
+.bn-bl-baslik {
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+  color: var(--ink);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--blue-deep);
+}
+.bn-bl-govde {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.bn-bl-yan {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 0.9rem 0;
+}
+.bn-bl-sag {
+  border-left: 2px solid var(--blue-deep);
+}
+.bn-bl-yan-baslik {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.bn-bl-satirlar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  padding-bottom: 0.6rem;
+}
+.bn-bl-satir {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.bn-bl-ad {
+  font-size: 0.86rem;
+  color: var(--ink);
+  min-width: 0;
+}
+.bn-bl-tutar {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.86rem;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.bn-bl-bos {
+  color: var(--ink-quiet);
+}
+.bn-bl-toplam {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 2px solid var(--blue-deep);
+  margin: 0 -0.9rem;
+  padding: 0.45rem 0.9rem;
+  font-weight: 700;
+}
+.bn-bl-toplam > span:first-child {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.bn-bl-toplam .bn-bl-tutar {
+  font-weight: 700;
+}
+.bn-bl-denk {
+  text-align: center;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-deep);
+}
+[data-tema='dark'] .bn-bl-baslik,
+[data-tema='dark'] .bn-bl-sag,
+[data-tema='dark'] .bn-bl-toplam {
+  border-color: var(--blue-mute);
+}
+[data-tema='dark'] .bn-bl-denk {
   color: var(--blue-soft);
 }
 

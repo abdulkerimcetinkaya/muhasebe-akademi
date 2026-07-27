@@ -197,8 +197,22 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         } as any);
       },
     };
+    const bilancoOgesi: DefaultReactSuggestionItem = {
+      title: 'Bilanço',
+      subtext: 'İki taraflı mali durum — solda varlıklar, sağda kaynaklar',
+      aliases: ['bilanco', 'bilanço', 'mali durum', 'varlik', 'kaynak', 'balance'],
+      group: 'Diğer',
+      icon: <BilancoGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'bilanco',
+          props: { baslik: 'BİLANÇO', sol: '[]', sag: '[]' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
     return filterSuggestionItems(
-      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi, tHesabiOgesi],
+      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi, tHesabiOgesi, bilancoOgesi],
       query,
     );
   };
@@ -293,6 +307,24 @@ const THesabiGlyph = () => (
   >
     <path d="M4 7h16" />
     <path d="M12 7v13" />
+  </svg>
+);
+
+const BilancoGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="3" y="5" width="18" height="15" rx="2" />
+    <path d="M12 5v15" />
+    <path d="M3 16h18" />
   </svg>
 );
 

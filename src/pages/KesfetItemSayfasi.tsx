@@ -17,6 +17,15 @@ export const KesfetItemSayfasi = () => {
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const [tamamlanan, setTamamlanan] = useState<Set<string>>(() => tamamlananSet());
   const [tocAcik, setTocAcik] = useState(false);
+  // Bölüm katlama durumu — kayıt yoksa açık (varsayılan: hepsi açık).
+  const [kapaliBolumler, setKapaliBolumler] = useState<Set<string>>(new Set());
+  const bolumToggle = (id: string) =>
+    setKapaliBolumler((s) => {
+      const yeni = new Set(s);
+      if (yeni.has(id)) yeni.delete(id);
+      else yeni.add(id);
+      return yeni;
+    });
 
   useEffect(() => {
     tumKartlariYukle().then(setKartlar).catch(() => setKartlar([]));
@@ -29,15 +38,15 @@ export const KesfetItemSayfasi = () => {
   // Yükleniyor — layout'a oturan skeleton
   if (!kartlar) {
     return (
-      <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
+      <div className="w-full py-8 sm:py-12 pl-4 sm:pl-6 pr-5 sm:pr-10">
         <div className="h-3 w-44 bg-surface-2 rounded animate-pulse mb-8" />
-        <div className="grid lg:grid-cols-[260px_1fr] gap-12">
+        <div className="grid lg:grid-cols-[264px_minmax(0,1fr)] gap-8 lg:gap-14">
           <div className="hidden lg:flex flex-col gap-2">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-8 bg-surface-2 rounded animate-pulse" />
             ))}
           </div>
-          <div className="max-w-[820px] w-full">
+          <div className="max-w-[1100px] w-full">
             <div className="h-4 w-24 bg-surface-2 rounded animate-pulse mb-4" />
             <div className="h-9 w-3/4 bg-surface-2 rounded animate-pulse mb-8" />
             <div className="h-48 bg-surface-2 rounded-[18px] animate-pulse" />
@@ -50,7 +59,7 @@ export const KesfetItemSayfasi = () => {
   const kart = kartBul(kartlar, slug);
   if (!kart) {
     return (
-      <main className="max-w-[820px] mx-auto px-5 py-20 text-center">
+      <main className="max-w-[1100px] mx-auto px-5 py-20 text-center">
         <p className="text-ink-soft">Bu kart bulunamadı.</p>
         <button onClick={() => nav('/kesfet')} className="mt-4 text-brand-deep font-semibold text-sm">
           Keşfet'e dön
@@ -64,7 +73,7 @@ export const KesfetItemSayfasi = () => {
 
   if (!mevcut) {
     return (
-      <main className="max-w-[820px] mx-auto px-5 py-20 text-center">
+      <main className="max-w-[1100px] mx-auto px-5 py-20 text-center">
         <p className="text-ink-soft">Bu içerik bulunamadı.</p>
         <button
           onClick={() => nav(`/kesfet/${kart.slug}`)}
@@ -90,11 +99,25 @@ export const KesfetItemSayfasi = () => {
   };
 
   // Tek TOC kaynağı — hem masaüstü sidebar hem mobil panel kullanır.
-  const tocIcerik = kart.bolumler.map((bolum) => (
+  // Bölümler açılır/kapanır; varsayılan açık.
+  const tocIcerik = kart.bolumler.map((bolum) => {
+    const kapali = kapaliBolumler.has(bolum.id);
+    return (
     <div key={bolum.id}>
-      <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-quiet mb-2.5 pl-3">
-        {bolum.ad}
-      </div>
+      <button
+        onClick={() => bolumToggle(bolum.id)}
+        className="w-full flex items-center justify-between gap-2 pl-3 pr-1.5 py-1 mb-1.5 group/bolum"
+      >
+        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-quiet group-hover/bolum:text-ink-soft transition text-left">
+          {bolum.ad}
+        </span>
+        <Icon
+          name="ChevronDown"
+          size={13}
+          className={`flex-none text-ink-quiet transition-transform ${kapali ? '-rotate-90' : ''}`}
+        />
+      </button>
+      {!kapali && (
       <div className="flex flex-col gap-0.5">
         {bolum.itemlar.map((it) => {
           const aktif = it.id === mevcut.item.id;
@@ -126,11 +149,13 @@ export const KesfetItemSayfasi = () => {
           );
         })}
       </div>
+      )}
     </div>
-  ));
+    );
+  });
 
   return (
-    <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 sm:py-12">
+    <div className="w-full py-8 sm:py-12 pl-4 sm:pl-6 pr-5 sm:pr-10">
       <nav className="flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase text-ink-mute mb-6 flex-wrap">
         <button onClick={() => nav('/kesfet')} className="hover:text-ink transition">Keşfet</button>
         <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
@@ -167,12 +192,12 @@ export const KesfetItemSayfasi = () => {
         )}
       </div>
 
-      <div className="grid lg:grid-cols-[260px_1fr] gap-12">
-        <aside className="hidden lg:block">
-          <div className="sticky top-24 flex flex-col gap-6">{tocIcerik}</div>
+      <div className="grid lg:grid-cols-[264px_minmax(0,1fr)] gap-8 lg:gap-14">
+        <aside className="hidden lg:block border-r border-line-soft pr-4">
+          <div className="sticky top-24 flex flex-col gap-5">{tocIcerik}</div>
         </aside>
 
-        <article className="min-w-0 max-w-[820px] w-full">
+        <article className="min-w-0 max-w-[1100px] w-full">
           <div className="flex items-center gap-3 mb-4">
             <span className="chip">{ders ? 'Ders' : 'Alıştırma'}</span>
             {bitti && <span className="chip chip-success">Tamamlandı</span>}
