@@ -211,8 +211,29 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         } as any);
       },
     };
+    const kontrolOgesi: DefaultReactSuggestionItem = {
+      title: 'Kontrol Sorusu',
+      subtext: 'Ders içi mini soru — şıklar + anında geri bildirim',
+      aliases: ['kontrol', 'soru', 'quiz', 'test', 'sik', 'kendini dene'],
+      group: 'Diğer',
+      icon: <KontrolGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'kontrol',
+          props: { soru: '', siklar: '[]', aciklama: '' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
     return filterSuggestionItems(
-      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi, tHesabiOgesi, bilancoOgesi],
+      [
+        ...getDefaultReactSlashMenuItems(editor),
+        yevmiyeOgesi,
+        sahaNotuOgesi,
+        tHesabiOgesi,
+        bilancoOgesi,
+        kontrolOgesi,
+      ],
       query,
     );
   };
@@ -325,6 +346,24 @@ const BilancoGlyph = () => (
     <rect x="3" y="5" width="18" height="15" rx="2" />
     <path d="M12 5v15" />
     <path d="M3 16h18" />
+  </svg>
+);
+
+const KontrolGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.2" />
+    <path d="M12 17h.01" />
   </svg>
 );
 

@@ -2916,14 +2916,32 @@ input[type='number'] { -moz-appearance: textfield; }
   text-underline-offset: 2px;
 }
 
-.bn-icerik blockquote,
+/* Quote — editorial pull-quote: kutu yok, Fraunces + kısa bakır aksan */
 .bn-icerik [data-content-type='quote'] {
-  border-left: 3px solid var(--copper);
-  background: var(--surface-2);
-  padding: 0.75rem 1rem;
-  border-radius: 0 8px 8px 0;
-  font-style: italic;
-  color: var(--ink-soft);
+  margin: 1.5rem 0;
+  padding: 0.3rem 0 0.3rem 1.35rem;
+  border: none;
+  border-left: 3px solid var(--copper) !important;
+  background: transparent;
+  border-radius: 0;
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.12em;
+  line-height: 1.55;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+}
+/* BlockNote'un iç blockquote varsayılanlarını tamamen sıfırla */
+.bn-icerik blockquote {
+  border: none !important;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-style: normal;
+  color: var(--ink) !important;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .bn-icerik code {
@@ -3360,6 +3378,277 @@ input[type='number'] { -moz-appearance: textfield; }
 }
 [data-tema='dark'] .bn-bl-denk {
   color: var(--blue-soft);
+}
+
+/* ===== Kontrol Sorusu (ders içi mini-kontrol) — premium ===== */
+.bn-kontrol {
+  position: relative;
+  margin: 2.1rem 0;
+  max-width: 640px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 1.5rem 1.6rem 1.55rem;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(var(--ink-rgb), 0.05),
+    0 22px 44px -26px rgba(var(--blue-deep-rgb), 0.24);
+}
+/* üstte ince bakır aksan */
+.bn-kontrol::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--copper), var(--copper-soft) 85%);
+}
+
+.bn-kn-ust {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.605rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--copper-deep);
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+}
+.bn-kn-ust::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--copper);
+  box-shadow: 0 0 0 4px rgba(var(--copper-rgb), 0.14);
+}
+
+.bn-kn-soru {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -0.006em;
+  color: var(--ink);
+  margin-bottom: 1.15rem;
+}
+
+.bn-kn-siklar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.bn-kn-sik {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.82rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--bg-tint);
+  color: var(--ink);
+  font-size: 0.945rem;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease,
+    box-shadow 0.18s ease, transform 0.13s ease;
+}
+.bn-kn-sik:not(:disabled):hover {
+  border-color: var(--blue);
+  background: var(--surface);
+  box-shadow: 0 10px 22px -14px rgba(var(--blue-deep-rgb), 0.42);
+  transform: translateY(-1px);
+}
+.bn-kn-sik:not(:disabled):active {
+  transform: translateY(0) scale(0.994);
+}
+.bn-kn-sik:disabled {
+  cursor: default;
+}
+
+.bn-kn-harf {
+  flex: none;
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-mute);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.bn-kn-metin {
+  flex: 1;
+  min-width: 0;
+}
+.bn-kn-isaret {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* --- cevap sonrası --- */
+.bn-kn-dogru {
+  border-color: rgba(var(--success-rgb), 0.5);
+  background: rgba(var(--success-rgb), 0.1);
+  box-shadow: 0 10px 24px -16px rgba(var(--success-rgb), 0.5);
+}
+.bn-kn-dogru .bn-kn-harf {
+  background: var(--success);
+  border-color: var(--success);
+  color: #fff;
+}
+.bn-kn-dogru .bn-kn-isaret {
+  background: var(--success);
+}
+.bn-kn-yanlis {
+  border-color: rgba(var(--danger-rgb), 0.5);
+  background: rgba(var(--danger-rgb), 0.09);
+}
+.bn-kn-yanlis .bn-kn-harf {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.bn-kn-yanlis .bn-kn-isaret {
+  background: var(--danger);
+}
+.bn-kn-pas {
+  opacity: 0.42;
+  filter: saturate(0.6);
+}
+
+/* --- sonuç --- */
+.bn-kn-sonuc {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  animation: bn-kn-reveal 0.34s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes bn-kn-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bn-kn-basari {
+  background: rgba(var(--success-rgb), 0.08);
+}
+.bn-kn-hata {
+  background: rgba(var(--danger-rgb), 0.07);
+}
+.bn-kn-sonuc-ikon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 1px;
+}
+.bn-kn-basari .bn-kn-sonuc-ikon {
+  background: var(--success);
+}
+.bn-kn-hata .bn-kn-sonuc-ikon {
+  background: var(--danger);
+}
+.bn-kn-sonuc-govde {
+  flex: 1;
+  min-width: 0;
+}
+.bn-kn-sonuc-baslik {
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.04rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 0.12rem;
+}
+.bn-kn-aciklama {
+  font-size: 0.9rem;
+  line-height: 1.58;
+  color: var(--ink-soft);
+}
+.bn-kn-tekrar {
+  margin-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: none;
+  background: transparent;
+  color: var(--blue-deep);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  padding: 0;
+}
+.bn-kn-tekrar::before {
+  content: '↻';
+  font-size: 0.92rem;
+}
+.bn-kn-tekrar:hover {
+  color: var(--blue);
+}
+[data-tema='dark'] .bn-kontrol {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 22px 44px -26px rgba(0, 0, 0, 0.55);
+}
+[data-tema='dark'] .bn-kn-sik {
+  background: rgba(255, 255, 255, 0.03);
+}
+[data-tema='dark'] .bn-kn-harf {
+  background: var(--surface-2);
+}
+
+/* Kontrol Sorusu — düzenleyici */
+.bn-kn-duz-siklar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+.bn-kn-duz-satir {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.bn-kn-duz-radyo {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-quiet);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.bn-kn-duz-radyo.secili {
+  border-color: var(--success, #2f855a);
+  color: var(--success, #2f855a);
 }
 
 /* T Hesabı — düzenleyici (admin) */
