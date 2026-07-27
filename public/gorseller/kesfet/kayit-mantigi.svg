@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-label="T hesabı ve kalem — kayıt mantığı">
+  <!-- MuhasebeLab flat illüstrasyon dili · Kayıt Mantığı: T hesabı + borç/alacak akışı -->
+  <g>
+    <rect width="1200" height="460" fill="#faf9f5"/>
+    <circle cx="1080" cy="80" r="120" fill="#d8e3f0" opacity="0.4"/>
+    <circle cx="110" cy="400" r="150" fill="#d8e3f0" opacity="0.35"/>
+    <rect x="80" y="392" width="1040" height="3" rx="1.5" fill="#1d3a5f"/>
+
+    <!-- büyük T kartı -->
+    <g>
+      <rect x="430" y="96" width="340" height="296" rx="14" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+      <!-- başlık -->
+      <rect x="430" y="96" width="340" height="46" rx="14" fill="#2c4f7c"/>
+      <rect x="430" y="124" width="340" height="18" fill="#2c4f7c"/>
+      <rect x="510" y="112" width="180" height="12" rx="6" fill="#faf9f5"/>
+      <!-- T -->
+      <path d="M456 172h288M600 172v192" stroke="#1d3a5f" stroke-width="4"/>
+      <!-- sol satırlar (borç) -->
+      <g fill="#d8e3f0">
+        <rect x="472" y="196" width="72" height="10" rx="5"/>
+        <rect x="472" y="224" width="94" height="10" rx="5"/>
+        <rect x="472" y="252" width="60" height="10" rx="5"/>
+      </g>
+      <!-- sağ satırlar (alacak) -->
+      <g fill="#d8e3f0">
+        <rect x="624" y="196" width="88" height="10" rx="5"/>
+        <rect x="624" y="224" width="64" height="10" rx="5"/>
+      </g>
+      <!-- altta bakiye şeridi -->
+      <rect x="472" y="330" width="100" height="12" rx="6" fill="#a47339"/>
+    </g>
+
+    <!-- sol ok: giren (borç) -->
+    <g stroke="#a47339" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 12">
+      <path d="M220 220c66-14 122-10 182 8" fill="none"/>
+    </g>
+    <path d="M408 222l16 9-16 9z" fill="#a47339"/>
+    <!-- giren rozet: artı -->
+    <circle cx="180" cy="216" r="34" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+    <rect x="166" y="212" width="28" height="7" rx="3.5" fill="#2c4f7c"/>
+    <rect x="176.5" y="201.5" width="7" height="28" rx="3.5" fill="#2c4f7c"/>
+
+    <!-- sağ ok: çıkan (alacak) -->
+    <g stroke="#a47339" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 12">
+      <path d="M800 228c60-16 116-16 178 0" fill="none"/>
+    </g>
+    <path d="M984 219l16 9-16 9z" fill="#a47339"/>
+    <!-- çıkan rozet: eksi -->
+    <circle cx="1024" cy="232" r="34" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+    <rect x="1010" y="228" width="28" height="7" rx="3.5" fill="#2c4f7c"/>
+
+    <!-- kalem -->
+    <g transform="rotate(-38 826 348)">
+      <rect x="790" y="336" width="118" height="22" rx="6" fill="#2c4f7c"/>
+      <rect x="890" y="336" width="16" height="22" fill="#d8e3f0"/>
+      <path d="M790 336l-22 11 22 11z" fill="#e8dfcc" stroke="#1d3a5f" stroke-width="2.5"/>
+      <path d="M776 343l-8 4 8 4z" fill="#1d3a5f"/>
+    </g>
+  </g>
+</svg>

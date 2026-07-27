@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" role="img" aria-label="Defterden raporlara — mizan, bilanço, gelir tablosu">
+  <!-- MuhasebeLab flat illüstrasyon dili · Çıktılar: defterden raporlara -->
+  <g>
+    <rect width="1200" height="460" fill="#faf9f5"/>
+    <circle cx="140" cy="90" r="120" fill="#d8e3f0" opacity="0.4"/>
+    <circle cx="1080" cy="400" r="150" fill="#d8e3f0" opacity="0.35"/>
+    <rect x="80" y="392" width="1040" height="3" rx="1.5" fill="#1d3a5f"/>
+
+    <!-- sol: açık defter -->
+    <g>
+      <path d="M160 200c40-16 84-16 120 0v150c-36-16-80-16-120 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+      <path d="M400 200c-40-16-84-16-120 0v150c36-16 80-16 120 0z" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+      <path d="M280 200v150" stroke="#1d3a5f" stroke-width="3"/>
+      <g fill="#d8e3f0">
+        <rect x="184" y="216" width="64" height="8" rx="4"/>
+        <rect x="184" y="240" width="76" height="8" rx="4"/>
+        <rect x="184" y="264" width="52" height="8" rx="4"/>
+        <rect x="300" y="216" width="72" height="8" rx="4"/>
+        <rect x="300" y="240" width="56" height="8" rx="4"/>
+        <rect x="300" y="264" width="66" height="8" rx="4"/>
+      </g>
+      <rect x="300" y="292" width="72" height="10" rx="5" fill="#a47339"/>
+    </g>
+
+    <!-- ok -->
+    <g stroke="#a47339" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="1 12">
+      <path d="M430 250c40-24 84-30 130-20" fill="none"/>
+    </g>
+    <path d="M566 224l15 10-17 7z" fill="#a47339"/>
+
+    <!-- orta: rapor kartları (kademeli) -->
+    <g>
+      <!-- arka kart -->
+      <rect x="676" y="120" width="170" height="220" rx="12" fill="#d8e3f0" transform="rotate(4 761 230)"/>
+      <!-- ön kart: bilanço -->
+      <rect x="610" y="130" width="190" height="230" rx="12" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+      <rect x="610" y="130" width="190" height="38" rx="12" fill="#2c4f7c"/>
+      <rect x="610" y="152" width="190" height="16" fill="#2c4f7c"/>
+      <rect x="648" y="142" width="114" height="10" rx="5" fill="#faf9f5"/>
+      <path d="M632 190h146M705 190v134" stroke="#1d3a5f" stroke-width="3"/>
+      <g fill="#d8e3f0">
+        <rect x="646" y="210" width="42" height="8" rx="4"/>
+        <rect x="646" y="234" width="34" height="8" rx="4"/>
+        <rect x="722" y="210" width="48" height="8" rx="4"/>
+        <rect x="722" y="234" width="38" height="8" rx="4"/>
+      </g>
+      <rect x="646" y="296" width="42" height="9" rx="4.5" fill="#a47339"/>
+      <rect x="722" y="296" width="42" height="9" rx="4.5" fill="#a47339"/>
+    </g>
+
+    <!-- sağ: yükselen grafik -->
+    <g>
+      <rect x="900" y="150" width="200" height="190" rx="12" fill="#ffffff" stroke="#1d3a5f" stroke-width="3.5"/>
+      <rect x="928" y="272" width="28" height="44" rx="6" fill="#d8e3f0"/>
+      <rect x="970" y="244" width="28" height="72" rx="6" fill="#2c4f7c"/>
+      <rect x="1012" y="212" width="28" height="104" rx="6" fill="#a47339"/>
+      <path d="M928 236l52-40 46-28" stroke="#1d3a5f" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <circle cx="1026" cy="168" r="6" fill="#1d3a5f"/>
+    </g>
+  </g>
+</svg>
