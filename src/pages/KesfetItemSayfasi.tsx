@@ -182,7 +182,7 @@ export const KesfetItemSayfasi = () => {
           </h1>
 
           {icerikVar ? (
-            <IcerikGoruntuleyici icerik={mevcut.item.icerik} />
+            <IcerikGoruntuleyici key={mevcut.item.id} icerik={mevcut.item.icerik} />
           ) : (
             <div className="relative bg-surface border border-line rounded-[18px] px-6 py-16 text-center overflow-hidden">
               <div className="absolute inset-x-0 top-0 h-px bg-line" />

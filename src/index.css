@@ -2872,9 +2872,19 @@ input[type='number'] { -moz-appearance: textfield; }
 
 .bn-icerik [class*='bn-block-content'] {
   font-family: var(--font-body, 'Inter Tight'), system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.65;
+  font-size: 17px;
+  line-height: 1.72;
   color: var(--ink);
+}
+
+/* Okuma konforu: düz metni ~68 karaktere sınırla (göz yormasın),
+   görsel/tablo/yevmiye/saha notu tam genişlikte kalsın. */
+.bn-icerik.bn-okunur [data-content-type='paragraph'],
+.bn-icerik.bn-okunur [data-content-type='heading'],
+.bn-icerik.bn-okunur [data-content-type='bulletListItem'],
+.bn-icerik.bn-okunur [data-content-type='numberedListItem'],
+.bn-icerik.bn-okunur [data-content-type='quote'] {
+  max-width: 68ch;
 }
 
 .bn-icerik h1,
@@ -2957,6 +2967,13 @@ input[type='number'] { -moz-appearance: textfield; }
   font-weight: 700;
   font-size: 0.85em;
   letter-spacing: 0.04em;
+}
+
+/* İçerik görselleri: çok ince lacivert, yuvarlak köşeli çerçeve */
+.bn-icerik img,
+.bn-icerik .bn-visual-media {
+  border: 1px solid var(--blue-deep);
+  border-radius: 14px;
 }
 
 /* Read-only mod: drag handle + side menu gizle */
