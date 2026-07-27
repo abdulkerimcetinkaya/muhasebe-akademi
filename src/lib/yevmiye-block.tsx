@@ -119,42 +119,54 @@ const YevmiyeOkuyucu = ({
 }) => {
   const borclar = satirlar.filter((s) => s.tip === 'borc');
   const alacaklar = satirlar.filter((s) => s.tip === 'alacak');
+  const borcToplam = borclar.reduce((t, s) => t + tutarSayi(s.tutar), 0);
+  const alacakToplam = alacaklar.reduce((t, s) => t + tutarSayi(s.tutar), 0);
 
   return (
-    <div className="bn-yevmiye-okur" contentEditable={false}>
-      <div className="bn-yevmiye-baslik">
-        <span className="bn-yevmiye-cizgi" />
+    <div className="bn-yevmiye" contentEditable={false}>
+      <div className="bn-yevmiye-ust">
         <span className="bn-yevmiye-tarih">{tarih || '—'}</span>
-        <span className="bn-yevmiye-cizgi" />
+        <span className="bn-yevmiye-etiket">Yevmiye Fişi</span>
+      </div>
+
+      <div className="bn-yevmiye-head">
+        <span className="bn-y-kod">Kod</span>
+        <span className="bn-y-ad">Hesap</span>
+        <span className="bn-y-borc">Borç</span>
+        <span className="bn-y-alacak">Alacak</span>
       </div>
 
       {borclar.map((s, i) => (
-        <div key={`b-${i}`} className="bn-yevmiye-satir bn-yevmiye-borc">
-          <span className="bn-yevmiye-hesap">
-            <span className="bn-yevmiye-kod">{s.kod}</span>{' '}
-            <span className="bn-yevmiye-ad">{s.ad}</span>
-          </span>
-          <span className="bn-yevmiye-tutar">{tutarBicim(s.tutar)}</span>
-          <span className="bn-yevmiye-tutar bn-yevmiye-tutar-bos" />
+        <div key={`b-${i}`} className="bn-y-row">
+          <span className="bn-y-kod">{s.kod}</span>
+          <span className="bn-y-ad">{s.ad}</span>
+          <span className="bn-y-borc">{tutarBicim(s.tutar)}</span>
+          <span className="bn-y-alacak" />
         </div>
       ))}
 
       {alacaklar.map((s, i) => (
-        <div key={`a-${i}`} className="bn-yevmiye-satir bn-yevmiye-alacak">
-          <span className="bn-yevmiye-hesap">
-            <span className="bn-yevmiye-kod">{s.kod}</span>{' '}
-            <span className="bn-yevmiye-ad">{s.ad}</span>
-          </span>
-          <span className="bn-yevmiye-tutar bn-yevmiye-tutar-bos" />
-          <span className="bn-yevmiye-tutar">{tutarBicim(s.tutar)}</span>
+        <div key={`a-${i}`} className="bn-y-row bn-y-row-alacak">
+          <span className="bn-y-kod">{s.kod}</span>
+          <span className="bn-y-ad">{s.ad}</span>
+          <span className="bn-y-borc" />
+          <span className="bn-y-alacak">{tutarBicim(s.tutar)}</span>
         </div>
       ))}
 
-      <div className="bn-yevmiye-alt">
-        <span className="bn-yevmiye-cizgi-uzun" />
+      <div className="bn-y-row bn-y-toplam">
+        <span className="bn-y-kod" />
+        <span className="bn-y-ad">Toplam</span>
+        <span className="bn-y-borc">{tutarBicim(borcToplam)}</span>
+        <span className="bn-y-alacak">{tutarBicim(alacakToplam)}</span>
       </div>
 
-      {aciklama && <div className="bn-yevmiye-aciklama">{aciklama}</div>}
+      {aciklama && (
+        <div className="bn-yevmiye-aciklama">
+          <span className="bn-y-acik-etk">Açıklama</span>
+          {aciklama}
+        </div>
+      )}
     </div>
   );
 };

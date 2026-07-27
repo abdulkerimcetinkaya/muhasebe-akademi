@@ -14,6 +14,7 @@ import { BlockNoteSchema, defaultBlockSpecs, defaultStyleSpecs } from '@blocknot
 import { createReactStyleSpec } from '@blocknote/react';
 import { YevmiyeBlock } from './yevmiye-block';
 import { SahaNotuBlock } from './saha-notu-block';
+import { THesabiBlock } from './t-hesabi-block';
 
 export const TermStyleSpec = createReactStyleSpec(
   {
@@ -36,6 +37,7 @@ export const ozelSema = BlockNoteSchema.create({
     ...defaultBlockSpecs,
     yevmiye: YevmiyeBlock(),
     sahanotu: SahaNotuBlock(),
+    thesabi: THesabiBlock(),
   },
   styleSpecs: {
     ...defaultStyleSpecs,

@@ -83,6 +83,17 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initialContent: initialBlocks as any,
     uploadFile: gorselYukle,
+    // Yapıştırmayı Markdown olarak parse et: kaynaktan gelen renk/stil (örn.
+    // beyaz yazı) taşınmaz, ama # başlık, * madde, > alıntı, ``` kod doğru
+    // bloklara dönüşür. Düz metin (pasteText) markdown'ı literal bırakıyordu.
+    pasteHandler: ({ event, editor: ed, defaultPasteHandler }) => {
+      const metin = event.clipboardData?.getData('text/plain');
+      if (metin) {
+        ed.pasteMarkdown(metin);
+        return true;
+      }
+      return defaultPasteHandler();
+    },
   });
 
   // Editör değiştiğinde parent'a bildir.
@@ -172,8 +183,22 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         } as any);
       },
     };
+    const tHesabiOgesi: DefaultReactSuggestionItem = {
+      title: 'T Hesabı',
+      subtext: 'Büyük defter görseli — borç solda, alacak sağda (T şekli)',
+      aliases: ['t', 'thesabi', 't hesabi', 'hesap', 'kebir', 'buyuk defter', 'ledger'],
+      group: 'Diğer',
+      icon: <THesabiGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'thesabi',
+          props: { hesap: '', sol: '[]', sag: '[]' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
     return filterSuggestionItems(
-      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi],
+      [...getDefaultReactSlashMenuItems(editor), yevmiyeOgesi, sahaNotuOgesi, tHesabiOgesi],
       query,
     );
   };
@@ -251,6 +276,23 @@ const SahaNotuGlyph = () => (
     <path d="M13 7h4v4h-4z" />
     <path d="M9 11c0 3-2 5-4 5" />
     <path d="M15 11c0 3-2 5-4 5" />
+  </svg>
+);
+
+const THesabiGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M4 7h16" />
+    <path d="M12 7v13" />
   </svg>
 );
 
