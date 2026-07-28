@@ -7,9 +7,7 @@
  *   ister). Kullanıcı giriş yapınca anonim ilerleme buluta bir kez taşınır.
  */
 
-import { useEffect, useState } from 'react';
 import { supabase } from './supabase';
-import { useAuth } from '../contexts/AuthContext';
 
 const KEY = 'mli_kesfet_tamamlanan_v1';
 
@@ -36,6 +34,19 @@ const localEkle = (id: string): void => {
   const s = tamamlananSet();
   s.add(id);
   localeYaz(s);
+};
+
+/**
+ * Çıkışta çağrılır — önceki kullanıcının Keşfet ilerleme cache'ini siler.
+ * Aksi halde aynı tarayıcıda B giriş yapınca A'nın local'de kalan
+ * tamamladıkları "anonim ilerleme" sanılıp B'nin hesabına taşınır (sızıntı).
+ */
+export const kesfetCacheTemizle = (): void => {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    // sessizce geç
+  }
 };
 
 export const itemTamamlandiMi = (id: string): boolean => tamamlananSet().has(id);
@@ -94,37 +105,4 @@ export const ilerlemeGetir = async (kullaniciId: string | null): Promise<Set<str
 
   localeYaz(birlesim);
   return birlesim;
-};
-
-// ---------- React hook ----------
-
-/**
- * Keşfet ilerlemesini kullanıcıya göre yükler ve tamamlama yazar.
- * Sayfalar bunu kullanır; local cache sayesinde ilk boyama anında gelir,
- * ardından bulut senkronu state'i tazeler.
- */
-export const useKesfetIlerleme = () => {
-  const { user } = useAuth();
-  const [tamamlanan, setTamamlanan] = useState<Set<string>>(() => tamamlananSet());
-
-  useEffect(() => {
-    let iptal = false;
-    ilerlemeGetir(user?.id ?? null).then((s) => {
-      if (!iptal) setTamamlanan(s);
-    });
-    return () => {
-      iptal = true;
-    };
-  }, [user?.id]);
-
-  const tamamla = async (itemId: string): Promise<void> => {
-    await itemTamamla(itemId, user?.id);
-    setTamamlanan((s) => {
-      const y = new Set(s);
-      y.add(itemId);
-      return y;
-    });
-  };
-
-  return { tamamlanan, tamamla };
 };

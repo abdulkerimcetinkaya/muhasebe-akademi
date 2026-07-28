@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { kartBul, kartItemlari, kartSureDk, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
 /**
  * Keşfet kart detayı — editorial/ledger dili.

@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
 import { kartDersSayisi, kartSureDk, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
 /**
  * Keşfet — kart vitrini (LeetCode Explore ana ekranı gibi), editorial/ledger dili.

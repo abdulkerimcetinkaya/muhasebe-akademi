@@ -2,6 +2,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import { authDonusTemizle } from './auth-donus';
 import { ilerlemeTemizle } from './ilerleme';
+import { kesfetCacheTemizle } from './kesfet-ilerleme';
 
 export interface AuthSonuc {
   basarili: boolean;
@@ -86,6 +87,7 @@ export const cikisYap = async (): Promise<AuthSonuc> => {
   // kullanıcı giriş yaptığında eski streak/puan/rozet UI'da görünmesin
   // ve migration yoluyla yeni hesaba sızmasın.
   ilerlemeTemizle();
+  kesfetCacheTemizle();
   // Recovery modunda iken logout edildiyse flag temizle, aksi halde
   // sonraki normal girişlerde takılı kalıp /sifre-yenile'ye yönlendirir.
   sessionStorage.removeItem('sifre_yenileme_modu');

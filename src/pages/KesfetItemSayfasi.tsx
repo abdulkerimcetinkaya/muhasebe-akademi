@@ -5,7 +5,7 @@ import { IcerikGoruntuleyici } from '../components/IcerikGoruntuleyici';
 import { KesfetTestModal } from '../components/KesfetTestModal';
 import { itemBul, kartBul, kartItemlari, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
 /**
  * Keşfet item ekranı — editorial/ledger dili. Sol TOC + okuma sütunu + İleri.
@@ -275,7 +275,8 @@ export const KesfetItemSayfasi = () => {
             </span>
 
             {testVar && !bitti ? (
-              // Testi olan derste tamamlama, testi geçmeden yapılamaz.
+              // Testi olan derste ders, testi AÇIP BİTİRMEDEN tamamlanamaz.
+              // (Skor kapısı yok — testi bitirmek yeterli; bkz. KesfetTestModal.)
               <button onClick={() => setTestAcik(true)} className="btn btn-primary active:scale-[0.98]">
                 Teste Başla
                 <Icon name="ArrowRight" size={16} className="ml-1" />
@@ -292,6 +293,7 @@ export const KesfetItemSayfasi = () => {
 
       {testAcik && testVar && (
         <KesfetTestModal
+          key={mevcut.item.id}
           sorular={testSorulari.map((b) => ({ type: b.type, props: b.props }))}
           baslik={mevcut.item.ad}
           onKapat={() => setTestAcik(false)}
