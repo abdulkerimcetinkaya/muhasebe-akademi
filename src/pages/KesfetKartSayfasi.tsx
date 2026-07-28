@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { kartBul, kartItemlari, kartSureDk, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { tamamlananSet } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
 
 /**
  * Keşfet kart detayı — editorial/ledger dili.
@@ -14,7 +14,7 @@ export const KesfetKartSayfasi = () => {
   const nav = useNavigate();
   const { kart: slug } = useParams();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
-  const tamamlanan = tamamlananSet();
+  const { tamamlanan } = useKesfetIlerleme();
 
   useEffect(() => {
     tumKartlariYukle().then(setKartlar).catch(() => setKartlar([]));

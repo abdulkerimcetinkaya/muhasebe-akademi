@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
 import { kartDersSayisi, kartSureDk, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { tamamlananSet } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
 
 /**
  * Keşfet — kart vitrini (LeetCode Explore ana ekranı gibi), editorial/ledger dili.
@@ -30,7 +30,7 @@ export const KesfetSayfasi = () => {
   const nav = useNavigate();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const [hata, setHata] = useState<string | null>(null);
-  const tamamlanan = tamamlananSet();
+  const { tamamlanan } = useKesfetIlerleme();
 
   useEffect(() => {
     tumKartlariYukle()

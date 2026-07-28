@@ -17,6 +17,7 @@ import { SahaNotuBlock } from './saha-notu-block';
 import { THesabiBlock } from './t-hesabi-block';
 import { BilancoBlock } from './bilanco-block';
 import { KontrolBlock } from './kontrol-block';
+import { KayitBlock } from './kayit-block';
 
 export const TermStyleSpec = createReactStyleSpec(
   {
@@ -42,6 +43,7 @@ export const ozelSema = BlockNoteSchema.create({
     thesabi: THesabiBlock(),
     bilanco: BilancoBlock(),
     kontrol: KontrolBlock(),
+    kayit: KayitBlock(),
   },
   styleSpecs: {
     ...defaultStyleSpecs,

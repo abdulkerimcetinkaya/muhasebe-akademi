@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { IcerikGoruntuleyici } from '../components/IcerikGoruntuleyici';
+import { KesfetTestModal } from '../components/KesfetTestModal';
 import { itemBul, kartBul, kartItemlari, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
-import { itemTamamla, tamamlananSet } from '../lib/kesfet-ilerleme';
+import { useKesfetIlerleme } from '../lib/kesfet-ilerleme';
 
 /**
  * Keşfet item ekranı — editorial/ledger dili. Sol TOC + okuma sütunu + İleri.
@@ -15,8 +16,9 @@ export const KesfetItemSayfasi = () => {
   const nav = useNavigate();
   const { kart: slug, item: itemId } = useParams();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
-  const [tamamlanan, setTamamlanan] = useState<Set<string>>(() => tamamlananSet());
+  const { tamamlanan, tamamla } = useKesfetIlerleme();
   const [tocAcik, setTocAcik] = useState(false);
+  const [testAcik, setTestAcik] = useState(false);
   // Bölüm katlama durumu — kayıt yoksa açık (varsayılan: hepsi açık).
   const [kapaliBolumler, setKapaliBolumler] = useState<Set<string>>(new Set());
   const bolumToggle = (id: string) =>
@@ -33,6 +35,7 @@ export const KesfetItemSayfasi = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setTocAcik(false);
+    setTestAcik(false);
   }, [itemId]);
 
   // Yükleniyor — layout'a oturan skeleton
@@ -89,13 +92,25 @@ export const KesfetItemSayfasi = () => {
   const sonraki = mevcut.sira < hepsi.length - 1 ? hepsi[mevcut.sira + 1] : null;
   const bitti = tamamlanan.has(mevcut.item.id);
   const ders = mevcut.item.tip === 'ders';
-  const icerikVar = Array.isArray(mevcut.item.icerik) && mevcut.item.icerik.length > 0;
+  // İçeriği ikiye ayır: düz anlatım (viewer) + interaktif sorular (test modalı).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tumBloklar: any[] = Array.isArray(mevcut.item.icerik) ? (mevcut.item.icerik as any[]) : [];
+  const testSorulari = tumBloklar.filter((b) => b?.type === 'kontrol' || b?.type === 'kayit');
+  const proseBloklar = tumBloklar.filter((b) => b?.type !== 'kontrol' && b?.type !== 'kayit');
+  const icerikVar = proseBloklar.length > 0;
+  const testVar = testSorulari.length > 0;
 
   const tamamlaVeIlerle = () => {
-    itemTamamla(mevcut.item.id);
-    setTamamlanan(tamamlananSet());
+    void tamamla(mevcut.item.id);
     if (sonraki) nav(`/kesfet/${kart.slug}/${sonraki.item.id}`);
     else nav(`/kesfet/${kart.slug}`);
+  };
+
+  // Test başarıyla bitince: dersi tamamla, modalı kapat, sayfada kal
+  // (kullanıcı yeşil tik + "Tamamlandı" onayını görsün, sonra İleri der).
+  const testGecildi = () => {
+    void tamamla(mevcut.item.id);
+    setTestAcik(false);
   };
 
   // Tek TOC kaynağı — hem masaüstü sidebar hem mobil panel kullanır.
@@ -193,8 +208,10 @@ export const KesfetItemSayfasi = () => {
       </div>
 
       <div className="grid lg:grid-cols-[264px_minmax(0,1fr)] gap-8 lg:gap-14">
-        <aside className="hidden lg:block border-r border-line-soft pr-4">
-          <div className="sticky top-24 flex flex-col gap-5">{tocIcerik}</div>
+        <aside className="hidden lg:block border-r border-line-soft">
+          <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col gap-5 pr-4 py-6 kesfet-toc-scroll">
+            {tocIcerik}
+          </div>
         </aside>
 
         <article className="min-w-0 max-w-[1100px] w-full">
@@ -207,8 +224,8 @@ export const KesfetItemSayfasi = () => {
           </h1>
 
           {icerikVar ? (
-            <IcerikGoruntuleyici key={mevcut.item.id} icerik={mevcut.item.icerik} />
-          ) : (
+            <IcerikGoruntuleyici key={mevcut.item.id} icerik={proseBloklar} />
+          ) : tumBloklar.length === 0 ? (
             <div className="relative bg-surface border border-line rounded-[18px] px-6 py-16 text-center overflow-hidden">
               <div className="absolute inset-x-0 top-0 h-px bg-line" />
               <div className="absolute inset-x-0 top-[3px] h-px bg-line-soft" />
@@ -221,6 +238,27 @@ export const KesfetItemSayfasi = () => {
                 iskeletini geziyorsun; içerik sonra doldurulacak.
               </p>
             </div>
+          ) : null}
+
+          {testVar && (
+            <button
+              type="button"
+              className={`kt-baslat ${bitti ? 'kt-baslat-bitti' : ''}`}
+              onClick={() => setTestAcik(true)}
+            >
+              <span className="kt-baslat-ikon">
+                <Icon name={bitti ? 'CheckCircle2' : 'Pencil'} size={18} />
+              </span>
+              <span className="kt-baslat-metin">
+                <span className="kt-baslat-baslik">{bitti ? 'Testi Tekrar Çöz' : 'Teste Başla'}</span>
+                <span className="kt-baslat-alt">
+                  {bitti
+                    ? `${testSorulari.length} soru · tamamlandı`
+                    : `${testSorulari.length} soru · öğrendiğini dene`}
+                </span>
+              </span>
+              <Icon name="ArrowRight" size={18} className="kt-baslat-ok" />
+            </button>
           )}
 
           <div className="flex items-center justify-between gap-3 mt-10 pt-6 border-t border-line-soft">
@@ -236,13 +274,30 @@ export const KesfetItemSayfasi = () => {
               {String(mevcut.sira + 1).padStart(2, '0')} / {String(hepsi.length).padStart(2, '0')}
             </span>
 
-            <button onClick={tamamlaVeIlerle} className="btn btn-primary active:scale-[0.98]">
-              {sonraki ? (bitti ? 'İleri' : 'Tamamla ve İleri') : bitti ? 'Karta dön' : 'Tamamla ve Bitir'}
-              <Icon name="ArrowRight" size={16} className="ml-1" />
-            </button>
+            {testVar && !bitti ? (
+              // Testi olan derste tamamlama, testi geçmeden yapılamaz.
+              <button onClick={() => setTestAcik(true)} className="btn btn-primary active:scale-[0.98]">
+                Teste Başla
+                <Icon name="ArrowRight" size={16} className="ml-1" />
+              </button>
+            ) : (
+              <button onClick={tamamlaVeIlerle} className="btn btn-primary active:scale-[0.98]">
+                {sonraki ? (bitti ? 'İleri' : 'Tamamla ve İleri') : bitti ? 'Karta dön' : 'Tamamla ve Bitir'}
+                <Icon name="ArrowRight" size={16} className="ml-1" />
+              </button>
+            )}
           </div>
         </article>
       </div>
+
+      {testAcik && testVar && (
+        <KesfetTestModal
+          sorular={testSorulari.map((b) => ({ type: b.type, props: b.props }))}
+          baslik={mevcut.item.ad}
+          onKapat={() => setTestAcik(false)}
+          onTamamla={testGecildi}
+        />
+      )}
     </div>
   );
 };

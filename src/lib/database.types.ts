@@ -112,6 +112,13 @@ export type KesfetItemRow = {
   updated_at: string;
 };
 
+// 20260728000001 — kullanıcı-bazlı Keşfet ders tamamlama kaydı.
+export type KesfetIlerlemeRow = {
+  kullanici_id: string;
+  item_id: string;
+  tamamlandi_at: string;
+};
+
 // 20260519000001 — atölye sorularını yönetmek için many-to-many junction.
 // sorular.alt_baslik_id artık "konu havuzu etiketi"; atölye müfredatı
 // burada belirlenir.
@@ -588,6 +595,14 @@ export type Database = {
           icerik_guncellendi?: string | null;
         };
         Update: Partial<KesfetItemRow>;
+        Relationships: [];
+      };
+      kesfet_ilerleme: {
+        Row: KesfetIlerlemeRow;
+        Insert: Omit<KesfetIlerlemeRow, 'tamamlandi_at'> & {
+          tamamlandi_at?: string;
+        };
+        Update: Partial<KesfetIlerlemeRow>;
         Relationships: [];
       };
       muavin_hesaplar: {

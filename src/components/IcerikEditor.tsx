@@ -225,6 +225,20 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         } as any);
       },
     };
+    const kayitOgesi: DefaultReactSuggestionItem = {
+      title: 'Mini Kayıt',
+      subtext: 'Ders içi yevmiye alıştırması — borç/alacak yerleştir + kontrol',
+      aliases: ['kayit', 'kayıt', 'mini', 'yevmiye alistirma', 'borc alacak', 'entry'],
+      group: 'Diğer',
+      icon: <KayitGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'kayit',
+          props: { senaryo: '', tarih: '', satirlar: '[]', aciklama: '' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
     return filterSuggestionItems(
       [
         ...getDefaultReactSlashMenuItems(editor),
@@ -233,6 +247,7 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         tHesabiOgesi,
         bilancoOgesi,
         kontrolOgesi,
+        kayitOgesi,
       ],
       query,
     );
@@ -364,6 +379,24 @@ const KontrolGlyph = () => (
     <circle cx="12" cy="12" r="9" />
     <path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.2" />
     <path d="M12 17h.01" />
+  </svg>
+);
+
+const KayitGlyph = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <rect x="4" y="4" width="16" height="16" rx="2" />
+    <path d="M12 4v16" />
+    <path d="M7 10l2 2 3-3" />
   </svg>
 );
 

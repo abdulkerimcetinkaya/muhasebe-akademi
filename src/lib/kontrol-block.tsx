@@ -13,6 +13,35 @@ import { useState } from 'react';
 
 export type KontrolSik = { metin: string; dogru: boolean };
 
+// Opsiyonel ipucu — admin doldurursa soru altında açılır kapanır rozet olur;
+// boşsa hiç görünmez. Kontrol ve Kayıt bloklarında ortak kullanılır.
+const AmpulGlyph = () => (
+  <svg className="bn-ipucu-ampul" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.5.4.8.9.9 1.5l.2 1.2h5l.2-1.2c.1-.6.4-1.1.9-1.5A6 6 0 0 0 12 3Z"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const Ipucu = ({ metin }: { metin: string }) => {
+  const [acik, setAcik] = useState(false);
+  if (!metin) return null;
+  return (
+    <div className={`bn-ipucu ${acik ? 'acik' : ''}`}>
+      <button type="button" className="bn-ipucu-btn" onClick={() => setAcik((a) => !a)}>
+        <AmpulGlyph />
+        İpucu
+        <span className="bn-ipucu-ok" aria-hidden="true">{acik ? '▾' : '▸'}</span>
+      </button>
+      {acik && <div className="bn-ipucu-metin">{metin}</div>}
+    </div>
+  );
+};
+
 const parse = (json: string): KontrolSik[] => {
   try {
     const arr = JSON.parse(json);
@@ -31,6 +60,7 @@ export const KontrolBlock = createReactBlockSpec(
       soru: { default: '' },
       siklar: { default: '[]' },
       aciklama: { default: '' },
+      ipucu: { default: '' },
     },
     content: 'none',
   },
@@ -39,18 +69,20 @@ export const KontrolBlock = createReactBlockSpec(
       const soru = block.props.soru;
       const siklar = parse(block.props.siklar);
       const aciklama = block.props.aciklama;
+      const ipucu = block.props.ipucu;
 
       if (!editor.isEditable) {
-        return <KontrolOkuyucu soru={soru} siklar={siklar} aciklama={aciklama} />;
+        return <KontrolOkuyucu soru={soru} siklar={siklar} aciklama={aciklama} ipucu={ipucu} />;
       }
       return (
         <KontrolDuzenleyici
           soru={soru}
           siklar={siklar}
           aciklama={aciklama}
+          ipucu={ipucu}
           onDegis={(yeni) =>
             editor.updateBlock(block, {
-              props: { soru: yeni.soru, siklar: stringify(yeni.siklar), aciklama: yeni.aciklama },
+              props: { soru: yeni.soru, siklar: stringify(yeni.siklar), aciklama: yeni.aciklama, ipucu: yeni.ipucu },
             })
           }
         />
@@ -65,19 +97,34 @@ const KontrolOkuyucu = ({
   soru,
   siklar,
   aciklama,
+  ipucu,
+  onDurum,
 }: {
   soru: string;
   siklar: KontrolSik[];
   aciklama: string;
+  ipucu?: string;
+  // Test modalı için: doğru=geçti, yanlış=yeniden dene, null=henüz cevaplanmadı.
+  onDurum?: (dogru: boolean | null) => void;
 }) => {
   const [secili, setSecili] = useState<number | null>(null);
   const cevaplandi = secili !== null;
   const dogruMu = cevaplandi && siklar[secili]?.dogru;
 
+  const sec = (i: number) => {
+    setSecili(i);
+    onDurum?.(!!siklar[i]?.dogru);
+  };
+  const tekrar = () => {
+    setSecili(null);
+    onDurum?.(null);
+  };
+
   return (
     <div className="bn-kontrol" contentEditable={false}>
       <div className="bn-kn-ust">Kendini dene</div>
       <div className="bn-kn-soru">{soru || 'Soru metni…'}</div>
+      <Ipucu metin={ipucu ?? ''} />
       <div className="bn-kn-siklar">
         {siklar.map((s, i) => {
           let durum = 'bos';
@@ -91,7 +138,7 @@ const KontrolOkuyucu = ({
               key={i}
               type="button"
               disabled={cevaplandi}
-              onClick={() => setSecili(i)}
+              onClick={() => sec(i)}
               className={`bn-kn-sik bn-kn-${durum}`}
             >
               <span className="bn-kn-harf">{String.fromCharCode(65 + i)}</span>
@@ -108,7 +155,7 @@ const KontrolOkuyucu = ({
           <div className="bn-kn-sonuc-govde">
             <div className="bn-kn-sonuc-baslik">{dogruMu ? 'Doğru' : 'Tekrar bak'}</div>
             {aciklama && <div className="bn-kn-aciklama">{aciklama}</div>}
-            <button type="button" className="bn-kn-tekrar" onClick={() => setSecili(null)}>
+            <button type="button" className="bn-kn-tekrar" onClick={tekrar}>
               Tekrar dene
             </button>
           </div>
@@ -118,27 +165,45 @@ const KontrolOkuyucu = ({
   );
 };
 
+
+// Modal içinde tek başına kullanım için (ham block props alır).
+export const KontrolSoruView = ({
+  soru,
+  siklar,
+  aciklama,
+  ipucu,
+  onDurum,
+}: {
+  soru: string;
+  siklar: string;
+  aciklama: string;
+  ipucu?: string;
+  onDurum?: (dogru: boolean | null) => void;
+}) => <KontrolOkuyucu soru={soru} siklar={parse(siklar)} aciklama={aciklama} ipucu={ipucu} onDurum={onDurum} />;
+
 // ---------- Düzenleyici (admin) ----------
 
 const KontrolDuzenleyici = ({
   soru,
   siklar,
   aciklama,
+  ipucu,
   onDegis,
 }: {
   soru: string;
   siklar: KontrolSik[];
   aciklama: string;
-  onDegis: (yeni: { soru: string; siklar: KontrolSik[]; aciklama: string }) => void;
+  ipucu: string;
+  onDegis: (yeni: { soru: string; siklar: KontrolSik[]; aciklama: string; ipucu: string }) => void;
 }) => {
-  const sikGuncelle = (yeni: KontrolSik[]) => onDegis({ soru, siklar: yeni, aciklama });
+  const sikGuncelle = (yeni: KontrolSik[]) => onDegis({ soru, siklar: yeni, aciklama, ipucu });
 
   return (
     <div className="bn-th-duz" contentEditable={false}>
       <input
         type="text"
         value={soru}
-        onChange={(e) => onDegis({ soru: e.target.value, siklar, aciklama })}
+        onChange={(e) => onDegis({ soru: e.target.value, siklar, aciklama, ipucu })}
         placeholder="Soru — örn: Kasadaki 120.000 TL varlık mı, kaynak mı?"
         className="bn-th-duz-hesap"
         style={{ textAlign: 'left' }}
@@ -185,8 +250,16 @@ const KontrolDuzenleyici = ({
       </div>
       <input
         type="text"
+        value={ipucu}
+        onChange={(e) => onDegis({ soru, siklar, aciklama, ipucu: e.target.value })}
+        placeholder="İpucu (opsiyonel — soru altında açılır; boşsa görünmez)"
+        className="bn-th-duz-not"
+        style={{ width: '100%', marginTop: '0.5rem' }}
+      />
+      <input
+        type="text"
         value={aciklama}
-        onChange={(e) => onDegis({ soru, siklar, aciklama: e.target.value })}
+        onChange={(e) => onDegis({ soru, siklar, aciklama: e.target.value, ipucu })}
         placeholder="Açıklama (cevap sonrası gösterilir)"
         className="bn-th-duz-not"
         style={{ width: '100%', marginTop: '0.5rem' }}
