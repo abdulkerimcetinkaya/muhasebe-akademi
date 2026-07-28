@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Icon } from './Icon';
 import { aiBelgeUret } from '../lib/ai';
+import { gunAnahtari } from '../lib/format';
 import type {
   Belge,
   BelgeTuru,
@@ -26,7 +27,7 @@ interface Props {
   };
 }
 
-const BUGUN = () => new Date().toISOString().slice(0, 10);
+const BUGUN = () => gunAnahtari();
 
 const TUR_AD: Record<BelgeTuru, string> = {
   fatura: 'Fatura',

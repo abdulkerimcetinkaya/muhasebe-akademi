@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { AktiviteRow } from '../lib/database.types';
+import { gunAnahtari } from '../lib/format';
 
 interface Props {
   aktivite: AktiviteRow[];
@@ -42,9 +43,9 @@ export const AktiviteIsiHaritasi = ({ aktivite, haftaSayisi = 26 }: Props) => {
     for (let i = 0; i < haftaToplamGun; i++) {
       const tarih = new Date(ilkGun);
       tarih.setDate(ilkGun.getDate() + i);
-      const tarihStr = tarih.toISOString().split('T')[0];
+      const tarihStr = gunAnahtari(tarih);
       const sayi = aktiviteMap.get(tarihStr) ?? 0;
-      const bugunMu = tarihStr === sonGun.toISOString().split('T')[0];
+      const bugunMu = tarihStr === gunAnahtari(sonGun);
       kareler.push({ tarih: tarihStr, sayi, bugun: bugunMu });
 
       // Ay başlangıcı

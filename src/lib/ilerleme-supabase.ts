@@ -139,6 +139,10 @@ export const soruCozumKaydetSupabase = async (
   bugun: string,
   zorluk: Zorluk,
   yardim: CozumYardim = {},
+  // Yalnızca soru İLK kez çözüldüğünde true. Tekrar çözümlerde aktivite
+  // sayacı artmaz — aksi halde aynı soruyu tekrar çözerek günlük hedef
+  // hileyle doldurulur ve heatmap şişer. RPC (istatistik) her zaman çalışır.
+  yeniCozum: boolean = true,
 ): Promise<void> => {
   const kazanilanPuan = puanHesapla(zorluk, yardim);
   // M9 — doğru çözüm: ilerleme insert + XP dağıtımı (soru→olay→olay_yetkinlikleri)
@@ -151,6 +155,7 @@ export const soruCozumKaydetSupabase = async (
     _kazanilan_puan: kazanilanPuan,
   });
   if (error) throw error;
+  if (!yeniCozum) return;
   // aktivite upsert (RPC aktivite yazmaz): aynı (user_id, tarih) varsa cozulen_sayi +1
   const { data: mevcut } = await supabase
     .from('aktivite')

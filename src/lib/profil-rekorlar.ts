@@ -1,5 +1,6 @@
 // Kişisel rekorlar — profilde "şampiyon kupaları" vitrininde gösterilir.
 import type { Ilerleme } from '../types';
+import { gunAnahtari } from './format';
 
 export interface KisiselRekorlar {
   enUzunStreak: number;
@@ -73,7 +74,7 @@ export const yillikAktivite = (
   const gunler: YilGunu[] = [];
   let toplam = 0;
   for (let d = new Date(baslangic); d <= bugun; d.setDate(d.getDate() + 1)) {
-    const k = d.toISOString().split('T')[0];
+    const k = gunAnahtari(d);
     const sayi = ilerleme.aktiviteTarihleri[k] || 0;
     gunler.push({ tarih: k, sayi });
     toplam += sayi;

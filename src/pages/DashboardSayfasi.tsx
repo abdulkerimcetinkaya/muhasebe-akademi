@@ -5,7 +5,7 @@ import { Thiings } from '../components/Thiings';
 import { TamamRozeti } from '../components/TamamRozeti';
 import { useUniteler } from '../contexts/UnitelerContext';
 import { ZORLUK_AD, ZORLUK_PUAN, ZORLUK_STIL } from '../data/sabitler';
-import { bugununTarihi } from '../lib/format';
+import { bugununTarihi, gunAnahtari } from '../lib/format';
 import { gununSorusu } from '../lib/gunun-sorusu';
 import { konuTamamlandiMi } from '../lib/konu-kilit';
 import { devamEtSorusu, enCokYanlisSoru } from '../lib/oneriler';
@@ -91,7 +91,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
     const gunler: { tarih: string; sayi: number }[] = [];
     for (let i = 29; i >= 0; i--) {
       const d = new Date(bugun.getTime() - i * 86400000);
-      const k = d.toISOString().split('T')[0];
+      const k = gunAnahtari(d);
       gunler.push({ tarih: k, sayi: ilerleme.aktiviteTarihleri[k] || 0 });
     }
     return gunler;

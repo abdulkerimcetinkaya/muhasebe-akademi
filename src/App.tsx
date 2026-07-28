@@ -334,16 +334,20 @@ const App = () => {
       // Daha düşük/eşit skor — kayıt değişmesin, ama backend'e logla
       // (kullanıcı yardım kullanım istatistiğini takip edebilelim).
       if (user) {
-        soruCozumKaydetSupabase(user.id, soru.id, bugun, soru.zorluk, yardim).catch((e) =>
+        // Tekrar çözüm — aktivite sayacı artmasın (yeniCozum=false).
+        soruCozumKaydetSupabase(user.id, soru.id, bugun, soru.zorluk, yardim, false).catch((e) =>
           console.error('Çözüm kaydı', e),
         );
       }
       return;
     }
 
+    const yeniCozum = !eskiKayit;
     const puanFarki = yeniPuan - eskiPuan;
     const yeniAkt = { ...ilerleme.aktiviteTarihleri };
-    yeniAkt[bugun] = (yeniAkt[bugun] || 0) + 1;
+    // Aktivite yalnızca ilk çözümde artar (daha yüksek skorla tekrar çözüm
+    // günlük hedefi/heatmap'i şişirmesin). Yerel ile DB tutarlı kalsın.
+    if (yeniCozum) yeniAkt[bugun] = (yeniAkt[bugun] || 0) + 1;
     setIlerleme({
       ...ilerleme,
       cozulenler: {
@@ -360,7 +364,7 @@ const App = () => {
       aktiviteTarihleri: yeniAkt,
     });
     if (user) {
-      soruCozumKaydetSupabase(user.id, soru.id, bugun, soru.zorluk, yardim).catch((e) =>
+      soruCozumKaydetSupabase(user.id, soru.id, bugun, soru.zorluk, yardim, yeniCozum).catch((e) =>
         console.error('Çözüm kaydı', e),
       );
     }
