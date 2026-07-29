@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { slugUret, sozlukListesi } from '../lib/sozluk';
 
 interface PopoverState {
   aciklama: string;
@@ -28,6 +29,21 @@ export const SozlukPopover = () => {
   const showTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sabitRef = useRef(false); // click ile açıldıysa true (hover-leave kapatmaz)
+  // Yayındaki sözlük slug'ları — terimin metninden türetilen slug bu sette ise
+  // tıklayınca küçük tooltip yerine geniş mevzuat paneli açılır.
+  const sluglarRef = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    let iptal = false;
+    sozlukListesi()
+      .then((liste) => {
+        if (!iptal) sluglarRef.current = new Set(liste.map((t) => t.slug));
+      })
+      .catch(() => {});
+    return () => {
+      iptal = true;
+    };
+  }, []);
 
   useEffect(() => {
     const acTimer = (terim: HTMLElement, sabit: boolean) => {
@@ -88,6 +104,14 @@ export const SozlukPopover = () => {
       if (terim) {
         e.preventDefault();
         e.stopPropagation();
+        // Terimin görünen metninden slug türet; yayındaki bir sözlük terimiyse
+        // tooltip yerine geniş mevzuat panelini aç.
+        const slug = slugUret((terim.textContent ?? '').trim());
+        if (slug && sluglarRef.current.has(slug)) {
+          kapatHemen();
+          window.dispatchEvent(new CustomEvent('mevzuat-ac', { detail: { slug } }));
+          return;
+        }
         acTimer(terim, true);
         return;
       }

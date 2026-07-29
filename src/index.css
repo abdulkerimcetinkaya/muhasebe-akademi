@@ -2825,18 +2825,19 @@ input[type='number'] { -moz-appearance: textfield; }
    Noktalı altı çizili + cursor help; hover'da bakır accent.
    Click handler SozlukPopover'da global delegation ile çalışır. */
 .bn-term {
-  text-decoration: underline dotted;
-  text-decoration-color: var(--copper-deep, #b8732b);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
-  cursor: help;
-  transition: color 120ms ease, background-color 120ms ease;
-  border-radius: 2px;
-  padding: 0 1px;
+  color: var(--blue-deep);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--blue-deep);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  border-radius: 3px;
+  padding: 0 2px;
 }
 .bn-term:hover {
-  color: var(--copper-deep, #b8732b);
-  background-color: rgba(184, 115, 43, 0.08);
+  background-color: rgba(var(--blue-rgb), 0.14);
 }
 
 .bn-icerik {
@@ -4663,6 +4664,459 @@ input[type='number'] { -moz-appearance: textfield; }
 .bn-sahanotu-duz-yazar:focus,
 .bn-sahanotu-duz-unvan:focus {
   border-color: var(--ink);
+}
+
+/* --- Kural Notu (mevzuat / standart) — bakır aksanlı ayrı kutu --- */
+.bn-kural {
+  margin: 1.15rem 0;
+  padding: 0.85rem 1.05rem 0.9rem;
+  background: rgba(var(--copper-rgb), 0.055);
+  border: 1px solid rgba(var(--copper-rgb), 0.22);
+  border-left: 3px solid var(--copper);
+  border-radius: 10px;
+  font-family: var(--font-body, 'Inter Tight', system-ui);
+}
+.bn-kural-ust {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--copper);
+  margin-bottom: 0.5rem;
+}
+.bn-kural-ikon {
+  display: inline-flex;
+  color: var(--copper);
+}
+.bn-icerik .bn-kural .bn-kural-govde,
+.bn-kural-govde {
+  font-size: 0.97em;
+  line-height: 1.62;
+  color: var(--ink);
+}
+.bn-kural-dayanak {
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(var(--copper-rgb), 0.28);
+  font-family: ui-monospace, monospace;
+  font-size: 0.8em;
+  letter-spacing: 0.01em;
+  color: var(--ink-soft);
+}
+[data-tema='dark'] .bn-kural {
+  background: rgba(var(--copper-rgb), 0.12);
+  border-color: rgba(var(--copper-rgb), 0.3);
+}
+
+/* --- Kural Notu düzenleyici --- */
+.bn-kural-duz {
+  border: 1px dashed var(--line-strong);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin: 1rem 0;
+  background: var(--bg-tint);
+  font-family: var(--font-body, system-ui);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.bn-kural-duz-etk {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--copper);
+}
+.bn-kural-duz-metin {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  font-size: 14px;
+  line-height: 1.55;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  min-height: 4.5rem;
+  font-family: inherit;
+}
+.bn-kural-duz-dayanak {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+}
+.bn-kural-duz-metin:focus,
+.bn-kural-duz-dayanak:focus {
+  border-color: var(--copper);
+}
+
+/* --- İşaretli Belge (mevzuat görseli): kâğıt fatura + numaralı işaretler --- */
+.bn-ib {
+  margin: 1.4rem 0;
+}
+.bn-ib-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  align-items: start;
+}
+@media (min-width: 680px) {
+  .bn-ib-grid {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Belge kartı — kâğıt his */
+.bn-ib-belge {
+  position: relative;
+  background: #fffdf8;
+  border: 1px solid var(--line-strong);
+  border-top: 3px solid var(--blue-deep);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem 1.2rem;
+  box-shadow: 0 14px 30px -22px rgba(var(--ink-rgb), 0.4);
+}
+.bn-ib-fis {
+  border-top-color: var(--copper);
+}
+.bn-ib-dekont {
+  border-top-color: var(--success);
+}
+.bn-ib-belge-ust {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-bottom: 0.7rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--line);
+}
+.bn-ib-baslik {
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.bn-ib-tur {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-deep);
+  background: var(--blue-soft);
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.bn-ib-alanlar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.bn-ib-alan {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+.bn-ib-etiket {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.bn-ib-deger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* Numaralı işaret rozeti — hem belgede hem not listesinde */
+.bn-ib-no {
+  flex: none;
+  width: 19px;
+  height: 19px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--copper);
+  color: #fff;
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bn-ib-kalemler {
+  margin-top: 0.85rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.bn-ib-kalem {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+.bn-ib-kalem-tutar {
+  font-family: ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.bn-ib-toplam {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 2px solid var(--ink);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* Yasal not listesi */
+.bn-ib-notlar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.bn-ib-not {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+.bn-ib-not-govde {
+  min-width: 0;
+}
+.bn-ib-not-metin {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.bn-ib-not-dayanak {
+  margin-top: 0.2rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.76rem;
+  color: var(--copper);
+  letter-spacing: 0.01em;
+}
+
+[data-tema='dark'] .bn-ib-belge {
+  background: rgba(var(--ink-rgb), 0.04);
+}
+
+/* İşaretli Belge düzenleyici — dinamik satırlar */
+.bn-ib-duz-satir {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+.bn-ib-duz-etk {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-mute);
+  margin-top: 0.5rem;
+}
+
+/* --- Mevzuat Paneli (terime tıklayınca sağdan açılan çekmece) --- */
+.mvz-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(var(--ink-rgb), 0.32);
+  backdrop-filter: blur(2px);
+  display: flex;
+  justify-content: flex-end;
+  animation: mvz-fade 0.18s ease both;
+}
+@keyframes mvz-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.mvz-panel {
+  width: min(480px, 100vw);
+  height: 100%;
+  background: var(--surface);
+  border-left: 1px solid var(--line-strong);
+  box-shadow: -24px 0 60px -30px rgba(var(--ink-rgb), 0.5);
+  overflow-y: auto;
+  padding: 1.2rem 1.4rem 2rem;
+  animation: mvz-slide 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes mvz-slide {
+  from { transform: translateX(24px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.mvz-ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+}
+.mvz-etiket {
+  font-family: ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+.mvz-kapat {
+  border: none;
+  background: transparent;
+  color: var(--ink-mute);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 8px;
+  display: inline-flex;
+}
+.mvz-kapat:hover { color: var(--ink); background: var(--surface-2); }
+.mvz-yukleniyor { color: var(--ink-mute); font-size: 0.92rem; padding: 1rem 0; }
+
+.mvz-baslik {
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-weight: 700;
+  font-size: 1.55rem;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+}
+.mvz-kisa {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0 0 0.7rem;
+}
+.mvz-uzun {
+  font-size: 0.94rem;
+  line-height: 1.62;
+  color: var(--ink);
+  margin: 0 0 0.4rem;
+}
+.mvz-bolum { margin-top: 1.5rem; }
+.mvz-bolum-baslik {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--copper);
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--line);
+}
+.mvz-maddeler { display: flex; flex-direction: column; gap: 0.9rem; }
+.mvz-madde-ust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
+}
+.mvz-kanun {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff;
+  background: var(--blue-deep);
+  padding: 0.12rem 0.4rem;
+  border-radius: 5px;
+}
+.mvz-madde-no {
+  font-family: ui-monospace, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.mvz-madde-baslik {
+  font-size: 0.82rem;
+  color: var(--ink-mute);
+}
+.mvz-lafiz {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: #fffdf8;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--copper);
+  border-radius: 0 8px 8px 0;
+}
+[data-tema='dark'] .mvz-lafiz { background: rgba(var(--copper-rgb), 0.08); }
+/* Özet · Pratik — başlıklı gruplar (Tanım / Zorunlu unsurlar / Süreler …) */
+.mvz-ozet-gruplar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.05rem;
+}
+.mvz-ozet-grup-baslik {
+  font-family: var(--font-display, 'Fraunces'), Georgia, serif;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+.mvz-ozet-liste {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+.mvz-ozet-liste li {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+/* Sözlük tam sayfasında mevzuat gövdesi için üst ayraç + boşluk.
+   Tek sütun; sayfa konteyneri (1080px) genişliği verir. */
+.mvz-sayfa {
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--line);
+}
+.mvz-tam {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.6rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--blue-deep);
+  text-decoration: none;
+}
+.mvz-tam:hover { text-decoration: underline; }
+.mvz-uyari {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--ink-quiet);
+  line-height: 1.5;
 }
 
 /* Keşfet sol TOC — ince, sessiz scrollbar (içerikten bağımsız kayar) */

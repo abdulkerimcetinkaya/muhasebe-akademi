@@ -501,6 +501,10 @@ export type SozlukTerimiRow = {
   ilgili_terimler: string[];
   ilgili_unite_ids: number[];
   ilgili_hesap_kodlari: string[];
+  mevzuat: {
+    maddeler?: { kanun: string; madde: string; baslik: string; lafiz: string }[];
+    ozet?: { baslik: string; maddeler: string[] }[];
+  };
   goruntuleme_sayisi: number;
   yayinda: boolean;
   created_at: string;
@@ -922,6 +926,7 @@ export type Database = {
           | 'ilgili_unite_ids'
           | 'ilgili_hesap_kodlari'
           | 'ornek'
+          | 'mevzuat'
         > & {
           created_at?: string;
           updated_at?: string;
@@ -931,6 +936,7 @@ export type Database = {
           ilgili_unite_ids?: number[];
           ilgili_hesap_kodlari?: string[];
           ornek?: string | null;
+          mevzuat?: SozlukTerimiRow['mevzuat'];
         };
         Update: Partial<SozlukTerimiRow>;
         Relationships: [];

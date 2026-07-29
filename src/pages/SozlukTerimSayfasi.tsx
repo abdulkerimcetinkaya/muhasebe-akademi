@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { SeoMeta } from '../components/SeoMeta';
+import { MevzuatGovde } from '../components/MevzuatGovde';
 import {
   sozlukGoruntule,
   sozlukTerimYukle,
@@ -177,7 +178,7 @@ export const SozlukTerimSayfasi = () => {
           },
         }}
       />
-      <main className="max-w-[760px] mx-auto px-5 sm:px-8 py-10">
+      <main className="max-w-[1080px] mx-auto px-5 sm:px-8 py-10">
         <nav className="text-[12px] text-ink-mute mb-6 font-medium">
           <Link to="/sozluk" className="hover:text-ink-soft transition">
             Mali Sözlük
@@ -196,13 +197,13 @@ export const SozlukTerimSayfasi = () => {
             </h1>
             <p
               itemProp="description"
-              className="text-[16px] sm:text-[17px] text-ink-soft leading-relaxed font-medium"
+              className="text-[16px] sm:text-[17px] text-ink-soft leading-relaxed font-medium max-w-[68ch]"
             >
               {terim.kisa_aciklama}
             </p>
           </header>
 
-          <div className="prose-content space-y-4">
+          <div className="prose-content space-y-4 max-w-[70ch]">
             {paragraflar.map((p, i) => {
               if (p.tip === 'h') {
                 return (
@@ -235,6 +236,10 @@ export const SozlukTerimSayfasi = () => {
                 </p>
               );
             })}
+          </div>
+
+          <div className="mvz-sayfa">
+            <MevzuatGovde mevzuat={terim.mevzuat} />
           </div>
 
           {terim.ornek && (

@@ -1,5 +1,23 @@
 import { supabase } from './supabase';
 
+// Terim panelinde "Kanun ne diyor?" bölümünü besleyen mevzuat katmanı.
+export interface MevzuatMaddesi {
+  kanun: string; // "VUK" | "TTK" ...
+  madde: string; // "231/5"
+  baslik: string;
+  lafiz: string; // kanun metni (birebir)
+}
+// Özet, başlıklı gruplar hâlinde: "Tanım", "Zorunlu unsurlar", "Süreler",
+// "Saklama" gibi — her grubun altında maddeler alt alta.
+export interface MevzuatOzetGrup {
+  baslik: string;
+  maddeler: string[];
+}
+export interface MevzuatKatmani {
+  maddeler?: MevzuatMaddesi[];
+  ozet?: MevzuatOzetGrup[];
+}
+
 export interface SozlukTerimi {
   slug: string;
   baslik: string;
@@ -9,6 +27,7 @@ export interface SozlukTerimi {
   ilgili_terimler: string[];
   ilgili_unite_ids: number[];
   ilgili_hesap_kodlari: string[];
+  mevzuat: MevzuatKatmani;
   goruntuleme_sayisi: number;
   yayinda: boolean;
   created_at: string;
@@ -55,8 +74,8 @@ export const sozlukGoruntule = async (slug: string): Promise<void> => {
 
 export type YeniSozlukTerimi = Omit<
   SozlukTerimi,
-  'goruntuleme_sayisi' | 'created_at' | 'updated_at'
->;
+  'goruntuleme_sayisi' | 'created_at' | 'updated_at' | 'mevzuat'
+> & { mevzuat?: MevzuatKatmani };
 
 export const sozlukTerimYarat = async (
   input: YeniSozlukTerimi,

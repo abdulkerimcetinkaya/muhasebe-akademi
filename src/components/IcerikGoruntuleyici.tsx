@@ -6,6 +6,7 @@ import '@blocknote/core/fonts/inter.css';
 import '@blocknote/mantine/style.css';
 import { ozelSema } from '../lib/blocknote-schema';
 import { SozlukPopover } from './SozlukPopover';
+import { MevzuatPaneli } from './MevzuatPaneli';
 
 interface Props {
   icerik: unknown | null;
@@ -23,8 +24,14 @@ interface Props {
 export const IcerikGoruntuleyici = ({ icerik }: Props) => {
   const blocks = useMemo<Block[] | undefined>(() => {
     if (!icerik) return undefined;
-    if (Array.isArray(icerik) && icerik.length > 0) return icerik as Block[];
-    return undefined;
+    if (!Array.isArray(icerik) || icerik.length === 0) return undefined;
+    // Savunma: şemada TANIMSIZ blok tipini ele. İçerik (DB) yeni bir blok
+    // tipi içerip kod henüz onu bilmiyorsa (deploy gecikmesi) tüm ders
+    // çökmesin — bilinmeyen blok sessizce atlanır, gerisi render edilir.
+    const bilinen = ozelSema.blockSchema as Record<string, unknown> | undefined;
+    if (!bilinen) return icerik as Block[];
+    const suzulmus = (icerik as Block[]).filter((b) => !b?.type || b.type in bilinen);
+    return suzulmus.length > 0 ? suzulmus : undefined;
   }, [icerik]);
 
   const editor = useCreateBlockNote({
@@ -39,6 +46,7 @@ export const IcerikGoruntuleyici = ({ icerik }: Props) => {
     <div className="bn-icerik bn-okunur">
       <BlockNoteView editor={editor} editable={false} theme="light" />
       <SozlukPopover />
+      <MevzuatPaneli />
     </div>
   );
 };
