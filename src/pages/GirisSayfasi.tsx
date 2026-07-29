@@ -512,7 +512,7 @@ export const GirisSayfasi = () => {
                 Hesabı Oluştur'a tıklayarak{' '}
                 <button
                   type="button"
-                  onClick={() => window.open('#/kvkk', '_blank')}
+                  onClick={() => window.open('/kvkk', '_blank')}
                   className="text-brand-deep hover:underline font-semibold"
                 >
                   KVKK Aydınlatma Metni

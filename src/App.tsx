@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { HashRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Footer } from './components/Footer';
@@ -282,8 +282,11 @@ const App = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         sessionStorage.setItem('sifre_yenileme_modu', '1');
-        if (!window.location.hash.startsWith('#/sifre-yenile')) {
-          window.location.hash = '#/sifre-yenile';
+        // BrowserRouter: path'e yönlendir (hash değil). Router dışındayız,
+        // history + popstate ile React Router'ı reload'suz tetikle.
+        if (window.location.pathname !== '/sifre-yenile') {
+          window.history.pushState(null, '', '/sifre-yenile');
+          window.dispatchEvent(new PopStateEvent('popstate'));
         }
       }
     });
@@ -440,7 +443,7 @@ const App = () => {
   }
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ScrollToTop />
       <SiteLoader />
       <div className="min-h-screen bg-bg-tint text-ink transition-colors">
@@ -816,7 +819,7 @@ const App = () => {
         <Analytics />
         <SpeedInsights />
       </div>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

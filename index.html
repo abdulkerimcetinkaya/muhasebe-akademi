@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#F4F5F8" />
+    <script>
+      // Eski hash-router linklerini (#/yol) yeni temiz path'e taşı; böylece
+      // BrowserRouter'a geçince paylaşılmış/bookmark'lı #/... linkleri kırılmaz.
+      // Süresi dolmuş şifre linkinin hata fragment'ını (#error=) şifre-sıfırlama
+      // sayfasına yönlendir. Supabase auth fragment'larına (#access_token=) DOKUNMA.
+      (function () {
+        var h = window.location.hash;
+        if (!h) return;
+        if (h.indexOf('#error=') === 0 || h.indexOf('#/error=') === 0) {
+          window.history.replaceState(null, '', '/sifre-sifirla');
+        } else if (h.indexOf('#/') === 0) {
+          window.history.replaceState(null, '', h.slice(1));
+        }
+      })();
+    </script>
     <title>MuhasebeAkademi · Muhasebe Pratik Platformu</title>
     <meta
       name="description"

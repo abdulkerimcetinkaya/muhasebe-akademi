@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from './Icon';
 import { MevzuatGovde } from './MevzuatGovde';
 import { sozlukTerimYukle, type SozlukTerimi } from '../lib/sozluk';
@@ -13,6 +14,7 @@ import { sozlukTerimYukle, type SozlukTerimi } from '../lib/sozluk';
  * tooltip'i gösterir — kademeli iyileştirme, kırılma yok.
  */
 export const MevzuatPaneli = () => {
+  const navigate = useNavigate();
   const [slug, setSlug] = useState<string | null>(null);
   const [terim, setTerim] = useState<SozlukTerimi | null>(null);
   const [yukleniyor, setYukleniyor] = useState(false);
@@ -83,10 +85,18 @@ export const MevzuatPaneli = () => {
 
             <MevzuatGovde mevzuat={terim.mevzuat} />
 
-            <a className="mvz-tam" href={`#/sozluk/${terim.slug}`} onClick={() => setSlug(null)}>
+            <button
+              type="button"
+              className="mvz-tam"
+              onClick={() => {
+                const s = terim.slug;
+                setSlug(null);
+                navigate(`/sozluk/${s}`);
+              }}
+            >
               Sözlükte tam sayfada aç
               <Icon name="ArrowRight" size={15} />
-            </a>
+            </button>
             <p className="mvz-uyari">
               Kanun metinleri bilgilendirme amaçlıdır; güncel mevzuatı esas alın.
             </p>
