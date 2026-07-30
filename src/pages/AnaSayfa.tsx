@@ -2,6 +2,7 @@ import { useMemo, useRef, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { Icon } from '../components/Icon';
+import { SeoMeta } from '../components/SeoMeta';
 import { Thiings } from '../components/Thiings';
 import { OpenBookHero } from '../components/OpenBookHero';
 import { SlideInWords } from '../components/SlideInWords';
@@ -103,6 +104,18 @@ const KullaniciPaneli = ({ ilerleme, stat }: Props) => {
 
   return (
     <main className="max-w-[1240px] mx-auto px-5 sm:px-8 py-10">
+      <SeoMeta
+        title="MuhasebeAkademi — Muhasebe ve Yevmiye Kaydı Pratik Platformu"
+        description="Türkiye'deki muhasebe öğrencileri için interaktif yevmiye kaydı pratik platformu. Senaryolu sorular, gerçek belgeler, anında geri bildirim. Tek Düzen Hesap Planı tabanlı."
+        canonical="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'MuhasebeAkademi',
+          url: 'https://muhasebeakademi.com',
+          inLanguage: 'tr-TR',
+        }}
+      />
       {/* Üst bar — selamlama + tarih */}
       <section className="mb-8 rise flex items-baseline justify-between gap-4 flex-wrap">
         <div>
