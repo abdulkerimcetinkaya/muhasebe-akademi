@@ -67,7 +67,6 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
     { id: '/isletmeler', ad: 'İşletmeler', aktif: aktifIsletme },
     { id: '/problemler', ad: 'Problemler', aktif: aktifProblem },
     { id: '/sozluk', ad: 'Sözlük', aktif: aktifSozluk },
-    ...(user ? [{ id: '/liderlik', ad: 'Liderlik', aktif: aktifLiderlik }] : []),
   ];
 
   const dropdownGit = (yol: string) => {
@@ -186,6 +185,16 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
                     </button>
 
                     <button
+                      onClick={() => dropdownGit('/liderlik')}
+                      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] hover:bg-surface-2/70 hover:text-ink transition ${
+                        aktifLiderlik ? 'text-ink font-medium' : 'text-ink-soft'
+                      }`}
+                    >
+                      <Icon name="Trophy" size={14} />
+                      <span>Liderlik</span>
+                    </button>
+
+                    <button
                       onClick={() => dropdownGit('/premium')}
                       className="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-ink-soft hover:bg-surface-2/70 hover:text-ink transition"
                     >
@@ -220,14 +229,6 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
                     >
                       <Icon name="BookOpen" size={14} />
                       <span>Hesap Planı</span>
-                    </button>
-
-                    <button
-                      onClick={() => dropdownGit('/sozluk')}
-                      className="w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] text-ink-soft hover:bg-surface-2/70 hover:text-ink transition"
-                    >
-                      <Icon name="Search" size={14} />
-                      <span>Mali Sözlük</span>
                     </button>
 
                     <button
@@ -310,6 +311,18 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
               >
                 <Icon name="User" size={14} />
                 Profilim
+              </button>
+            )}
+            {user && (
+              <button
+                onClick={() => {
+                  nav('/liderlik');
+                  setMobilMenuAcik(false);
+                }}
+                className="w-full px-2 py-3 text-left text-[14px] text-ink-soft flex items-center gap-2.5 border-b border-line-soft"
+              >
+                <Icon name="Trophy" size={14} />
+                Liderlik
               </button>
             )}
             <div className="hairline my-2" />
