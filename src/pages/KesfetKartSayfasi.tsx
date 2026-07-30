@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { kartBul, kartItemlari, kartSureDk, type KesfetKart } from '../data/kesfet';
+import { kartBul, kartItemlari, kartSureDk, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
@@ -12,13 +12,15 @@ import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
 export const KesfetKartSayfasi = () => {
   const nav = useNavigate();
+  const { pathname } = useLocation();
+  const ayar = trackAyar(pathname);
   const { kart: slug } = useParams();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const { tamamlanan } = useKesfetIlerleme();
 
   useEffect(() => {
-    tumKartlariYukle().then(setKartlar).catch(() => setKartlar([]));
-  }, []);
+    tumKartlariYukle(ayar.tip).then(setKartlar).catch(() => setKartlar([]));
+  }, [ayar.tip]);
 
   if (!kartlar) {
     return (
@@ -51,10 +53,10 @@ export const KesfetKartSayfasi = () => {
       <main className="max-w-[860px] mx-auto px-5 sm:px-8 py-20 text-center">
         <p className="text-ink-soft">Bu kart bulunamadı.</p>
         <button
-          onClick={() => nav('/kesfet')}
+          onClick={() => nav(ayar.taban)}
           className="mt-4 text-brand-deep font-semibold text-sm inline-flex items-center gap-1.5"
         >
-          <Icon name="ArrowLeft" size={15} /> Keşfet'e dön
+          <Icon name="ArrowLeft" size={15} /> {ayar.etiket}'e dön
         </button>
       </main>
     );
@@ -73,8 +75,8 @@ export const KesfetKartSayfasi = () => {
   return (
     <main className="max-w-[1200px] mx-auto px-5 sm:px-8 py-10 sm:py-14">
       <nav className="flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase text-ink-mute mb-8">
-        <button onClick={() => nav('/kesfet')} className="hover:text-ink transition">
-          Keşfet
+        <button onClick={() => nav(ayar.taban)} className="hover:text-ink transition">
+          {ayar.etiket}
         </button>
         <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
         <span className="text-ink-soft">{kart.ad}</span>
@@ -94,7 +96,7 @@ export const KesfetKartSayfasi = () => {
           <div className="flex items-center gap-5 mt-8 flex-wrap">
             {sirada && (
               <button
-                onClick={() => nav(`/kesfet/${kart.slug}/${sirada.item.id}`)}
+                onClick={() => nav(`${ayar.taban}/${kart.slug}/${sirada.item.id}`)}
                 className="btn btn-primary btn-lg active:scale-[0.98]"
               >
                 {biten === 0 ? 'Başla' : biten === toplam ? 'Tekrar Et' : 'Devam Et'}
@@ -158,7 +160,7 @@ export const KesfetKartSayfasi = () => {
                 return (
                   <button
                     key={item.id}
-                    onClick={() => nav(`/kesfet/${kart.slug}/${item.id}`)}
+                    onClick={() => nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
                     className="group relative w-full flex items-center gap-4 py-3.5 pr-1 border-b border-line-soft text-left transition-all"
                   >
                     {/* hover'da sola kayan mavi vurgu */}

@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import type { KesfetBolumRow, KesfetItemRow, KesfetKartRow } from './database.types';
-import type { KesfetKart } from '../data/kesfet';
+import type { KartTip, KesfetKart } from '../data/kesfet';
 
 /**
  * Keşfet DB erişimi — public yükleme + admin CRUD.
@@ -9,10 +9,15 @@ import type { KesfetKart } from '../data/kesfet';
 
 // ── Public yükleme ─────────────────────────────────────────────────────────
 
-/** Tüm kartları bölüm ve item'larıyla, sıralı iç içe yapı olarak yükler. */
-export const tumKartlariYukle = async (): Promise<KesfetKart[]> => {
+/**
+ * Kartları bölüm ve item'larıyla, sıralı iç içe yapı olarak yükler.
+ * `tip` verilirse yalnızca o türü ('kesfet' ders / 'isletme' simülasyon) getirir.
+ */
+export const tumKartlariYukle = async (tip?: KartTip): Promise<KesfetKart[]> => {
+  let kartSorgu = supabase.from('kesfet_kartlar').select('*').order('sira');
+  if (tip) kartSorgu = kartSorgu.eq('tip', tip);
   const [kartlarR, bolumlerR, itemlerR] = await Promise.all([
-    supabase.from('kesfet_kartlar').select('*').order('sira'),
+    kartSorgu,
     supabase.from('kesfet_bolumler').select('*').order('sira'),
     supabase.from('kesfet_itemler').select('*').order('sira'),
   ]);
@@ -30,6 +35,7 @@ export const tumKartlariYukle = async (): Promise<KesfetKart[]> => {
     aciklama: k.aciklama,
     ikon: k.ikon,
     kategori: k.kategori,
+    tip: ((k as { tip?: KartTip }).tip ?? 'kesfet') as KartTip,
     durum: k.durum,
     sira: k.sira,
     bolumler: bolumler

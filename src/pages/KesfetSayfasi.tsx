@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
-import { kartDersSayisi, kartSureDk, type KesfetKart } from '../data/kesfet';
+import { kartDersSayisi, kartSureDk, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
@@ -13,13 +13,10 @@ import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
 const RISE = ['rise', 'rise-2', 'rise-3', 'rise-4', 'rise-5'];
 
-// Kategori bölüm sırası — önce Temeller, sonra Uzmanlık, sonra bilinmeyenler.
-const KATEGORI_SIRA = ['Temeller', 'Uzmanlık Alanları', 'Uzmanlık'];
-const kategoriSira = (ad: string) => {
-  const i = KATEGORI_SIRA.findIndex(
-    (k) => k.toLocaleLowerCase('tr') === ad.toLocaleLowerCase('tr'),
-  );
-  return i === -1 ? KATEGORI_SIRA.length : i;
+// Kategori bölüm sırası — track'e göre (Temeller/Uzmanlık ya da Ticaret/Üretim…).
+const kategoriSira = (siralar: string[], ad: string) => {
+  const i = siralar.findIndex((k) => k.toLocaleLowerCase('tr') === ad.toLocaleLowerCase('tr'));
+  return i === -1 ? siralar.length : i;
 };
 
 // Yükleme iskeleti — kompakt kart layout'una oturur (spinner yerine).
@@ -37,11 +34,13 @@ const KartSkeleton = () => (
 
 export const KesfetSayfasi = () => {
   const nav = useNavigate();
+  const { pathname } = useLocation();
+  const ayar = trackAyar(pathname);
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   const { tamamlanan } = useKesfetIlerleme();
 
-  // Kartları kategoriye göre bölümle (Temeller · Uzmanlık Alanları …).
+  // Kartları kategoriye göre bölümle (track'e özgü sırayla).
   const gruplar = useMemo(() => {
     if (!kartlar) return [];
     const harita = new Map<string, KesfetKart[]>();
@@ -52,14 +51,19 @@ export const KesfetSayfasi = () => {
     }
     return [...harita.entries()]
       .map(([kategori, list]) => ({ kategori, kartlar: list }))
-      .sort((a, b) => kategoriSira(a.kategori) - kategoriSira(b.kategori));
-  }, [kartlar]);
+      .sort(
+        (a, b) =>
+          kategoriSira(ayar.kategoriSira, a.kategori) - kategoriSira(ayar.kategoriSira, b.kategori),
+      );
+  }, [kartlar, ayar.kategoriSira]);
 
   useEffect(() => {
-    tumKartlariYukle()
+    setKartlar(null);
+    setHata(null);
+    tumKartlariYukle(ayar.tip)
       .then(setKartlar)
       .catch((e) => setHata(e instanceof Error ? e.message : 'Kartlar yüklenemedi'));
-  }, []);
+  }, [ayar.tip]);
 
   return (
     <main className="max-w-[1180px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
@@ -67,16 +71,15 @@ export const KesfetSayfasi = () => {
       <header className="mb-12 sm:mb-14">
         <div className="flex items-center gap-2.5 mb-4">
           <span className="font-mono text-[11px] tracking-[0.28em] uppercase text-brand-mute font-medium">
-            Keşfet
+            {ayar.katalogUst}
           </span>
           <span className="h-px w-10 bg-line-strong" />
         </div>
         <h1 className="font-display text-[38px] sm:text-[52px] leading-[1.02] font-bold tracking-[-0.02em] text-ink max-w-2xl text-balance">
-          Nereden başlayacağını seç.
+          {ayar.katalogBaslik}
         </h1>
         <p className="mt-5 text-[16px] sm:text-[18px] text-ink-soft max-w-xl leading-relaxed">
-          Önce temelleri kavra, sonra uzmanlık alanlarında kendi patikanı ilerlet. Her kart, sıralı
-          ders ve alıştırmalardan oluşur.
+          {ayar.katalogAlt}
         </p>
         <div className="hairline mt-10" />
       </header>
@@ -104,8 +107,8 @@ export const KesfetSayfasi = () => {
       {kartlar && kartlar.length === 0 && (
         <EmptyState
           ikon="Search"
-          baslik="Henüz içerik yok"
-          aciklama="Keşfet kartları yakında burada olacak. İlk kart eklendiğinde görünecek."
+          baslik={ayar.bosBaslik}
+          aciklama={ayar.bosAciklama}
           variant="compact"
         />
       )}
@@ -137,7 +140,7 @@ export const KesfetSayfasi = () => {
                   return (
                     <button
                       key={k.id}
-                      onClick={() => acik && nav(`/kesfet/${k.slug}`)}
+                      onClick={() => acik && nav(`${ayar.taban}/${k.slug}`)}
                       disabled={!acik}
                       className={`${RISE[Math.min(i, 4)]} group relative text-left bg-surface border rounded-2xl p-5 flex flex-col transition-all duration-200 active:scale-[0.99] ${
                         acik

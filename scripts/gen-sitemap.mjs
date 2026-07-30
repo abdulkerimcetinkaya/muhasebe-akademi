@@ -38,6 +38,7 @@ const STATIK = [
   ['/', 'weekly', '1.0'],
   ['/sozluk', 'weekly', '0.9'],
   ['/kesfet', 'weekly', '0.8'],
+  ['/isletmeler', 'weekly', '0.8'],
   ['/uniteler', 'weekly', '0.7'],
   ['/problemler', 'weekly', '0.7'],
   ['/premium', 'monthly', '0.5'],
@@ -57,12 +58,16 @@ async function main() {
       const sb = createClient(url, key);
       const [soz, kart] = await Promise.all([
         sb.from('sozluk_terimleri').select('slug').eq('yayinda', true),
-        sb.from('kesfet_kartlar').select('slug').eq('durum', 'acik'),
+        sb.from('kesfet_kartlar').select('slug, tip').eq('durum', 'acik'),
       ]);
       for (const t of soz.data ?? []) satirlar.push(tag(`/sozluk/${t.slug}`, bugun, 'monthly', '0.8'));
-      // Keşfet ders (item) sayfaları anonime kapalı (kayıt duvarı) — sitemap'e
-      // yalnızca vitrin niteliğindeki kart sayfaları girer, ders URL'leri girmez.
-      for (const k of kart.data ?? []) satirlar.push(tag(`/kesfet/${k.slug}`, bugun, 'weekly', '0.7'));
+      // Ders/işlem (item) sayfaları anonime kapalı (kayıt duvarı) — sitemap'e
+      // yalnızca vitrin niteliğindeki kart sayfaları girer. Kart türüne göre
+      // taban: 'kesfet' → /kesfet, 'isletme' → /isletmeler.
+      for (const k of kart.data ?? []) {
+        const taban = k.tip === 'isletme' ? '/isletmeler' : '/kesfet';
+        satirlar.push(tag(`${taban}/${k.slug}`, bugun, 'weekly', '0.7'));
+      }
       if (soz.error || kart.error) {
         console.warn('[sitemap] kısmi DB hatası:', soz.error?.message, kart.error?.message);
       }

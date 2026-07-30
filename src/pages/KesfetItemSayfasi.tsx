@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { IcerikGoruntuleyici } from '../components/IcerikGoruntuleyici';
 import { KesfetTestModal } from '../components/KesfetTestModal';
-import { itemBul, kartBul, kartItemlari, type KesfetKart } from '../data/kesfet';
+import { itemBul, kartBul, kartItemlari, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,8 @@ import { authDonusYaz } from '../lib/auth-donus';
 
 export const KesfetItemSayfasi = () => {
   const nav = useNavigate();
+  const { pathname } = useLocation();
+  const ayar = trackAyar(pathname);
   const { kart: slug, item: itemId } = useParams();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const { tamamlanan, tamamla } = useKesfetIlerleme();
@@ -33,8 +35,8 @@ export const KesfetItemSayfasi = () => {
     });
 
   useEffect(() => {
-    tumKartlariYukle().then(setKartlar).catch(() => setKartlar([]));
-  }, []);
+    tumKartlariYukle(ayar.tip).then(setKartlar).catch(() => setKartlar([]));
+  }, [ayar.tip]);
   useEffect(() => {
     window.scrollTo(0, 0);
     setTocAcik(false);
@@ -67,8 +69,8 @@ export const KesfetItemSayfasi = () => {
     return (
       <main className="max-w-[1100px] mx-auto px-5 py-20 text-center">
         <p className="text-ink-soft">Bu kart bulunamadı.</p>
-        <button onClick={() => nav('/kesfet')} className="mt-4 text-brand-deep font-semibold text-sm">
-          Keşfet'e dön
+        <button onClick={() => nav(ayar.taban)} className="mt-4 text-brand-deep font-semibold text-sm">
+          {ayar.etiket}'e dön
         </button>
       </main>
     );
@@ -82,7 +84,7 @@ export const KesfetItemSayfasi = () => {
       <main className="max-w-[1100px] mx-auto px-5 py-20 text-center">
         <p className="text-ink-soft">Bu içerik bulunamadı.</p>
         <button
-          onClick={() => nav(`/kesfet/${kart.slug}`)}
+          onClick={() => nav(`${ayar.taban}/${kart.slug}`)}
           className="mt-4 text-brand-deep font-semibold text-sm"
         >
           Karta dön
@@ -105,8 +107,8 @@ export const KesfetItemSayfasi = () => {
 
   const tamamlaVeIlerle = () => {
     void tamamla(mevcut.item.id);
-    if (sonraki) nav(`/kesfet/${kart.slug}/${sonraki.item.id}`);
-    else nav(`/kesfet/${kart.slug}`);
+    if (sonraki) nav(`${ayar.taban}/${kart.slug}/${sonraki.item.id}`);
+    else nav(`${ayar.taban}/${kart.slug}`);
   };
 
   // Test başarıyla bitince: dersi tamamla, modalı kapat, sayfada kal
@@ -145,7 +147,7 @@ export const KesfetItemSayfasi = () => {
               key={it.id}
               onClick={() => {
                 setTocAcik(false);
-                nav(`/kesfet/${kart.slug}/${it.id}`);
+                nav(`${ayar.taban}/${kart.slug}/${it.id}`);
               }}
               className={`flex items-center gap-2.5 pl-3 pr-2 py-2 rounded-r-lg text-left transition border-l-2 active:scale-[0.99] ${
                 aktif ? 'border-brand bg-brand-soft/60' : 'border-transparent hover:bg-surface-2'
@@ -175,9 +177,9 @@ export const KesfetItemSayfasi = () => {
   return (
     <div className="w-full py-8 sm:py-12 pl-4 sm:pl-6 pr-5 sm:pr-10">
       <nav className="flex items-center gap-2 font-mono text-[11px] tracking-wide uppercase text-ink-mute mb-6 flex-wrap">
-        <button onClick={() => nav('/kesfet')} className="hover:text-ink transition">Keşfet</button>
+        <button onClick={() => nav(ayar.taban)} className="hover:text-ink transition">{ayar.etiket}</button>
         <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
-        <button onClick={() => nav(`/kesfet/${kart.slug}`)} className="hover:text-ink transition">
+        <button onClick={() => nav(`${ayar.taban}/${kart.slug}`)} className="hover:text-ink transition">
           {kart.ad}
         </button>
         <Icon name="ChevronRight" size={12} className="text-ink-quiet" />
@@ -230,8 +232,9 @@ export const KesfetItemSayfasi = () => {
             <div className="h-48 bg-surface-2 rounded-[18px] animate-pulse" />
           ) : !user ? (
             <KesfetKayitDuvari
-              donusUrl={`/kesfet/${kart.slug}/${mevcut.item.id}`}
+              donusUrl={`${ayar.taban}/${kart.slug}/${mevcut.item.id}`}
               kartSlug={kart.slug}
+              taban={ayar.taban}
             />
           ) : (
           <>
@@ -275,7 +278,7 @@ export const KesfetItemSayfasi = () => {
 
           <div className="flex items-center justify-between gap-3 mt-10 pt-6 border-t border-line-soft">
             <button
-              onClick={() => onceki && nav(`/kesfet/${kart.slug}/${onceki.item.id}`)}
+              onClick={() => onceki && nav(`${ayar.taban}/${kart.slug}/${onceki.item.id}`)}
               disabled={!onceki}
               className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-ink-soft disabled:opacity-30 disabled:cursor-not-allowed hover:text-ink active:scale-[0.98] transition"
             >
@@ -321,7 +324,15 @@ export const KesfetItemSayfasi = () => {
 // Anonim kullanıcı ders içeriğine tıklayınca — kayıt duvarı (vitrin: TOC + başlık
 // açık kalır, içerik + test kilitli). Sözlük her zaman serbest; burada kurs ürünü
 // kayıt karşılığı. Giriş sonrası bu derse geri döner (authDonusYaz).
-const KesfetKayitDuvari = ({ donusUrl, kartSlug }: { donusUrl: string; kartSlug: string }) => {
+const KesfetKayitDuvari = ({
+  donusUrl,
+  kartSlug,
+  taban,
+}: {
+  donusUrl: string;
+  kartSlug: string;
+  taban: string;
+}) => {
   const nav = useNavigate();
   const giriseGit = () => {
     authDonusYaz(donusUrl);
@@ -362,7 +373,7 @@ const KesfetKayitDuvari = ({ donusUrl, kartSlug }: { donusUrl: string; kartSlug:
           <Icon name="ArrowRight" size={16} className="ml-1" />
         </button>
         <button
-          onClick={() => nav(`/kesfet/${kartSlug}`)}
+          onClick={() => nav(`${taban}/${kartSlug}`)}
           className="btn btn-soft active:scale-[0.98]"
         >
           Kart sayfasına dön

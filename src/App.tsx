@@ -496,6 +496,10 @@ const App = () => {
             <Route path="/kesfet" element={<KesfetSayfasi />} />
             <Route path="/kesfet/:kart" element={<KesfetKartSayfasi />} />
             <Route path="/kesfet/:kart/:item" element={<KesfetItemSayfasi />} />
+            {/* İşletmeler (dönem simülasyonu) — aynı bileşenler, track pathname'den. */}
+            <Route path="/isletmeler" element={<KesfetSayfasi />} />
+            <Route path="/isletmeler/:kart" element={<KesfetKartSayfasi />} />
+            <Route path="/isletmeler/:kart/:item" element={<KesfetItemSayfasi />} />
             <Route path="/premium" element={<PremiumSayfasi />} />
             <Route path="/premium/sonuc" element={<PremiumSonucSayfasi />} />
             <Route path="/premium/kurum-odeme" element={<KurumOdemeSayfasi />} />

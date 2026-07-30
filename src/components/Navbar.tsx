@@ -54,7 +54,7 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
     'Kullanıcı';
 
   const aktifKesfet = pathname === '/kesfet' || pathname.startsWith('/kesfet/');
-  const aktifUnite = pathname === '/uniteler' || pathname.startsWith('/uniteler/');
+  const aktifIsletme = pathname === '/isletmeler' || pathname.startsWith('/isletmeler/');
   const aktifProblem = pathname === '/problemler' || pathname.startsWith('/problemler/');
   const aktifSozluk = pathname === '/sozluk' || pathname.startsWith('/sozluk/');
   const aktifLiderlik = pathname === '/liderlik';
@@ -64,7 +64,7 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
   // Keşfet (öğren) · İşletmeler (uygula) · Problemler (pekiştir) · Sözlük (başvur).
   const linkler = [
     { id: '/kesfet', ad: 'Keşfet', aktif: aktifKesfet },
-    { id: '/uniteler', ad: 'İşletmeler', aktif: aktifUnite },
+    { id: '/isletmeler', ad: 'İşletmeler', aktif: aktifIsletme },
     { id: '/problemler', ad: 'Problemler', aktif: aktifProblem },
     { id: '/sozluk', ad: 'Sözlük', aktif: aktifSozluk },
     ...(user ? [{ id: '/liderlik', ad: 'Liderlik', aktif: aktifLiderlik }] : []),

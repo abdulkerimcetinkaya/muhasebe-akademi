@@ -84,6 +84,7 @@ export type KesfetKartRow = {
   aciklama: string;
   ikon: string;
   kategori: string;
+  tip: 'kesfet' | 'isletme';
   durum: 'acik' | 'yakinda';
   sira: number;
   created_at: string;
@@ -562,13 +563,14 @@ export type Database = {
       };
       kesfet_kartlar: {
         Row: KesfetKartRow;
-        Insert: Omit<KesfetKartRow, 'id' | 'created_at' | 'updated_at' | 'aciklama' | 'ikon' | 'kategori' | 'durum' | 'sira'> & {
+        Insert: Omit<KesfetKartRow, 'id' | 'created_at' | 'updated_at' | 'aciklama' | 'ikon' | 'kategori' | 'tip' | 'durum' | 'sira'> & {
           id?: string;
           created_at?: string;
           updated_at?: string;
           aciklama?: string;
           ikon?: string;
           kategori?: string;
+          tip?: 'kesfet' | 'isletme';
           durum?: 'acik' | 'yakinda';
           sira?: number;
         };
