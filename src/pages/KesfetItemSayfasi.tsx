@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { IcerikGoruntuleyici } from '../components/IcerikGoruntuleyici';
 import { KesfetTestModal } from '../components/KesfetTestModal';
+import { IsletmeGuncelDurum, IsletmeMaliTablolar } from '../components/IsletmeDurum';
 import { itemBul, kartBul, kartItemlari, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
@@ -97,6 +98,10 @@ export const KesfetItemSayfasi = () => {
   const sonraki = mevcut.sira < hepsi.length - 1 ? hepsi[mevcut.sira + 1] : null;
   const bitti = tamamlanan.has(mevcut.item.id);
   const ders = mevcut.item.tip === 'ders';
+  // İşletme track: canlı defter paneli + Mali Tablolar adımında tam tablolar.
+  const isIsletme = ayar.tip === 'isletme';
+  const maliTablolarAdimi =
+    isIsletme && mevcut.bolum.ad.toLocaleLowerCase('tr').includes('mali tablo');
   // İçeriği ikiye ayır: düz anlatım (viewer) + interaktif sorular (test modalı).
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tumBloklar: any[] = Array.isArray(mevcut.item.icerik) ? (mevcut.item.icerik as any[]) : [];
@@ -216,6 +221,14 @@ export const KesfetItemSayfasi = () => {
         <aside className="hidden lg:block border-r border-line-soft">
           <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto flex flex-col gap-5 pr-4 py-6 kesfet-toc-scroll">
             {tocIcerik}
+            {isIsletme && user && (
+              <IsletmeGuncelDurum
+                kart={kart}
+                tamamlanan={tamamlanan}
+                toplamIslem={hepsi.length}
+                bitenIslem={hepsi.filter((x) => tamamlanan.has(x.item.id)).length}
+              />
+            )}
           </div>
         </aside>
 
@@ -254,6 +267,12 @@ export const KesfetItemSayfasi = () => {
               </p>
             </div>
           ) : null}
+
+          {maliTablolarAdimi && (
+            <div className="mt-8">
+              <IsletmeMaliTablolar kart={kart} tamamlanan={tamamlanan} />
+            </div>
+          )}
 
           {testVar && (
             <button
