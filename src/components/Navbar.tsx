@@ -53,18 +53,20 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
     user?.email?.split('@')[0] ||
     'Kullanıcı';
 
-  const aktifAna = pathname === '/' || pathname === '/dashboard';
   const aktifKesfet = pathname === '/kesfet' || pathname.startsWith('/kesfet/');
   const aktifUnite = pathname === '/uniteler' || pathname.startsWith('/uniteler/');
   const aktifProblem = pathname === '/problemler' || pathname.startsWith('/problemler/');
+  const aktifSozluk = pathname === '/sozluk' || pathname.startsWith('/sozluk/');
   const aktifLiderlik = pathname === '/liderlik';
   const aktifAdmin = pathname.startsWith('/admin');
 
+  // Logo zaten anasayfaya götürüyor; nav sade tutuluyor:
+  // Keşfet (öğren) · İşletmeler (uygula) · Problemler (pekiştir) · Sözlük (başvur).
   const linkler = [
-    { id: '/', ad: 'Anasayfa', aktif: aktifAna },
     { id: '/kesfet', ad: 'Keşfet', aktif: aktifKesfet },
     { id: '/uniteler', ad: 'İşletmeler', aktif: aktifUnite },
     { id: '/problemler', ad: 'Problemler', aktif: aktifProblem },
+    { id: '/sozluk', ad: 'Sözlük', aktif: aktifSozluk },
     ...(user ? [{ id: '/liderlik', ad: 'Liderlik', aktif: aktifLiderlik }] : []),
   ];
 
@@ -320,16 +322,6 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
             >
               <Icon name="BookOpen" size={14} />
               Hesap Planı
-            </button>
-            <button
-              onClick={() => {
-                nav('/sozluk');
-                setMobilMenuAcik(false);
-              }}
-              className="w-full px-2 py-3 text-left text-[14px] text-ink-soft flex items-center gap-2.5"
-            >
-              <Icon name="Search" size={14} />
-              Mali Sözlük
             </button>
             <button
               onClick={() => {

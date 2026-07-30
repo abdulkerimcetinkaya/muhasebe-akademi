@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
@@ -12,6 +12,15 @@ import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
  */
 
 const RISE = ['rise', 'rise-2', 'rise-3', 'rise-4', 'rise-5'];
+
+// Kategori bölüm sırası — önce Temeller, sonra Uzmanlık, sonra bilinmeyenler.
+const KATEGORI_SIRA = ['Temeller', 'Uzmanlık Alanları', 'Uzmanlık'];
+const kategoriSira = (ad: string) => {
+  const i = KATEGORI_SIRA.findIndex(
+    (k) => k.toLocaleLowerCase('tr') === ad.toLocaleLowerCase('tr'),
+  );
+  return i === -1 ? KATEGORI_SIRA.length : i;
+};
 
 // Yükleme iskeleti — kompakt kart layout'una oturur (spinner yerine).
 const KartSkeleton = () => (
@@ -31,6 +40,20 @@ export const KesfetSayfasi = () => {
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const [hata, setHata] = useState<string | null>(null);
   const { tamamlanan } = useKesfetIlerleme();
+
+  // Kartları kategoriye göre bölümle (Temeller · Uzmanlık Alanları …).
+  const gruplar = useMemo(() => {
+    if (!kartlar) return [];
+    const harita = new Map<string, KesfetKart[]>();
+    for (const k of kartlar) {
+      const ad = k.kategori?.trim() || 'Diğer';
+      if (!harita.has(ad)) harita.set(ad, []);
+      harita.get(ad)!.push(k);
+    }
+    return [...harita.entries()]
+      .map(([kategori, list]) => ({ kategori, kartlar: list }))
+      .sort((a, b) => kategoriSira(a.kategori) - kategoriSira(b.kategori));
+  }, [kartlar]);
 
   useEffect(() => {
     tumKartlariYukle()
@@ -88,72 +111,86 @@ export const KesfetSayfasi = () => {
       )}
 
       {kartlar && kartlar.length > 0 && (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {kartlar.map((k, i) => {
-            const acik = k.durum === 'acik';
-            const toplam = kartDersSayisi(k);
-            const biten = k.bolumler
-              .flatMap((b) => b.itemlar)
-              .filter((it) => tamamlanan.has(it.id)).length;
-            const yuzde = toplam ? Math.round((biten / toplam) * 100) : 0;
+        <div className="space-y-14 sm:space-y-16">
+          {gruplar.map((grup) => (
+            <section key={grup.kategori}>
+              {/* Kategori bölüm başlığı */}
+              <div className="flex items-center gap-3 mb-6">
+                <h2 className="font-mono text-[12px] tracking-[0.24em] uppercase text-brand-mute font-semibold">
+                  {grup.kategori}
+                </h2>
+                <span className="h-px flex-1 bg-line-soft" />
+                <span className="font-mono text-[11px] text-ink-quiet tnum">
+                  {grup.kartlar.length} kart
+                </span>
+              </div>
 
-            return (
-              <button
-                key={k.id}
-                onClick={() => acik && nav(`/kesfet/${k.slug}`)}
-                disabled={!acik}
-                className={`${RISE[Math.min(i, 4)]} group relative text-left bg-surface border rounded-2xl p-5 flex flex-col transition-all duration-200 active:scale-[0.99] ${
-                  acik
-                    ? 'border-line hover:-translate-y-0.5 hover:border-line-strong hover:shadow-[0_14px_32px_-18px_rgba(26,37,56,0.26)] cursor-pointer'
-                    : 'border-line-soft opacity-70 cursor-not-allowed'
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-mute">
-                      {k.kategori}
-                    </span>
-                    <span
-                      className={`mt-2.5 w-11 h-11 rounded-xl grid place-items-center transition-colors ${
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {grup.kartlar.map((k, i) => {
+                  const acik = k.durum === 'acik';
+                  const toplam = kartDersSayisi(k);
+                  const biten = k.bolumler
+                    .flatMap((b) => b.itemlar)
+                    .filter((it) => tamamlanan.has(it.id)).length;
+                  const yuzde = toplam ? Math.round((biten / toplam) * 100) : 0;
+
+                  return (
+                    <button
+                      key={k.id}
+                      onClick={() => acik && nav(`/kesfet/${k.slug}`)}
+                      disabled={!acik}
+                      className={`${RISE[Math.min(i, 4)]} group relative text-left bg-surface border rounded-2xl p-5 flex flex-col transition-all duration-200 active:scale-[0.99] ${
                         acik
-                          ? 'bg-brand-soft text-brand-deep group-hover:bg-brand group-hover:text-white'
-                          : 'bg-surface-2 text-ink-quiet'
+                          ? 'border-line hover:-translate-y-0.5 hover:border-line-strong hover:shadow-[0_14px_32px_-18px_rgba(26,37,56,0.26)] cursor-pointer'
+                          : 'border-line-soft opacity-70 cursor-not-allowed'
                       }`}
                     >
-                      <Icon name={k.ikon} size={20} />
-                    </span>
-                  </div>
-                  {!acik && <span className="chip">Yakında</span>}
-                </div>
+                      <div className="flex items-start justify-between mb-4">
+                        <span
+                          className={`w-11 h-11 rounded-xl grid place-items-center transition-colors ${
+                            acik
+                              ? 'bg-brand-soft text-brand-deep group-hover:bg-brand group-hover:text-white'
+                              : 'bg-surface-2 text-ink-quiet'
+                          }`}
+                        >
+                          <Icon name={k.ikon} size={20} />
+                        </span>
+                        {!acik && <span className="chip">Yakında</span>}
+                      </div>
 
-                <h2 className="font-display text-[23px] leading-tight font-bold tracking-tight text-ink mb-1.5">
-                  {k.ad}
-                </h2>
-                <p className="text-[14px] text-ink-mute leading-relaxed flex-1">{k.aciklama}</p>
+                      <h3 className="font-display text-[23px] leading-tight font-bold tracking-tight text-ink mb-1.5">
+                        {k.ad}
+                      </h3>
+                      <p className="text-[14px] text-ink-mute leading-relaxed flex-1">
+                        {k.aciklama}
+                      </p>
 
-                {acik && (
-                  <>
-                    <div className="hairline my-4" />
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] tracking-wide uppercase text-ink-mute tnum">
-                        {toplam} ders · ~{kartSureDk(k)} dk
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-deep opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                        {biten === 0 ? 'Başla' : 'Devam'}
-                        <Icon name="ArrowRight" size={15} />
-                      </span>
-                    </div>
-                    <div className="mt-3 h-1 bg-surface-2 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-brand rounded-full transition-all duration-500"
-                        style={{ width: `${yuzde}%` }}
-                      />
-                    </div>
-                  </>
-                )}
-              </button>
-            );
-          })}
+                      {acik && (
+                        <>
+                          <div className="hairline my-4" />
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-[11px] tracking-wide uppercase text-ink-mute tnum">
+                              {toplam} ders · ~{kartSureDk(k)} dk
+                            </span>
+                            <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-deep opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                              {biten === 0 ? 'Başla' : 'Devam'}
+                              <Icon name="ArrowRight" size={15} />
+                            </span>
+                          </div>
+                          <div className="mt-3 h-1 bg-surface-2 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-brand rounded-full transition-all duration-500"
+                              style={{ width: `${yuzde}%` }}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         </div>
       )}
     </main>
