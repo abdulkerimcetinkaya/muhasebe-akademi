@@ -55,19 +55,16 @@ async function main() {
   } else {
     try {
       const sb = createClient(url, key);
-      const [soz, kart, item] = await Promise.all([
+      const [soz, kart] = await Promise.all([
         sb.from('sozluk_terimleri').select('slug').eq('yayinda', true),
         sb.from('kesfet_kartlar').select('slug').eq('durum', 'acik'),
-        sb.from('kesfet_itemler').select('id, kesfet_bolumler(kesfet_kartlar(slug, durum))'),
       ]);
       for (const t of soz.data ?? []) satirlar.push(tag(`/sozluk/${t.slug}`, bugun, 'monthly', '0.8'));
+      // Keşfet ders (item) sayfaları anonime kapalı (kayıt duvarı) — sitemap'e
+      // yalnızca vitrin niteliğindeki kart sayfaları girer, ders URL'leri girmez.
       for (const k of kart.data ?? []) satirlar.push(tag(`/kesfet/${k.slug}`, bugun, 'weekly', '0.7'));
-      for (const it of item.data ?? []) {
-        const k = it.kesfet_bolumler?.kesfet_kartlar;
-        if (k?.slug && k.durum === 'acik') satirlar.push(tag(`/kesfet/${k.slug}/${it.id}`, bugun, 'monthly', '0.7'));
-      }
-      if (soz.error || kart.error || item.error) {
-        console.warn('[sitemap] kısmi DB hatası:', soz.error?.message, kart.error?.message, item.error?.message);
+      if (soz.error || kart.error) {
+        console.warn('[sitemap] kısmi DB hatası:', soz.error?.message, kart.error?.message);
       }
     } catch (e) {
       console.warn('[sitemap] DB hatası, statik rotalarla devam:', e?.message);

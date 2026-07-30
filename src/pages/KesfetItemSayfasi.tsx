@@ -6,6 +6,8 @@ import { KesfetTestModal } from '../components/KesfetTestModal';
 import { itemBul, kartBul, kartItemlari, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
+import { useAuth } from '../contexts/AuthContext';
+import { authDonusYaz } from '../lib/auth-donus';
 
 /**
  * Keşfet item ekranı — editorial/ledger dili. Sol TOC + okuma sütunu + İleri.
@@ -17,6 +19,7 @@ export const KesfetItemSayfasi = () => {
   const { kart: slug, item: itemId } = useParams();
   const [kartlar, setKartlar] = useState<KesfetKart[] | null>(null);
   const { tamamlanan, tamamla } = useKesfetIlerleme();
+  const { user, yukleniyor } = useAuth();
   const [tocAcik, setTocAcik] = useState(false);
   const [testAcik, setTestAcik] = useState(false);
   // Bölüm katlama durumu — kayıt yoksa açık (varsayılan: hepsi açık).
@@ -223,6 +226,15 @@ export const KesfetItemSayfasi = () => {
             {mevcut.item.ad}
           </h1>
 
+          {yukleniyor ? (
+            <div className="h-48 bg-surface-2 rounded-[18px] animate-pulse" />
+          ) : !user ? (
+            <KesfetKayitDuvari
+              donusUrl={`/kesfet/${kart.slug}/${mevcut.item.id}`}
+              kartSlug={kart.slug}
+            />
+          ) : (
+          <>
           {icerikVar ? (
             <IcerikGoruntuleyici key={mevcut.item.id} icerik={proseBloklar} />
           ) : tumBloklar.length === 0 ? (
@@ -288,6 +300,8 @@ export const KesfetItemSayfasi = () => {
               </button>
             )}
           </div>
+          </>
+          )}
         </article>
       </div>
 
@@ -300,6 +314,66 @@ export const KesfetItemSayfasi = () => {
           onTamamla={testGecildi}
         />
       )}
+    </div>
+  );
+};
+
+// Anonim kullanıcı ders içeriğine tıklayınca — kayıt duvarı (vitrin: TOC + başlık
+// açık kalır, içerik + test kilitli). Sözlük her zaman serbest; burada kurs ürünü
+// kayıt karşılığı. Giriş sonrası bu derse geri döner (authDonusYaz).
+const KesfetKayitDuvari = ({ donusUrl, kartSlug }: { donusUrl: string; kartSlug: string }) => {
+  const nav = useNavigate();
+  const giriseGit = () => {
+    authDonusYaz(donusUrl);
+    nav('/giris');
+  };
+  const kazanimlar = [
+    { icon: 'BookOpen', metin: 'Tüm ders anlatımları' },
+    { icon: 'ListChecks', metin: 'İnteraktif testler ve alıştırmalar' },
+    { icon: 'Flame', metin: 'İlerleme, puan, rozet ve streak' },
+  ] as const;
+  return (
+    <div className="relative bg-surface border border-line rounded-[18px] px-6 sm:px-10 py-12 sm:py-14 text-center overflow-hidden">
+      <div className="absolute inset-x-0 top-0 h-px bg-line" />
+      <div className="absolute inset-x-0 top-[3px] h-px bg-line-soft" />
+      <span className="w-14 h-14 rounded-2xl bg-brand-soft text-brand-deep grid place-items-center mx-auto mb-5">
+        <Icon name="Lock" size={24} />
+      </span>
+      <h2 className="font-display text-[22px] sm:text-[26px] font-bold text-ink">
+        Bu ders üyelere özel
+      </h2>
+      <p className="text-[14px] sm:text-[15px] text-ink-mute mt-3 max-w-md mx-auto leading-relaxed">
+        Ücretsiz kaydol; dersin tamamı, interaktif testler ve ilerleme takibi senin olsun.
+        Sözlük her zaman serbest.
+      </p>
+      <ul className="mt-7 mb-8 flex flex-col gap-2.5 max-w-xs mx-auto text-left">
+        {kazanimlar.map((k) => (
+          <li key={k.metin} className="flex items-center gap-3 text-[14px] text-ink-soft">
+            <span className="w-8 h-8 rounded-lg bg-surface-2 text-brand-deep grid place-items-center flex-none">
+              <Icon name={k.icon} size={15} />
+            </span>
+            {k.metin}
+          </li>
+        ))}
+      </ul>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button onClick={giriseGit} className="btn btn-primary active:scale-[0.98]">
+          Ücretsiz Kaydol
+          <Icon name="ArrowRight" size={16} className="ml-1" />
+        </button>
+        <button
+          onClick={() => nav(`/kesfet/${kartSlug}`)}
+          className="btn btn-soft active:scale-[0.98]"
+        >
+          Kart sayfasına dön
+        </button>
+      </div>
+      <button
+        onClick={giriseGit}
+        className="mt-5 text-[13px] text-ink-mute hover:text-ink font-semibold transition"
+      >
+        Zaten üye misin? Giriş yap
+      </button>
     </div>
   );
 };
