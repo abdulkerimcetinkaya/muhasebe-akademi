@@ -44,7 +44,10 @@ export interface TrackAyar {
   taban: string; // '/kesfet' | '/isletmeler'
   etiket: string; // breadcrumb / rozet
   katalogUst: string;
-  katalogBaslik: string;
+  // Başlık üç parça: düz öncesi + italik (Fraunces) vurgu + düz sonrası.
+  katalogBaslikOnce: string;
+  katalogBaslikVurgu: string;
+  katalogBaslikSonra: string;
   katalogAlt: string;
   bosBaslik: string;
   bosAciklama: string;
@@ -55,10 +58,12 @@ export const KESFET_TRACK: TrackAyar = {
   tip: 'kesfet',
   taban: '/kesfet',
   etiket: 'Keşfet',
-  katalogUst: 'Keşfet',
-  katalogBaslik: 'Nereden başlayacağını seç.',
+  katalogUst: 'Öğrenme patikası',
+  katalogBaslikOnce: 'Nereden ',
+  katalogBaslikVurgu: 'başlamak',
+  katalogBaslikSonra: ' istersin?',
   katalogAlt:
-    'Önce temelleri kavra, sonra uzmanlık alanlarında kendi patikanı ilerlet. Her kart, sıralı ders ve alıştırmalardan oluşur.',
+    'Önce temelleri kavra, sonra uzmanlık alanlarında kendi patikanı çiz. Her kart, sıralı ders ve alıştırmalardan oluşur.',
   bosBaslik: 'Henüz içerik yok',
   bosAciklama: 'Keşfet kartları yakında burada olacak. İlk kart eklendiğinde görünecek.',
   kategoriSira: ['Temeller', 'Uzmanlık Alanları', 'Uzmanlık'],
@@ -68,10 +73,12 @@ export const ISLETME_TRACK: TrackAyar = {
   tip: 'isletme',
   taban: '/isletmeler',
   etiket: 'İşletmeler',
-  katalogUst: 'İşletmeler',
-  katalogBaslik: 'Bir işletmeyi baştan sona çalıştır.',
+  katalogUst: 'İşletme türü seç',
+  katalogBaslikOnce: 'Hangi ',
+  katalogBaslikVurgu: 'işletmeyle',
+  katalogBaslikSonra: ' başlamak istersin?',
   katalogAlt:
-    'Bir işletme türü seç; açılıştan dönem sonuna kadar tüm işlemleri gerçek bir muhasebeci gibi kaydet. Her adımda şirketin güncel durumunu gör.',
+    'Bir işletme türü seç; açılıştan dönem sonuna dek her işlemi gerçek bir muhasebeci gibi kaydet, şirketin canlı durumunu izle.',
   bosBaslik: 'İşletmeler yakında',
   bosAciklama:
     'İlk işletme hazırlanıyor. Yakında burada bir dönemi baştan sona çalıştırabileceksin.',

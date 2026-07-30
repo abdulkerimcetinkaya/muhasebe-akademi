@@ -69,16 +69,20 @@ export const KesfetSayfasi = () => {
     <main className="max-w-[1180px] mx-auto px-5 sm:px-8 py-14 sm:py-20">
       {/* Editorial başlık */}
       <header className="mb-12 sm:mb-14">
-        <div className="flex items-center gap-2.5 mb-4">
-          <span className="font-mono text-[11px] tracking-[0.28em] uppercase text-brand-mute font-medium">
+        <div className="flex items-center gap-3 mb-5">
+          <span className="font-mono text-[10.5px] tracking-[0.3em] uppercase text-brand-mute font-semibold">
             {ayar.katalogUst}
           </span>
           <span className="h-px w-10 bg-line-strong" />
         </div>
-        <h1 className="font-display text-[38px] sm:text-[52px] leading-[1.02] font-bold tracking-[-0.02em] text-ink max-w-2xl text-balance">
-          {ayar.katalogBaslik}
+        <h1 className="font-display font-bold tracking-[-0.02em] text-ink leading-[0.98] text-[40px] sm:text-[56px] max-w-[15ch] text-balance">
+          {ayar.katalogBaslikOnce}
+          <span className="font-display-italic font-normal text-ink-soft">
+            {ayar.katalogBaslikVurgu}
+          </span>
+          {ayar.katalogBaslikSonra}
         </h1>
-        <p className="mt-5 text-[16px] sm:text-[18px] text-ink-soft max-w-xl leading-relaxed">
+        <p className="mt-6 font-display-italic text-[17px] sm:text-[19px] text-ink-soft max-w-[600px] leading-snug">
           {ayar.katalogAlt}
         </p>
         <div className="hairline mt-10" />
