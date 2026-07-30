@@ -62,11 +62,13 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
 
   // Logo zaten anasayfaya götürüyor; nav sade tutuluyor:
   // Keşfet (öğren) · İşletmeler (uygula) · Problemler (pekiştir) · Sözlük (başvur).
+  // Üst nav çekirdek yolculuk: Öğren · Uygula · Pekiştir. Sözlük referans
+  // olduğu için dropdown (üye) + footer (herkes/SEO) üzerinden erişilir;
+  // SEO trafiği zaten doğrudan derin sözlük sayfalarına düşer.
   const linkler = [
     { id: '/kesfet', ad: 'Keşfet', aktif: aktifKesfet },
     { id: '/isletmeler', ad: 'İşletmeler', aktif: aktifIsletme },
     { id: '/problemler', ad: 'Problemler', aktif: aktifProblem },
-    { id: '/sozluk', ad: 'Sözlük', aktif: aktifSozluk },
   ];
 
   const dropdownGit = (yol: string) => {
@@ -232,6 +234,16 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
                     </button>
 
                     <button
+                      onClick={() => dropdownGit('/sozluk')}
+                      className={`w-full flex items-center gap-2.5 px-3.5 py-2 text-[13px] hover:bg-surface-2/70 hover:text-ink transition ${
+                        aktifSozluk ? 'text-ink font-medium' : 'text-ink-soft'
+                      }`}
+                    >
+                      <Icon name="Search" size={14} />
+                      <span>Mali Sözlük</span>
+                    </button>
+
+                    <button
                       onClick={() => {
                         onTemaDegistir();
                         // tema değişikliği için menüyü kapatmıyoruz — kullanıcı sonucu görsün
@@ -335,6 +347,16 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
             >
               <Icon name="BookOpen" size={14} />
               Hesap Planı
+            </button>
+            <button
+              onClick={() => {
+                nav('/sozluk');
+                setMobilMenuAcik(false);
+              }}
+              className="w-full px-2 py-3 text-left text-[14px] text-ink-soft flex items-center gap-2.5"
+            >
+              <Icon name="Search" size={14} />
+              Mali Sözlük
             </button>
             <button
               onClick={() => {
