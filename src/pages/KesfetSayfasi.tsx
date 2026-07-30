@@ -128,7 +128,7 @@ export const KesfetSayfasi = () => {
                 </span>
               </div>
 
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {grup.kartlar.map((k, i) => {
                   const acik = k.durum === 'acik';
                   const toplam = kartDersSayisi(k);
@@ -142,52 +142,67 @@ export const KesfetSayfasi = () => {
                       key={k.id}
                       onClick={() => acik && nav(`${ayar.taban}/${k.slug}`)}
                       disabled={!acik}
-                      className={`${RISE[Math.min(i, 4)]} group relative text-left bg-surface border rounded-2xl p-5 flex flex-col transition-all duration-200 active:scale-[0.99] ${
+                      className={`${RISE[Math.min(i, 4)]} group relative text-left bg-surface border rounded-2xl p-5 min-h-[200px] flex flex-col justify-between transition-all duration-200 ${
                         acik
-                          ? 'border-line hover:-translate-y-0.5 hover:border-line-strong hover:shadow-[0_14px_32px_-18px_rgba(26,37,56,0.26)] cursor-pointer'
-                          : 'border-line-soft opacity-70 cursor-not-allowed'
+                          ? 'border-line hover:border-ink hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-14px_rgba(15,23,42,0.4)] active:scale-[0.99] cursor-pointer'
+                          : 'border-line-soft opacity-60 cursor-not-allowed'
                       }`}
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      {acik && (
                         <span
-                          className={`w-11 h-11 rounded-xl grid place-items-center transition-colors ${
-                            acik
-                              ? 'bg-brand-soft text-brand-deep group-hover:bg-brand group-hover:text-white'
-                              : 'bg-surface-2 text-ink-quiet'
-                          }`}
-                        >
-                          <Icon name={k.ikon} size={20} />
+                          className="absolute left-0 top-5 bottom-5 w-[3px] bg-brand-deep rounded-r opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-hidden
+                        />
+                      )}
+
+                      {/* Üst: sıra numarası + ikon */}
+                      <div className="flex items-start justify-between">
+                        <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-quiet font-bold">
+                          {String(i + 1).padStart(2, '0')} / {String(grup.kartlar.length).padStart(2, '0')}
                         </span>
-                        {!acik && <span className="chip">Yakında</span>}
+                        <Icon name={k.ikon} size={22} className={acik ? 'text-ink' : 'text-ink-quiet'} />
                       </div>
 
-                      <h3 className="font-display text-[23px] leading-tight font-bold tracking-tight text-ink mb-1.5">
-                        {k.ad}
-                      </h3>
-                      <p className="text-[14px] text-ink-mute leading-relaxed flex-1">
-                        {k.aciklama}
-                      </p>
+                      {/* Orta: başlık + açıklama */}
+                      <div className="mt-6">
+                        <h3
+                          className="font-display font-bold tracking-tight leading-[1.1] text-ink"
+                          style={{ fontSize: 'clamp(18px, 1.6vw, 22px)' }}
+                        >
+                          {k.ad}
+                        </h3>
+                        <p className="text-[12.5px] text-ink-mute leading-snug mt-1.5 font-medium line-clamp-3">
+                          {k.aciklama}
+                        </p>
+                      </div>
 
-                      {acik && (
-                        <>
-                          <div className="hairline my-4" />
-                          <div className="flex items-center justify-between">
-                            <span className="font-mono text-[11px] tracking-wide uppercase text-ink-mute tnum">
-                              {toplam} ders · ~{kartSureDk(k)} dk
-                            </span>
-                            <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand-deep opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                              {biten === 0 ? 'Başla' : 'Devam'}
-                              <Icon name="ArrowRight" size={15} />
-                            </span>
-                          </div>
-                          <div className="mt-3 h-1 bg-surface-2 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-brand rounded-full transition-all duration-500"
-                              style={{ width: `${yuzde}%` }}
-                            />
-                          </div>
-                        </>
-                      )}
+                      {/* Alt: ders/süre + CTA + ilerleme */}
+                      <div className="mt-5">
+                        {acik ? (
+                          <>
+                            <div className="flex items-center justify-between">
+                              <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-ink-mute tnum">
+                                {toplam} ders · ~{kartSureDk(k)} dk
+                              </span>
+                              <span className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold text-ink-mute inline-flex items-center gap-1.5 group-hover:text-brand-deep transition-colors">
+                                {biten === 0 ? 'Başla' : biten >= toplam ? 'Tekrar' : 'Devam'}
+                                <Icon name="ArrowRight" size={11} />
+                              </span>
+                            </div>
+                            <div className="mt-3 h-1 bg-surface-2 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-brand rounded-full transition-all duration-500"
+                                style={{ width: `${yuzde}%` }}
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <span className="font-mono text-[9.5px] tracking-[0.22em] uppercase font-bold text-premium-deep inline-flex items-center gap-1.5 bg-premium-soft/60 px-2 py-1 rounded">
+                            <Icon name="Lock" size={10} />
+                            Yakında
+                          </span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
