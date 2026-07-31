@@ -446,7 +446,7 @@ const App = () => {
     <BrowserRouter>
       <ScrollToTop />
       <SiteLoader />
-      <div className="min-h-screen bg-bg-tint text-ink transition-colors">
+      <div className="min-h-screen flex flex-col bg-bg-tint text-ink transition-colors">
         <Navbar
           ilerleme={ilerleme}
           onTemaDegistir={temaDegistir}
@@ -458,6 +458,7 @@ const App = () => {
           oturumYukleniyor={oturumYukleniyor}
         />
 
+        <div className="flex-1 flex flex-col">
         <Suspense fallback={<SayfaYukleniyor />}>
           <Routes>
             <Route
@@ -807,6 +808,7 @@ const App = () => {
             <Route path="*" element={<RouteFallback />} />
           </Routes>
         </Suspense>
+        </div>
 
         <Footer />
 
