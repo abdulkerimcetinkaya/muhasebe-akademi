@@ -874,12 +874,24 @@ const SoruEkraniIci = ({
         </div>
       </div>
 
-      {/* Aksiyon butonları */}
-      <div className="mt-5 flex flex-col sm:flex-row gap-3">
+      {/* Canlı denge göstergesi + kontrol */}
+      <div className="mt-5 flex flex-col sm:flex-row items-stretch gap-3">
+        {(toplamBorc > 0 || toplamAlacak > 0) && (
+          <div
+            className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold whitespace-nowrap sm:min-w-[196px] transition-colors ${
+              esit ? 'bg-success-soft text-success' : 'bg-premium-soft text-premium-deep'
+            }`}
+          >
+            <Icon name={esit ? 'CheckCircle2' : 'Scale'} size={15} />
+            {esit
+              ? 'Borç = Alacak · Denk'
+              : `Fark: ${paraFormat(Math.abs(toplamBorc - toplamAlacak))} ₺`}
+          </div>
+        )}
         <button
           onClick={kontrol}
           data-tour="kontrol"
-          className="flex-1 bg-ink text-bg py-3.5 text-sm tracking-wide uppercase font-bold hover:bg-ink-soft dark:hover:bg-surface transition flex items-center justify-center gap-2 rounded-xl shadow-lg"
+          className="flex-1 bg-ink text-bg py-3.5 text-sm tracking-wide uppercase font-bold hover:bg-ink-soft dark:hover:bg-surface active:scale-[0.99] transition flex items-center justify-center gap-2 rounded-xl shadow-lg"
         >
           <Icon name="Zap" size={14} />
           Kaydı Kontrol Et
