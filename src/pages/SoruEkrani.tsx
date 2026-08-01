@@ -217,6 +217,7 @@ const SoruEkraniIci = ({
   const [belgeAcik, setBelgeAcik] = useState(false);
   const [solTab, setSolTab] = useState<SolTab>('senaryo');
   const [belgeSekme, setBelgeSekme] = useState(0);
+  const [ipucuAcik, setIpucuAcik] = useState(false);
   const [solGenislik, setSolGenislik] = useState<number>(() => {
     try {
       const v = Number(localStorage.getItem(SOL_GENISLIK_KEY));
@@ -331,6 +332,7 @@ const SoruEkraniIci = ({
     setBelgeAcik(false);
     setSolTab('senaryo');
     setBelgeSekme(0);
+    setIpucuAcik(false);
     setAiMetin(null);
     setAiHata(null);
 
@@ -593,9 +595,16 @@ const SoruEkraniIci = ({
     else nav('/problemler');
   };
 
+  // Etiketleri ayır: kavramlar (bağlam — göster) vs hesap kodları (spoiler — ipucunda)
+  const etiketler = soru.etiketler ?? [];
+  const kavramlar = etiketler.filter((e) => !/^\d{2,4}$/.test(e));
+  const kodEtiketleri = etiketler.filter((e) => /^\d{2,4}$/.test(e));
+  const ipucuMetni = soru.ipucu?.trim() || '';
+  const ipucuVar = ipucuMetni.length > 0 || kodEtiketleri.length > 0;
+
   return (
     <main className="max-w-[1500px] mx-auto px-4 lg:px-6 py-5">
-      {/* ÜST ŞERİT — kimlik + navigasyon */}
+      {/* ÜST ŞERİT — kimlik + navigasyon + araçlar */}
       <div className="mb-4">
         <button
           onClick={() => nav('/problemler')}
@@ -604,25 +613,59 @@ const SoruEkraniIci = ({
           <Icon name="ArrowLeft" size={14} />
           <span>Tüm Problemler</span>
         </button>
-        <div className="flex items-center gap-3 flex-wrap">
-          {unite && <Thiings name={unite.thiingsIcon} size={22} />}
-          <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold">
-            {unite?.ad}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3 flex-wrap">
+              {unite && <Thiings name={unite.thiingsIcon} size={22} />}
+              <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold">
+                {unite?.ad}
+              </div>
+              <span
+                className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[soru.zorluk]}`}
+              >
+                {ZORLUK_AD[soru.zorluk]} · {ZORLUK_PUAN[soru.zorluk]} puan
+              </span>
+              {cozulmusMu && (
+                <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-success dark:text-success bg-success-soft px-2 py-0.5 rounded">
+                  Çözüldü
+                </span>
+              )}
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl tracking-tight mt-1.5 font-bold">
+              {soru.baslik}
+            </h1>
           </div>
-          <span
-            className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[soru.zorluk]}`}
-          >
-            {ZORLUK_AD[soru.zorluk]} · {ZORLUK_PUAN[soru.zorluk]} puan
-          </span>
-          {cozulmusMu && (
-            <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-success dark:text-success bg-success-soft px-2 py-0.5 rounded">
-              Çözüldü
-            </span>
-          )}
+          {/* Araçlar */}
+          <div className="flex items-center gap-1.5 flex-wrap flex-shrink-0">
+            <button
+              onClick={onHesapPlaniYanPanel}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-ink transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="BookOpen" size={13} />
+              Hesap Planı
+            </button>
+            <button
+              onClick={() => {
+                setAiAsistanAcik(true);
+                setKullanilanAi(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-premium/60 dark:border-premium-deep/40 bg-gradient-to-r from-premium-soft to-transparent hover:border-premium transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="Sparkles" size={13} className="text-premium" />
+              AI Asistan
+              <span className="text-[8px] tracking-[0.15em] uppercase font-bold text-premium-deep">
+                Pro
+              </span>
+            </button>
+            <button
+              onClick={() => setHataAcik(true)}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-danger dark:hover:border-danger transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="AlertCircle" size={13} className="text-danger" />
+              Hata Bildir
+            </button>
+          </div>
         </div>
-        <h1 className="font-display text-2xl md:text-3xl tracking-tight mt-1.5 font-bold">
-          {soru.baslik}
-        </h1>
       </div>
 
       {/* İKİ PANE: solda referans · sağda çalışma */}
@@ -665,12 +708,114 @@ const SoruEkraniIci = ({
             {/* Sekme içeriği */}
             <div className="overflow-auto flex-1">
               {solTab === 'senaryo' && (
-                <div data-tour="senaryo" className="p-5">
+                <div data-tour="senaryo" className="p-5 space-y-5">
                   <p className="text-base lg:text-lg leading-relaxed text-ink font-medium whitespace-pre-line">
                     {soru.senaryo}
                   </p>
+
+                  {/* Kavramlar — bağlam (spoiler değil) */}
+                  {kavramlar.length > 0 && (
+                    <div>
+                      <div className="text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-2">
+                        Kavramlar
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {kavramlar.map((e) => (
+                          <span
+                            key={e}
+                            className="text-[11px] font-semibold text-ink-soft bg-line-soft/70 border border-line rounded-full px-2.5 py-0.5"
+                          >
+                            {e.replace(/-/g, ' ')}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* İpucu — opt-in (metin + ilgili hesap kodları) */}
+                  {ipucuVar && (
+                    <div className="rounded-xl border border-premium/40 dark:border-premium-deep/30 bg-premium-soft/30 overflow-hidden">
+                      <button
+                        onClick={() => setIpucuAcik((v) => !v)}
+                        className="w-full flex items-center gap-2 px-3.5 py-2.5 text-left"
+                      >
+                        <Icon name="Lightbulb" size={14} className="text-premium-deep flex-shrink-0" />
+                        <span className="text-[12px] font-bold text-premium-deep">
+                          İpucu
+                        </span>
+                        <span className="text-[11px] text-ink-mute font-medium">
+                          {ipucuAcik ? 'gizle' : 'göster'}
+                        </span>
+                        <Icon
+                          name="ChevronRight"
+                          size={13}
+                          className={`ml-auto text-premium-deep transition-transform ${ipucuAcik ? 'rotate-90' : ''}`}
+                        />
+                      </button>
+                      {ipucuAcik && (
+                        <div className="px-3.5 pb-3.5 pt-0 space-y-3">
+                          {ipucuMetni && (
+                            <p className="text-[13px] leading-relaxed text-ink-soft font-medium">
+                              {ipucuMetni}
+                            </p>
+                          )}
+                          {kodEtiketleri.length > 0 && (
+                            <div>
+                              <div className="text-[9px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-1.5">
+                                İlgili hesap kodları
+                              </div>
+                              <div className="flex flex-wrap gap-1.5">
+                                {kodEtiketleri.map((k) => (
+                                  <span
+                                    key={k}
+                                    className="font-mono text-[12px] font-bold text-brand-deep bg-blue-soft/50 border border-brand/30 rounded px-2 py-0.5"
+                                  >
+                                    {k}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Nasıl kaydederim — statik mini rehber */}
+                  <details className="group rounded-xl border border-line bg-surface-2/30 overflow-hidden">
+                    <summary className="flex items-center gap-2 px-3.5 py-2.5 cursor-pointer list-none">
+                      <Icon name="BookOpen" size={14} className="text-ink-mute flex-shrink-0" />
+                      <span className="text-[12px] font-bold text-ink-soft">
+                        Yevmiye kaydı nasıl yapılır?
+                      </span>
+                      <Icon
+                        name="ChevronRight"
+                        size={13}
+                        className="ml-auto text-ink-mute transition-transform group-open:rotate-90"
+                      />
+                    </summary>
+                    <ol className="px-3.5 pb-3.5 space-y-2 text-[13px] text-ink-soft font-medium leading-relaxed">
+                      <li className="flex gap-2">
+                        <span className="font-mono font-bold text-ink-mute flex-shrink-0">1.</span>
+                        Belgeyi (fatura/dekont) oku; tutarları ve tarafları belirle.
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-mono font-bold text-ink-mute flex-shrink-0">2.</span>
+                        Hangi hesapların arttığını/azaldığını, borç mu alacak mı olduğunu bul.
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-mono font-bold text-ink-mute flex-shrink-0">3.</span>
+                        Hesap kodlarını yaz, tutarları borç/alacak sütununa gir.
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-mono font-bold text-ink-mute flex-shrink-0">4.</span>
+                        Borç toplamı = Alacak toplamı olduğunu (denge) kontrol et.
+                      </li>
+                    </ol>
+                  </details>
+
                   {yazar && (
-                    <div className="flex items-center gap-1.5 text-[12px] text-ink-mute mt-5 pt-4 border-t border-line-soft">
+                    <div className="flex items-center gap-1.5 text-[12px] text-ink-mute pt-4 border-t border-line-soft">
                       <Icon
                         name="BadgeCheck"
                         size={11}
@@ -781,40 +926,6 @@ const SoruEkraniIci = ({
 
         {/* SAĞ PANE — çalışma alanı */}
         <div className="w-full lg:flex-1 lg:min-w-0">
-          {/* Araç çubuğu */}
-          <div className="flex items-center justify-end gap-1.5 mb-3">
-            <button
-              onClick={onHesapPlaniYanPanel}
-              title="Hesap Planı"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-ink transition text-[12px] font-semibold rounded-lg"
-            >
-              <Icon name="BookOpen" size={13} />
-              <span className="hidden sm:inline">Hesap Planı</span>
-            </button>
-            <button
-              onClick={() => {
-                setAiAsistanAcik(true);
-                setKullanilanAi(true);
-              }}
-              title="AI Asistan"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-premium/60 dark:border-premium-deep/40 bg-gradient-to-r from-premium-soft to-transparent hover:border-premium transition text-[12px] font-semibold rounded-lg"
-            >
-              <Icon name="Sparkles" size={13} className="text-premium" />
-              <span className="hidden sm:inline">AI Asistan</span>
-              <span className="text-[8px] tracking-[0.15em] uppercase font-bold text-premium-deep">
-                Pro
-              </span>
-            </button>
-            <button
-              onClick={() => setHataAcik(true)}
-              title="Hata Bildir"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-danger dark:hover:border-danger transition text-[12px] font-semibold rounded-lg"
-            >
-              <Icon name="AlertCircle" size={13} className="text-danger" />
-              <span className="hidden sm:inline">Hata Bildir</span>
-            </button>
-          </div>
-
       {/* YEVMİYE FİŞİ — LUCA tarzı */}
       <div data-tour="fis" className="bg-surface border border-line-strong rounded-xl overflow-hidden shadow-sm">
         {/* Fiş başlığı */}
