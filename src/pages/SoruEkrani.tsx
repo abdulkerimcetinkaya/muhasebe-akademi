@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { Thiings } from '../components/Thiings';
 import { HesapKoduInput } from '../components/HesapKoduInput';
 import { CozumModal } from '../components/CozumModal';
-import { BelgeModal } from '../components/BelgeModal';
-import { BelgeYanPanel } from '../components/BelgeYanPanel';
+import { BelgeModal, BelgeGovde } from '../components/BelgeModal';
 import { HataBildirModal } from '../components/HataBildirModal';
 import { AIAsistanYanPanel } from '../components/AIAsistanYanPanel';
 import { MarkdownLite } from '../components/MarkdownLite';
@@ -41,6 +40,23 @@ import type {
 } from '../types';
 
 type Durum = 'bos' | 'dogru' | 'yanlis';
+type SolTab = 'senaryo' | 'belge' | 'cozum';
+
+const BELGE_ETIKET: Record<Belge['tur'], string> = {
+  fatura: 'Fatura',
+  'perakende-fis': 'Perakende Fişi',
+  cek: 'Çek',
+  senet: 'Senet',
+  dekont: 'Dekont',
+};
+
+const SOL_GENISLIK_KEY = 'soru-sol-genislik';
+
+const SOL_TABLAR: { key: SolTab; ad: string }[] = [
+  { key: 'senaryo', ad: 'Senaryo' },
+  { key: 'belge', ad: 'Belge' },
+  { key: 'cozum', ad: 'Çözüm' },
+];
 
 interface CozumYardim {
   kullanilanAi?: boolean;
@@ -199,7 +215,17 @@ const SoruEkraniIci = ({
   const [cozumOnayAcik, setCozumOnayAcik] = useState(false);
   const [hataAcik, setHataAcik] = useState(false);
   const [belgeAcik, setBelgeAcik] = useState(false);
-  const [belgePanelAcik, setBelgePanelAcik] = useState(false);
+  const [solTab, setSolTab] = useState<SolTab>('senaryo');
+  const [belgeSekme, setBelgeSekme] = useState(0);
+  const [solGenislik, setSolGenislik] = useState<number>(() => {
+    try {
+      const v = Number(localStorage.getItem(SOL_GENISLIK_KEY));
+      return v >= 30 && v <= 58 ? v : 40;
+    } catch {
+      return 40;
+    }
+  });
+  const splitRef = useRef<HTMLDivElement>(null);
   const [aiAsistanAcik, setAiAsistanAcik] = useState(false);
   const [aiYukleniyor, setAiYukleniyor] = useState(false);
   // Yardım takibi — puanlama için. AI açıldıysa veya çözüm gösterildiyse
@@ -303,7 +329,8 @@ const SoruEkraniIci = ({
     setCozumOnayAcik(false);
     setHataAcik(false);
     setBelgeAcik(false);
-    setBelgePanelAcik(false);
+    setSolTab('senaryo');
+    setBelgeSekme(0);
     setAiMetin(null);
     setAiHata(null);
 
@@ -375,6 +402,35 @@ const SoruEkraniIci = ({
   const toplamBorc = kayitlar.reduce((a, k) => a + (+k.borc || 0), 0);
   const toplamAlacak = kayitlar.reduce((a, k) => a + (+k.alacak || 0), 0);
   const esit = Math.abs(toplamBorc - toplamAlacak) < 0.01 && toplamBorc > 0;
+
+  // İki-pane bölücüyü sürükle
+  const surukleBaslat = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    const rect = splitRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const hareket = (ev: PointerEvent) => {
+      const pct = ((ev.clientX - rect.left) / rect.width) * 100;
+      setSolGenislik(Math.min(58, Math.max(30, Math.round(pct))));
+    };
+    const bitir = () => {
+      window.removeEventListener('pointermove', hareket);
+      window.removeEventListener('pointerup', bitir);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      setSolGenislik((g) => {
+        try {
+          localStorage.setItem(SOL_GENISLIK_KEY, String(g));
+        } catch {
+          /* yok say */
+        }
+        return g;
+      });
+    };
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+    window.addEventListener('pointermove', hareket);
+    window.addEventListener('pointerup', bitir);
+  }, []);
 
   const satirEkle = () => {
     setKayitlar((prev) => [...prev, bosSatir()]);
@@ -483,14 +539,13 @@ const SoruEkraniIci = ({
         if (cozumAcik) { setCozumAcik(false); return; }
         if (cozumOnayAcik) { setCozumOnayAcik(false); return; }
         if (belgeAcik) { setBelgeAcik(false); return; }
-        if (belgePanelAcik) { setBelgePanelAcik(false); return; }
         if (hataAcik) { setHataAcik(false); return; }
         if (aiAsistanAcik) { setAiAsistanAcik(false); return; }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [kontrol, cozumAcik, cozumOnayAcik, belgeAcik, belgePanelAcik, hataAcik, aiAsistanAcik]);
+  }, [kontrol, cozumAcik, cozumOnayAcik, belgeAcik, hataAcik, aiAsistanAcik]);
 
   const bulunanHesap = (kod: string) => hesapAdiBul(kod, muavinler);
 
@@ -539,135 +594,226 @@ const SoruEkraniIci = ({
   };
 
   return (
-    <main className="max-w-[1400px] mx-auto px-4 lg:px-8 py-6">
-      <button
-        onClick={() => nav('/problemler')}
-        className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-5 font-semibold"
-      >
-        <Icon name="ArrowLeft" size={14} />
-        <span>Tüm Problemler</span>
-      </button>
-
-      {/* ÜST BÖLÜM: Soru bilgisi + yan toolbar */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6 mb-6">
-        <div>
-          <div className="flex items-center gap-3 mb-3 flex-wrap">
-            {unite && <Thiings name={unite.thiingsIcon} size={22} />}
-            <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold">
-              {unite?.ad}
-            </div>
-            <span
-              className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[soru.zorluk]}`}
-            >
-              {ZORLUK_AD[soru.zorluk]} · {ZORLUK_PUAN[soru.zorluk]} puan
-            </span>
-            {cozulmusMu && (
-              <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-success dark:text-success bg-success-soft px-2 py-0.5 rounded">
-                Çözüldü
-              </span>
-            )}
+    <main className="max-w-[1500px] mx-auto px-4 lg:px-6 py-5">
+      {/* ÜST ŞERİT — kimlik + navigasyon */}
+      <div className="mb-4">
+        <button
+          onClick={() => nav('/problemler')}
+          className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-3 font-semibold"
+        >
+          <Icon name="ArrowLeft" size={14} />
+          <span>Tüm Problemler</span>
+        </button>
+        <div className="flex items-center gap-3 flex-wrap">
+          {unite && <Thiings name={unite.thiingsIcon} size={22} />}
+          <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold">
+            {unite?.ad}
           </div>
-          <h1 className="font-display text-2xl md:text-3xl tracking-tight mb-2 font-bold">
-            {soru.baslik}
-          </h1>
-          {yazar && (
-            <div className="flex items-center gap-1.5 text-[12px] text-ink-mute mb-4">
-              <Icon name="BadgeCheck" size={11} className="text-success dark:text-success" />
-              <span>
-                <strong>{yazar.ad}</strong> tarafından önerildi
-                {yazar.unvan && <span className="text-ink-quiet"> · {yazar.unvan}</span>}
-              </span>
-            </div>
-          )}
-          <div data-tour="senaryo" className="border-l-4 border-ink pl-5 py-1">
-            <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-2 font-bold">
-              Senaryo
-            </div>
-            <p className="text-base lg:text-lg leading-relaxed text-ink font-medium whitespace-pre-line">
-              {soru.senaryo}
-            </p>
-          </div>
-
-        </div>
-
-        {/* YAN TOOLBAR */}
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
-          {belgeler && belgeler.length > 0 && (
-            <button
-              onClick={() => setBelgePanelAcik(true)}
-              className="col-span-2 lg:col-span-1 flex items-center gap-2.5 px-3 py-2.5 bg-ink text-white hover:bg-ink/90 transition text-left text-sm font-semibold rounded-lg"
-            >
-              <Icon name="FileText" size={14} className="flex-shrink-0" />
-              <span>Belgeyi Aç</span>
-              {belgeler.length > 1 && (
-                <span className="ml-auto text-[11px] font-bold bg-white/20 rounded px-1.5 py-0.5">
-                  {belgeler.length}
-                </span>
-              )}
-            </button>
-          )}
-          <button
-            onClick={onHesapPlaniYanPanel}
-            className="flex items-center gap-2.5 px-3 py-2.5 border border-line-strong hover:border-ink transition text-left text-sm font-semibold rounded-lg"
+          <span
+            className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[soru.zorluk]}`}
           >
-            <Icon name="BookOpen" size={14} className="flex-shrink-0" />
-            <span>Hesap Planı</span>
-          </button>
-          <button
-            onClick={() => {
-              setAiAsistanAcik(true);
-              setKullanilanAi(true);
-            }}
-            className="flex items-center gap-2.5 px-3 py-2.5 border border-premium/60 dark:border-premium-deep/40 bg-gradient-to-r from-premium-soft to-transparent hover:border-premium transition text-left text-sm font-semibold rounded-lg"
-          >
-            <Icon
-              name="Sparkles"
-              size={14}
-              className="text-premium flex-shrink-0"
-            />
-            <span>AI Asistan</span>
-            <span className="ml-auto text-[8px] tracking-[0.2em] uppercase font-bold text-premium-deep">
-              Pro
+            {ZORLUK_AD[soru.zorluk]} · {ZORLUK_PUAN[soru.zorluk]} puan
+          </span>
+          {cozulmusMu && (
+            <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-success dark:text-success bg-success-soft px-2 py-0.5 rounded">
+              Çözüldü
             </span>
-          </button>
-          <button
-            onClick={() => {
-              // Soru zaten çözülmüşse veya bu oturumda çözüm açılmışsa
-              // doğrudan modali aç — uyarı/onay gerekmez (puan zaten kazanılmış).
-              if (cozulmusMu || cozumGosterildi) {
-                setCozumAcik(true);
-              } else {
-                setCozumOnayAcik(true);
-              }
-            }}
-            className={`flex items-center gap-2.5 px-3 py-2.5 border rounded-lg text-left text-sm font-semibold transition ${
- cozumGosterildi && !cozulmusMu
- ? 'border-danger bg-danger-soft/40 text-danger'
- : 'border-line-strong hover:border-ink '
- }`}
-          >
-            <Icon name="Eye" size={14} className="flex-shrink-0" />
-            <span>Çözümü Gör</span>
-            {cozumGosterildi && !cozulmusMu && (
-              <span className="ml-auto text-[8px] tracking-[0.2em] uppercase font-bold text-danger dark:text-danger">
-                0 puan
-              </span>
-            )}
-            {cozulmusMu && (
-              <span className="ml-auto text-[8px] tracking-[0.2em] uppercase font-bold text-success">
-                Açık
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setHataAcik(true)}
-            className="flex items-center gap-2.5 px-3 py-2.5 border border-line-strong hover:border-danger dark:hover:border-danger transition text-left text-sm font-semibold rounded-lg col-span-2 lg:col-span-1"
-          >
-            <Icon name="AlertCircle" size={14} className="text-danger flex-shrink-0" />
-            <span>Hata Bildir</span>
-          </button>
+          )}
         </div>
+        <h1 className="font-display text-2xl md:text-3xl tracking-tight mt-1.5 font-bold">
+          {soru.baslik}
+        </h1>
       </div>
+
+      {/* İKİ PANE: solda referans · sağda çalışma */}
+      <div
+        ref={splitRef}
+        style={{ ['--sol' as string]: `${solGenislik}%` } as React.CSSProperties}
+        className="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-0"
+      >
+        {/* SOL PANE — referans */}
+        <section className="w-full lg:w-[var(--sol)] flex-shrink-0 lg:sticky lg:top-4 self-start">
+          <div className="rounded-xl border border-line bg-surface overflow-hidden flex flex-col lg:max-h-[calc(100vh-108px)]">
+            {/* Sekme başlıkları */}
+            <div className="flex items-stretch border-b border-line bg-surface-2/40">
+              {SOL_TABLAR.filter(
+                (t) => t.key !== 'belge' || (belgeler && belgeler.length > 0),
+              ).map((t) => {
+                const aktifTab = solTab === t.key;
+                return (
+                  <button
+                    key={t.key}
+                    onClick={() => setSolTab(t.key)}
+                    className={`relative px-4 py-2.5 text-[12px] font-bold tracking-tight transition-colors ${
+                      aktifTab ? 'text-ink' : 'text-ink-mute hover:text-ink-soft'
+                    }`}
+                  >
+                    {t.ad}
+                    {t.key === 'belge' && belgeler && belgeler.length > 1 && (
+                      <span className="ml-1 text-[10px] text-ink-quiet">
+                        ({belgeler.length})
+                      </span>
+                    )}
+                    {aktifTab && (
+                      <span className="absolute left-3 right-3 -bottom-px h-0.5 bg-ink rounded-full" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Sekme içeriği */}
+            <div className="overflow-auto flex-1">
+              {solTab === 'senaryo' && (
+                <div data-tour="senaryo" className="p-5">
+                  <p className="text-base lg:text-lg leading-relaxed text-ink font-medium whitespace-pre-line">
+                    {soru.senaryo}
+                  </p>
+                  {yazar && (
+                    <div className="flex items-center gap-1.5 text-[12px] text-ink-mute mt-5 pt-4 border-t border-line-soft">
+                      <Icon
+                        name="BadgeCheck"
+                        size={11}
+                        className="text-success dark:text-success"
+                      />
+                      <span>
+                        <strong>{yazar.ad}</strong> tarafından önerildi
+                        {yazar.unvan && (
+                          <span className="text-ink-quiet"> · {yazar.unvan}</span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {solTab === 'belge' && belgeler && belgeler.length > 0 && (
+                <div>
+                  <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-line-soft bg-surface-2/30">
+                    {belgeler.length > 1 ? (
+                      <div className="flex items-center gap-1 overflow-x-auto">
+                        {belgeler.map((b, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setBelgeSekme(i)}
+                            className={`flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-semibold transition ${
+                              i === belgeSekme
+                                ? 'bg-ink text-white'
+                                : 'text-ink-soft hover:bg-line-soft'
+                            }`}
+                          >
+                            {BELGE_ETIKET[b.tur]}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold px-1">
+                        {BELGE_ETIKET[belgeler[0].tur]}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => setBelgeAcik(true)}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-deep hover:gap-2 transition-all flex-shrink-0"
+                    >
+                      Tam ekran <Icon name="Eye" size={12} />
+                    </button>
+                  </div>
+                  <div className="bg-line-soft/25 p-3.5">
+                    <div style={{ zoom: 0.82 }}>
+                      <BelgeGovde
+                        belge={belgeler[Math.min(belgeSekme, belgeler.length - 1)]}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {solTab === 'cozum' && (
+                <div className="p-5">
+                  {cozulmusMu || cozumGosterildi ? (
+                    <div>
+                      <div className="flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-3">
+                        <Icon name="Eye" size={13} /> Çözüm
+                      </div>
+                      <p className="text-sm text-ink-soft font-medium leading-relaxed mb-4">
+                        Bu sorunun çözümü senin için açık.
+                        {cozumGosterildi &&
+                          !cozulmusMu &&
+                          ' (Çözümü gördüğün için puan kazanılmadı.)'}
+                      </p>
+                      <button
+                        onClick={() => setCozumAcik(true)}
+                        className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2.5 text-sm font-semibold rounded-lg hover:bg-ink-soft dark:hover:bg-surface transition"
+                      >
+                        <Icon name="Eye" size={14} /> Çözümü Aç
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center gap-2 text-[11px] tracking-[0.2em] uppercase font-bold text-danger mb-3">
+                        <Icon name="Lock" size={13} /> Çözüm kilitli
+                      </div>
+                      <p className="text-sm text-ink-soft font-medium leading-relaxed mb-4">
+                        Önce kendin dene. Çözümü görürsen bu sorudan{' '}
+                        <strong>puan kazanamazsın</strong>.
+                      </p>
+                      <button
+                        onClick={() => setCozumOnayAcik(true)}
+                        className="inline-flex items-center gap-2 border border-danger bg-danger-soft/40 text-danger px-4 py-2.5 text-sm font-semibold rounded-lg hover:bg-danger-soft transition"
+                      >
+                        <Icon name="Eye" size={14} /> Yine de Çözümü Gör
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Sürüklenebilir bölücü (lg) */}
+        <div
+          onPointerDown={surukleBaslat}
+          className="hidden lg:flex items-center justify-center w-4 flex-shrink-0 self-stretch cursor-col-resize group"
+        >
+          <div className="w-px h-12 bg-line group-hover:bg-ink transition-colors rounded-full" />
+        </div>
+
+        {/* SAĞ PANE — çalışma alanı */}
+        <div className="w-full lg:flex-1 lg:min-w-0">
+          {/* Araç çubuğu */}
+          <div className="flex items-center justify-end gap-1.5 mb-3">
+            <button
+              onClick={onHesapPlaniYanPanel}
+              title="Hesap Planı"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-ink transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="BookOpen" size={13} />
+              <span className="hidden sm:inline">Hesap Planı</span>
+            </button>
+            <button
+              onClick={() => {
+                setAiAsistanAcik(true);
+                setKullanilanAi(true);
+              }}
+              title="AI Asistan"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-premium/60 dark:border-premium-deep/40 bg-gradient-to-r from-premium-soft to-transparent hover:border-premium transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="Sparkles" size={13} className="text-premium" />
+              <span className="hidden sm:inline">AI Asistan</span>
+              <span className="text-[8px] tracking-[0.15em] uppercase font-bold text-premium-deep">
+                Pro
+              </span>
+            </button>
+            <button
+              onClick={() => setHataAcik(true)}
+              title="Hata Bildir"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 border border-line-strong hover:border-danger dark:hover:border-danger transition text-[12px] font-semibold rounded-lg"
+            >
+              <Icon name="AlertCircle" size={13} className="text-danger" />
+              <span className="hidden sm:inline">Hata Bildir</span>
+            </button>
+          </div>
 
       {/* YEVMİYE FİŞİ — LUCA tarzı */}
       <div data-tour="fis" className="bg-surface border border-line-strong rounded-xl overflow-hidden shadow-sm">
@@ -1052,6 +1198,8 @@ const SoruEkraniIci = ({
           )}
         </div>
       )}
+        </div>{/* /sağ pane */}
+      </div>{/* /iki pane */}
 
       {cozumAcik && <CozumModal soru={soru} onKapat={() => setCozumAcik(false)} />}
       {cozumOnayAcik && (
@@ -1107,17 +1255,6 @@ const SoruEkraniIci = ({
             </div>
           </div>
         </div>
-      )}
-      {belgeler && (
-        <BelgeYanPanel
-          acik={belgePanelAcik}
-          belgeler={belgeler}
-          onKapat={() => setBelgePanelAcik(false)}
-          onTamEkran={() => {
-            setBelgePanelAcik(false);
-            setBelgeAcik(true);
-          }}
-        />
       )}
       {belgeAcik && belgeler && (
         <BelgeModal belgeler={belgeler} onKapat={() => setBelgeAcik(false)} />
