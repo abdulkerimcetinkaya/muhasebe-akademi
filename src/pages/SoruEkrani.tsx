@@ -4,7 +4,8 @@ import { Icon } from '../components/Icon';
 import { Thiings } from '../components/Thiings';
 import { HesapKoduInput } from '../components/HesapKoduInput';
 import { CozumModal } from '../components/CozumModal';
-import { BelgeModal, BelgeGovde } from '../components/BelgeModal';
+import { BelgeModal } from '../components/BelgeModal';
+import { BelgeYanPanel } from '../components/BelgeYanPanel';
 import { HataBildirModal } from '../components/HataBildirModal';
 import { AIAsistanYanPanel } from '../components/AIAsistanYanPanel';
 import { MarkdownLite } from '../components/MarkdownLite';
@@ -40,14 +41,6 @@ import type {
 } from '../types';
 
 type Durum = 'bos' | 'dogru' | 'yanlis';
-
-const BELGE_ETIKET: Record<Belge['tur'], string> = {
-  fatura: 'Fatura',
-  'perakende-fis': 'Perakende Fişi',
-  cek: 'Çek',
-  senet: 'Senet',
-  dekont: 'Dekont',
-};
 
 interface CozumYardim {
   kullanilanAi?: boolean;
@@ -206,7 +199,7 @@ const SoruEkraniIci = ({
   const [cozumOnayAcik, setCozumOnayAcik] = useState(false);
   const [hataAcik, setHataAcik] = useState(false);
   const [belgeAcik, setBelgeAcik] = useState(false);
-  const [belgeGenis, setBelgeGenis] = useState(false);
+  const [belgePanelAcik, setBelgePanelAcik] = useState(false);
   const [aiAsistanAcik, setAiAsistanAcik] = useState(false);
   const [aiYukleniyor, setAiYukleniyor] = useState(false);
   // Yardım takibi — puanlama için. AI açıldıysa veya çözüm gösterildiyse
@@ -310,6 +303,7 @@ const SoruEkraniIci = ({
     setCozumOnayAcik(false);
     setHataAcik(false);
     setBelgeAcik(false);
+    setBelgePanelAcik(false);
     setAiMetin(null);
     setAiHata(null);
 
@@ -489,13 +483,14 @@ const SoruEkraniIci = ({
         if (cozumAcik) { setCozumAcik(false); return; }
         if (cozumOnayAcik) { setCozumOnayAcik(false); return; }
         if (belgeAcik) { setBelgeAcik(false); return; }
+        if (belgePanelAcik) { setBelgePanelAcik(false); return; }
         if (hataAcik) { setHataAcik(false); return; }
         if (aiAsistanAcik) { setAiAsistanAcik(false); return; }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [kontrol, cozumAcik, cozumOnayAcik, belgeAcik, hataAcik, aiAsistanAcik]);
+  }, [kontrol, cozumAcik, cozumOnayAcik, belgeAcik, belgePanelAcik, hataAcik, aiAsistanAcik]);
 
   const bulunanHesap = (kod: string) => hesapAdiBul(kod, muavinler);
 
@@ -593,47 +588,24 @@ const SoruEkraniIci = ({
             </p>
           </div>
 
-          {/* Belge masası — belgeyi modal yerine inline göster (katlanabilir, kompakt) */}
-          {belgeler && belgeler.length > 0 && (
-            <div className="mt-5 rounded-xl border border-line bg-surface overflow-hidden">
-              <div className="flex items-center justify-between gap-3 px-3.5 py-2">
-                <button
-                  onClick={() => setBelgeGenis((v) => !v)}
-                  className="group flex items-center gap-2 min-w-0 text-left"
-                >
-                  <Icon
-                    name="ChevronRight"
-                    size={14}
-                    className={`flex-shrink-0 text-ink-mute transition-transform ${belgeGenis ? 'rotate-90' : ''}`}
-                  />
-                  <Icon name="FileText" size={13} className="flex-shrink-0 text-ink-mute" />
-                  <span className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-soft font-bold truncate">
-                    {belgeler.length > 1 ? `${BELGE_ETIKET[belgeler[0].tur]} +${belgeler.length - 1}` : BELGE_ETIKET[belgeler[0].tur]}
-                  </span>
-                  <span className="text-[11px] text-ink-mute font-medium group-hover:text-ink-soft transition-colors">
-                    {belgeGenis ? '· gizle' : '· göster'}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setBelgeAcik(true)}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-deep hover:gap-2 transition-all flex-shrink-0"
-                >
-                  Tam ekran <Icon name="Eye" size={12} />
-                </button>
-              </div>
-              {belgeGenis && (
-                <div className="border-t border-line-soft bg-line-soft/30 max-h-[400px] overflow-auto">
-                  <div className="p-3.5" style={{ zoom: 0.78 }}>
-                    <BelgeGovde belge={belgeler[0]} />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
         </div>
 
         {/* YAN TOOLBAR */}
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+          {belgeler && belgeler.length > 0 && (
+            <button
+              onClick={() => setBelgePanelAcik(true)}
+              className="col-span-2 lg:col-span-1 flex items-center gap-2.5 px-3 py-2.5 bg-ink text-white hover:bg-ink/90 transition text-left text-sm font-semibold rounded-lg"
+            >
+              <Icon name="FileText" size={14} className="flex-shrink-0" />
+              <span>Belgeyi Aç</span>
+              {belgeler.length > 1 && (
+                <span className="ml-auto text-[11px] font-bold bg-white/20 rounded px-1.5 py-0.5">
+                  {belgeler.length}
+                </span>
+              )}
+            </button>
+          )}
           <button
             onClick={onHesapPlaniYanPanel}
             className="flex items-center gap-2.5 px-3 py-2.5 border border-line-strong hover:border-ink transition text-left text-sm font-semibold rounded-lg"
@@ -1135,6 +1107,17 @@ const SoruEkraniIci = ({
             </div>
           </div>
         </div>
+      )}
+      {belgeler && (
+        <BelgeYanPanel
+          acik={belgePanelAcik}
+          belgeler={belgeler}
+          onKapat={() => setBelgePanelAcik(false)}
+          onTamEkran={() => {
+            setBelgePanelAcik(false);
+            setBelgeAcik(true);
+          }}
+        />
       )}
       {belgeAcik && belgeler && (
         <BelgeModal belgeler={belgeler} onKapat={() => setBelgeAcik(false)} />
