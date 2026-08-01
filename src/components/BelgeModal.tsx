@@ -69,11 +69,7 @@ export const BelgeModal = ({ belgeler, onKapat }: Props) => {
           </button>
         </div>
         <div className="p-4 sm:p-8 bg-line-soft/40">
-          {aktif.tur === 'fatura' && <FaturaGorunum f={aktif} />}
-          {aktif.tur === 'perakende-fis' && <PerakendeFisGorunum f={aktif} />}
-          {aktif.tur === 'cek' && <CekGorunum c={aktif} />}
-          {aktif.tur === 'senet' && <SenetGorunum s={aktif} />}
-          {aktif.tur === 'dekont' && <DekontGorunum d={aktif} />}
+          <BelgeGovde belge={aktif} />
         </div>
       </div>
     </div>
@@ -933,4 +929,23 @@ const maskele = (s: string): string => {
   const ilk = s.slice(0, 2);
   const son = s.slice(-2);
   return `${ilk}${'*'.repeat(Math.min(s.length - 4, 10))}${son}`;
+};
+
+// Belge gövdesi — türe göre doğru görünümü render eder. Hem modalda hem soru
+// ekranında (belge masası) inline kullanılır.
+export const BelgeGovde = ({ belge }: { belge: Belge }) => {
+  switch (belge.tur) {
+    case 'fatura':
+      return <FaturaGorunum f={belge} />;
+    case 'perakende-fis':
+      return <PerakendeFisGorunum f={belge} />;
+    case 'cek':
+      return <CekGorunum c={belge} />;
+    case 'senet':
+      return <SenetGorunum s={belge} />;
+    case 'dekont':
+      return <DekontGorunum d={belge} />;
+    default:
+      return null;
+  }
 };

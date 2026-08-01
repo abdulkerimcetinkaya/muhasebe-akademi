@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon';
 import { Thiings } from '../components/Thiings';
 import { HesapKoduInput } from '../components/HesapKoduInput';
 import { CozumModal } from '../components/CozumModal';
-import { BelgeModal } from '../components/BelgeModal';
+import { BelgeModal, BelgeGovde } from '../components/BelgeModal';
 import { HataBildirModal } from '../components/HataBildirModal';
 import { AIAsistanYanPanel } from '../components/AIAsistanYanPanel';
 import { MarkdownLite } from '../components/MarkdownLite';
@@ -583,26 +583,31 @@ const SoruEkraniIci = ({
               {soru.senaryo}
             </p>
           </div>
+
+          {/* Belge masası — belgeyi modal yerine inline göster */}
+          {belgeler && belgeler.length > 0 && (
+            <div className="mt-5 rounded-2xl border border-line bg-surface overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-line-soft bg-surface-2/50">
+                <div className="flex items-center gap-2 font-mono text-[10.5px] tracking-[0.2em] uppercase text-ink-mute font-bold">
+                  <Icon name="FileText" size={13} />
+                  {belgeler.length > 1 ? `Belgeler · ${belgeler.length}` : 'Belge'}
+                </div>
+                <button
+                  onClick={() => setBelgeAcik(true)}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-deep hover:gap-2 transition-all"
+                >
+                  Tam ekran <Icon name="Eye" size={12} />
+                </button>
+              </div>
+              <div className="p-4 sm:p-5 bg-line-soft/30 max-h-[540px] overflow-auto">
+                <BelgeGovde belge={belgeler[0]} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* YAN TOOLBAR */}
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
-          {belgeler && belgeler.length > 0 && (
-            <button
-              onClick={() => setBelgeAcik(true)}
-              className="flex items-center gap-2.5 px-3 py-2.5 border border-brand-soft dark:border-brand-deep/50 bg-gradient-to-r from-brand-soft to-transparent hover:border-brand transition text-left text-sm font-semibold rounded-lg col-span-2 lg:col-span-1"
-            >
-              <Icon
-                name="FileText"
-                size={14}
-                className="text-brand dark:text-brand-mute flex-shrink-0"
-              />
-              <span>Belgeyi Görüntüle</span>
-              <span className="ml-auto text-[9px] tracking-[0.2em] uppercase font-bold text-brand dark:text-brand-mute font-mono">
-                {belgeler.length}
-              </span>
-            </button>
-          )}
           <button
             onClick={onHesapPlaniYanPanel}
             className="flex items-center gap-2.5 px-3 py-2.5 border border-line-strong hover:border-ink transition text-left text-sm font-semibold rounded-lg"
