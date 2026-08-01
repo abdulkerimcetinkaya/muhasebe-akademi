@@ -41,6 +41,14 @@ import type {
 
 type Durum = 'bos' | 'dogru' | 'yanlis';
 
+const BELGE_ETIKET: Record<Belge['tur'], string> = {
+  fatura: 'Fatura',
+  'perakende-fis': 'Perakende Fişi',
+  cek: 'Çek',
+  senet: 'Senet',
+  dekont: 'Dekont',
+};
+
 interface CozumYardim {
   kullanilanAi?: boolean;
   cozumGosterildi?: boolean;
@@ -198,6 +206,7 @@ const SoruEkraniIci = ({
   const [cozumOnayAcik, setCozumOnayAcik] = useState(false);
   const [hataAcik, setHataAcik] = useState(false);
   const [belgeAcik, setBelgeAcik] = useState(false);
+  const [belgeGenis, setBelgeGenis] = useState(false);
   const [aiAsistanAcik, setAiAsistanAcik] = useState(false);
   const [aiYukleniyor, setAiYukleniyor] = useState(false);
   // Yardım takibi — puanlama için. AI açıldıysa veya çözüm gösterildiyse
@@ -584,24 +593,41 @@ const SoruEkraniIci = ({
             </p>
           </div>
 
-          {/* Belge masası — belgeyi modal yerine inline göster */}
+          {/* Belge masası — belgeyi modal yerine inline göster (katlanabilir, kompakt) */}
           {belgeler && belgeler.length > 0 && (
-            <div className="mt-5 rounded-2xl border border-line bg-surface overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-line-soft bg-surface-2/50">
-                <div className="flex items-center gap-2 font-mono text-[10.5px] tracking-[0.2em] uppercase text-ink-mute font-bold">
-                  <Icon name="FileText" size={13} />
-                  {belgeler.length > 1 ? `Belgeler · ${belgeler.length}` : 'Belge'}
-                </div>
+            <div className="mt-5 rounded-xl border border-line bg-surface overflow-hidden">
+              <div className="flex items-center justify-between gap-3 px-3.5 py-2">
+                <button
+                  onClick={() => setBelgeGenis((v) => !v)}
+                  className="group flex items-center gap-2 min-w-0 text-left"
+                >
+                  <Icon
+                    name="ChevronRight"
+                    size={14}
+                    className={`flex-shrink-0 text-ink-mute transition-transform ${belgeGenis ? 'rotate-90' : ''}`}
+                  />
+                  <Icon name="FileText" size={13} className="flex-shrink-0 text-ink-mute" />
+                  <span className="font-mono text-[10.5px] tracking-[0.18em] uppercase text-ink-soft font-bold truncate">
+                    {belgeler.length > 1 ? `${BELGE_ETIKET[belgeler[0].tur]} +${belgeler.length - 1}` : BELGE_ETIKET[belgeler[0].tur]}
+                  </span>
+                  <span className="text-[11px] text-ink-mute font-medium group-hover:text-ink-soft transition-colors">
+                    {belgeGenis ? '· gizle' : '· göster'}
+                  </span>
+                </button>
                 <button
                   onClick={() => setBelgeAcik(true)}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-deep hover:gap-2 transition-all"
+                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-deep hover:gap-2 transition-all flex-shrink-0"
                 >
                   Tam ekran <Icon name="Eye" size={12} />
                 </button>
               </div>
-              <div className="p-4 sm:p-5 bg-line-soft/30 max-h-[540px] overflow-auto">
-                <BelgeGovde belge={belgeler[0]} />
-              </div>
+              {belgeGenis && (
+                <div className="border-t border-line-soft bg-line-soft/30 max-h-[400px] overflow-auto">
+                  <div className="p-3.5" style={{ zoom: 0.78 }}>
+                    <BelgeGovde belge={belgeler[0]} />
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
