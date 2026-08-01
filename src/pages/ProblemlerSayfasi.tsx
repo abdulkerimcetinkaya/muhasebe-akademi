@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
 import { useUniteler } from '../contexts/UnitelerContext';
-import { ZORLUK_AD, ZORLUK_SIRA, ZORLUK_STIL } from '../data/sabitler';
+import { devamEtSorusu } from '../lib/oneriler';
+import { ZORLUK_AD, ZORLUK_PUAN, ZORLUK_SIRA, ZORLUK_STIL } from '../data/sabitler';
 import type { Ilerleme, Zorluk } from '../types';
 
 interface Props {
@@ -53,20 +55,97 @@ const EtiketChipler = ({
   );
 };
 
-/* Sıralama oku — parent dışında tanımlı (her render'da yeniden oluşmasın) */
-const SirOk = ({
-  fld,
-  aktifFld,
-  yon,
+/* Segment kontrolü — kaydırmalı pill grubu (native select yerine). */
+type SegSecenek = { key: string; label: string; renk?: string };
+const Segment = ({
+  secenekler,
+  secili,
+  onSecim,
 }: {
-  fld: SiralamaFld;
-  aktifFld: SiralamaFld;
-  yon: 'asc' | 'desc';
-}) => {
-  if (aktifFld !== fld) {
-    return <Icon name="ChevronsUpDown" size={10} className="text-ink-quiet" />;
-  }
-  return <Icon name={yon === 'asc' ? 'ChevronUp' : 'ChevronDown'} size={10} />;
+  secenekler: SegSecenek[];
+  secili: string;
+  onSecim: (k: string) => void;
+}) => (
+  <div className="inline-flex items-center gap-0.5 p-0.5 rounded-full bg-surface-2/70 border border-line">
+    {secenekler.map((o) => {
+      const aktif = o.key === secili;
+      return (
+        <button
+          key={o.key}
+          onClick={() => onSecim(o.key)}
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12.5px] leading-none whitespace-nowrap transition-all active:scale-[0.97] ${
+            aktif
+              ? 'bg-surface text-ink font-semibold shadow-[0_1px_2px_rgba(26,37,56,0.10)]'
+              : 'text-ink-mute font-medium hover:text-ink'
+          }`}
+        >
+          {o.renk && <span className="w-1.5 h-1.5 rounded-full" style={{ background: o.renk }} />}
+          {o.label}
+        </button>
+      );
+    })}
+  </div>
+);
+
+/* Hayalet pill dropdown — çok seçenekli filtreler için (native ok gizli). */
+const PillSelect = ({
+  value,
+  onChange,
+  ariaLabel,
+  children,
+}: {
+  value: string;
+  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  ariaLabel: string;
+  children: ReactNode;
+}) => (
+  <div className="relative">
+    <select
+      value={value}
+      onChange={onChange}
+      aria-label={ariaLabel}
+      className="appearance-none h-8 rounded-full border border-line bg-surface pl-3.5 pr-8 text-[12.5px] font-medium text-ink-soft hover:border-line-strong focus:border-ink focus:outline-none cursor-pointer transition-colors"
+    >
+      {children}
+    </select>
+    <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-quiet">
+      <Icon name="ChevronDown" size={13} />
+    </span>
+  </div>
+);
+
+/* İlerleme halkası — animasyonlu (mount'ta dolan). */
+const StatRing = ({ yuzde }: { yuzde: number }) => {
+  const R = 26;
+  const C = 2 * Math.PI * R;
+  return (
+    <div className="relative w-[64px] h-[64px] grid place-items-center flex-none">
+      <svg width="64" height="64" viewBox="0 0 64 64" className="-rotate-90">
+        <circle cx="32" cy="32" r={R} fill="none" stroke="var(--line)" strokeWidth="5" />
+        <motion.circle
+          cx="32"
+          cy="32"
+          r={R}
+          fill="none"
+          stroke="var(--blue)"
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray={C}
+          initial={{ strokeDashoffset: C }}
+          animate={{ strokeDashoffset: C * (1 - yuzde / 100) }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </svg>
+      <span className="absolute font-display font-bold text-[15px] text-ink tnum">%{yuzde}</span>
+    </div>
+  );
+};
+
+/* Liste stagger — mount'ta dalga gibi açılır. */
+const listeVar = { hidden: {}, show: { transition: { staggerChildren: 0.045 } } };
+const satirVar = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 120, damping: 18 } },
 };
 
 export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
@@ -77,9 +156,6 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
   const [uniteFiltre, setUniteFiltre] = useState('hepsi');
   const [durumFiltre, setDurumFiltre] = useState<DurumFiltre>('hepsi');
   const [etiketFiltre, setEtiketFiltre] = useState('hepsi');
-  // LeetCode tarzı global toggle — kapalıyken satırlarda etiket görünmez,
-  // butonla açıldığında her satırın altında chip'ler beliriverir.
-  const [etiketlerAcik, setEtiketlerAcik] = useState(false);
   const [siralamaFld, setSiralamaFld] = useState<SiralamaFld>('sira');
   const [siralamaYon, setSiralamaYon] = useState<'asc' | 'desc'>('asc');
   const [sayfa, setSayfa] = useState(1);
@@ -138,210 +214,304 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
   const son = Math.min(ilk + SAYFA_BOYUT, filtreli.length);
   const sayfadakiler = filtreli.slice(ilk, son);
 
-  const sirala = (fld: SiralamaFld) => {
-    if (siralamaFld === fld) setSiralamaYon(siralamaYon === 'asc' ? 'desc' : 'asc');
-    else {
-      setSiralamaFld(fld);
-      setSiralamaYon('asc');
-    }
-  };
-
   const cozulenSayi = tumSorular.filter((s) => ilerleme.cozulenler[s.id]).length;
+  const toplamSoru = tumSorular.length;
+  const yuzde = toplamSoru > 0 ? Math.round((cozulenSayi / toplamSoru) * 100) : 0;
+
+  // "Kaldığın yerden devam" — filtre yokken 1. sayfada öne çıkan kart.
+  const devamSoru = devamEtSorusu(ilerleme, tumSorular);
+  const filtreYok =
+    !arama.trim() &&
+    zorlukFiltre === 'hepsi' &&
+    uniteFiltre === 'hepsi' &&
+    etiketFiltre === 'hepsi' &&
+    durumFiltre === 'hepsi';
+  const oneCikanGoster = filtreYok && guvenliSayfa === 1 && !!devamSoru;
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div className="mb-8">
-        <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-3 font-bold">
-          Tüm Sorular
-        </div>
-        <h1 className="font-display text-5xl md:text-6xl tracking-tight mb-3 font-bold">
-          Problemler
-        </h1>
-        <p className="text-ink-soft max-w-2xl font-medium">
-          {tumSorular.length} soru · {cozulenSayi} çözüldü · %
-          {tumSorular.length > 0 ? Math.round((cozulenSayi / tumSorular.length) * 100) : 0} ilerleme
-        </p>
-      </div>
-
-      <div className="mb-6 bg-surface border border-line p-4 rounded-xl">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-          <div className="relative md:col-span-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-quiet">
-              <Icon name="Search" size={14} />
-            </span>
-            <input
-              type="text"
-              value={arama}
-              onChange={(e) => setArama(e.target.value)}
-              placeholder="Ara..."
-              className="w-full pl-9 pr-3 py-2 bg-bg-tint border border-line-strong focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none text-sm rounded-lg font-medium"
-            />
+      {/* Hero — asimetrik başlık + canlı istatistik */}
+      <header className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end mb-10 sm:mb-12">
+        <div>
+          <div className="font-mono text-[11px] tracking-[0.32em] uppercase text-brand-mute font-semibold mb-4">
+            Pratik
           </div>
-          <select
-            value={zorlukFiltre}
-            onChange={(e) => setZorlukFiltre(e.target.value as typeof zorlukFiltre)}
-            className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
-          >
-            <option value="hepsi">Tüm Zorluklar</option>
-            <option value="kolay">Kolay</option>
-            <option value="orta">Orta</option>
-            <option value="zor">Zor</option>
-          </select>
-          <select
-            value={uniteFiltre}
-            onChange={(e) => setUniteFiltre(e.target.value)}
-            className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
-          >
-            <option value="hepsi">Tüm İşletmeler</option>
-            {uniteler.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.ad}
-              </option>
-            ))}
-          </select>
-          <select
-            value={etiketFiltre}
-            onChange={(e) => setEtiketFiltre(e.target.value)}
-            className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
-          >
-            <option value="hepsi">Tüm Etiketler</option>
-            {tumEtiketler.kavramlar.length > 0 && (
-              <optgroup label="Kavramlar">
-                {tumEtiketler.kavramlar.map((e) => (
-                  <option key={e} value={e}>
-                    {e.replace(/-/g, ' ')}
-                  </option>
-                ))}
-              </optgroup>
-            )}
-            {tumEtiketler.kodlar.length > 0 && (
-              <optgroup label="Hesap Kodları">
-                {tumEtiketler.kodlar.map((e) => (
-                  <option key={e} value={e}>
-                    {e}
-                  </option>
-                ))}
-              </optgroup>
-            )}
-          </select>
-          <select
-            value={durumFiltre}
-            onChange={(e) => setDurumFiltre(e.target.value as DurumFiltre)}
-            className="px-3 py-2 bg-bg-tint border border-line-strong text-sm focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none rounded-lg font-medium"
-          >
-            <option value="hepsi">Tüm Durumlar</option>
-            <option value="cozulen">Çözülenler</option>
-            <option value="cozulmeyen">Henüz Çözülmemiş</option>
-          </select>
+          <h1 className="font-display text-[52px] md:text-[68px] leading-[0.95] tracking-[-0.02em] font-bold text-ink">
+            Problemler
+          </h1>
+          <p className="font-display-italic text-ink-soft text-[17px] sm:text-[19px] leading-snug mt-4 max-w-md">
+            Gerçek senaryolarla yevmiye kaydı pratiği. Çöz, anında gör, ustalaş.
+          </p>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between mb-3">
-        <div className="text-[11px] font-semibold text-ink-mute">
-          {filtreli.length} sonuç
-        </div>
-        <button
-          onClick={() => setEtiketlerAcik((v) => !v)}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11.5px] font-semibold transition ${
-            etiketlerAcik
-              ? 'bg-ink text-bg border-ink'
-              : 'bg-surface text-ink-soft border-line hover:border-ink-mute'
-          }`}
-          title="Her satırın altında etiketleri göster/gizle"
-        >
-          <Icon name="Tag" size={12} />
-          Etiketler
-        </button>
-      </div>
-
-      <div className="bg-surface border border-line rounded-xl overflow-hidden">
-        <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-3 border-b border-line bg-bg-tint text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
-          <button
-            onClick={() => sirala('durum')}
-            className="col-span-1 text-left flex items-center gap-1 hover:text-ink"
-          >
-            Durum <SirOk fld="durum" aktifFld={siralamaFld} yon={siralamaYon} />
-          </button>
-          <div className="col-span-9">Başlık</div>
-          <button
-            onClick={() => sirala('zorluk')}
-            className="col-span-2 text-left flex items-center gap-1 hover:text-ink"
-          >
-            Zorluk <SirOk fld="zorluk" aktifFld={siralamaFld} yon={siralamaYon} />
-          </button>
-        </div>
-        {sayfadakiler.map((s) => {
-          const cozulmus = !!ilerleme.cozulenler[s.id];
-          const yanlisSayi = ilerleme.yanlislar[s.id] || 0;
-          const durumIkon = cozulmus ? (
-            <Icon
-              name="CheckCircle2"
-              size={18}
-              className="text-success dark:text-success"
-            />
-          ) : yanlisSayi > 0 ? (
-            <Icon name="XCircle" size={18} className="text-danger" />
-          ) : (
-            <Icon name="Circle" size={18} className="text-ink-quiet" />
-          );
-          return (
-            <button
-              key={s.id}
-              onClick={() =>
-                nav(`/problemler/${s.id}`, {
-                  state: { liste: filtreli.map((x) => x.id) },
-                })
-              }
-              className="w-full border-b border-line-soft hover:bg-bg-tint transition text-left"
-            >
-              {/* Mobile (<md) — kart görünüm */}
-              <div className="md:hidden px-4 py-3 flex items-start gap-3">
-                <div className="pt-0.5 flex-shrink-0">{durumIkon}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-display text-base leading-tight font-bold">{s.baslik}</div>
-                  <div className="text-xs text-ink-mute line-clamp-1 mt-0.5 font-medium">
-                    {s.senaryo}
+        {/* İstatistik — kutu yok; halka + dikey ayraçlar */}
+        <div className="flex items-center gap-5 sm:gap-6">
+          <StatRing yuzde={yuzde} />
+          <div className="flex items-center gap-5 sm:gap-6">
+            <div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-quiet font-semibold">
+                Çözülen
+              </div>
+              <div className="font-display text-[22px] font-bold text-ink tnum mt-0.5">
+                {cozulenSayi}
+                <span className="text-ink-quiet text-[16px] font-medium">/{toplamSoru}</span>
+              </div>
+            </div>
+            {ilerleme.puan > 0 && (
+              <>
+                <span className="w-px h-9 bg-line" />
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-quiet font-semibold">
+                    Puan
                   </div>
-                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                  <div className="font-mono text-[22px] font-bold text-ink tnum mt-0.5">
+                    {ilerleme.puan}
+                  </div>
+                </div>
+              </>
+            )}
+            {ilerleme.streak > 0 && (
+              <>
+                <span className="w-px h-9 bg-line" />
+                <div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-quiet font-semibold">
+                    Seri
+                  </div>
+                  <div className="font-mono text-[22px] font-bold text-ink tnum mt-0.5">
+                    {ilerleme.streak}
+                    <span className="text-ink-quiet text-[15px] font-medium">g</span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Öne çıkan — "kaldığın yerden devam" */}
+      {oneCikanGoster && devamSoru && (
+        <motion.button
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 90, damping: 18 }}
+          whileHover={{ y: -3 }}
+          onClick={() =>
+            nav(`/problemler/${devamSoru.id}`, { state: { liste: filtreli.map((x) => x.id) } })
+          }
+          className="group relative w-full overflow-hidden rounded-[26px] text-left text-white mb-9 px-7 sm:px-10 py-8 sm:py-10 shadow-[0_28px_64px_-32px_rgba(26,37,56,0.65)]"
+          style={{ background: 'linear-gradient(135deg, #1d3a5f 0%, #274a76 60%, #2c4f7c 100%)' }}
+        >
+          {/* Dekoratif defter/T-hesabı motifi */}
+          <svg
+            className="pointer-events-none absolute right-0 top-0 h-full w-[46%] opacity-[0.10]"
+            viewBox="0 0 320 220"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M60 40 H300 M180 40 V200" stroke="#fff" strokeWidth="3" strokeLinecap="round" />
+            <path d="M80 78 H150 M80 104 H140 M80 130 H150 M210 78 H280 M210 104 H270 M210 130 H285" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <div className="relative max-w-2xl">
+            <div className="font-mono text-[10.5px] tracking-[0.28em] uppercase text-[#a9c4e6] font-semibold">
+              Kaldığın yerden devam
+            </div>
+            <h2 className="font-display text-[27px] sm:text-[34px] font-bold leading-[1.08] mt-2.5">
+              {devamSoru.baslik}
+            </h2>
+            <p className="text-[14px] sm:text-[15px] text-[#c7d6ea] leading-relaxed mt-3 line-clamp-2 max-w-xl">
+              {devamSoru.senaryo}
+            </p>
+            <div className="flex items-center gap-4 mt-6 flex-wrap">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white text-[#1d3a5f] font-semibold text-[14px] px-5 py-2.5 group-hover:gap-3 transition-all">
+                Çöze Başla <Icon name="ArrowRight" size={16} />
+              </span>
+              <span className="font-mono text-[11.5px] text-[#a9c4e6] uppercase tracking-[0.14em]">
+                {ZORLUK_AD[devamSoru.zorluk]} · {ZORLUK_PUAN[devamSoru.zorluk]} puan
+              </span>
+            </div>
+          </div>
+        </motion.button>
+      )}
+
+      {/* Filtreler — segment + hayalet pill (rafine) */}
+      <div className="flex flex-wrap items-center gap-2.5 mb-6">
+        <div className="relative flex-1 min-w-[180px] max-w-[260px]">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-quiet">
+            <Icon name="Search" size={14} />
+          </span>
+          <input
+            type="text"
+            value={arama}
+            onChange={(e) => setArama(e.target.value)}
+            placeholder="Ara…"
+            className="w-full h-9 pl-9 pr-3.5 rounded-full border border-line bg-surface text-[13px] font-medium text-ink placeholder:text-ink-quiet hover:border-line-strong focus:border-ink focus:outline-none transition-colors"
+          />
+        </div>
+
+        <Segment
+          secili={zorlukFiltre}
+          onSecim={(k) => setZorlukFiltre(k as typeof zorlukFiltre)}
+          secenekler={[
+            { key: 'hepsi', label: 'Tümü' },
+            { key: 'kolay', label: 'Kolay', renk: 'var(--success)' },
+            { key: 'orta', label: 'Orta', renk: 'var(--copper)' },
+            { key: 'zor', label: 'Zor', renk: 'var(--danger)' },
+          ]}
+        />
+
+        <Segment
+          secili={durumFiltre}
+          onSecim={(k) => setDurumFiltre(k as DurumFiltre)}
+          secenekler={[
+            { key: 'hepsi', label: 'Tümü' },
+            { key: 'cozulmeyen', label: 'Kalan' },
+            { key: 'cozulen', label: 'Çözülen' },
+          ]}
+        />
+
+        <PillSelect
+          value={uniteFiltre}
+          onChange={(e) => setUniteFiltre(e.target.value)}
+          ariaLabel="İşletme filtresi"
+        >
+          <option value="hepsi">Tüm İşletmeler</option>
+          {uniteler.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.ad}
+            </option>
+          ))}
+        </PillSelect>
+
+        <PillSelect
+          value={etiketFiltre}
+          onChange={(e) => setEtiketFiltre(e.target.value)}
+          ariaLabel="Etiket filtresi"
+        >
+          <option value="hepsi">Tüm Etiketler</option>
+          {tumEtiketler.kavramlar.length > 0 && (
+            <optgroup label="Kavramlar">
+              {tumEtiketler.kavramlar.map((e) => (
+                <option key={e} value={e}>
+                  {e.replace(/-/g, ' ')}
+                </option>
+              ))}
+            </optgroup>
+          )}
+          {tumEtiketler.kodlar.length > 0 && (
+            <optgroup label="Hesap Kodları">
+              {tumEtiketler.kodlar.map((e) => (
+                <option key={e} value={e}>
+                  {e}
+                </option>
+              ))}
+            </optgroup>
+          )}
+        </PillSelect>
+      </div>
+
+      {/* Sonuç sayısı + sıralama kontrolü */}
+      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+        <div className="text-[11px] font-semibold text-ink-mute">{filtreli.length} sonuç</div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[11px] text-ink-quiet font-medium">Sırala</span>
+          <PillSelect
+            value={siralamaFld}
+            onChange={(e) => setSiralamaFld(e.target.value as SiralamaFld)}
+            ariaLabel="Sıralama"
+          >
+            <option value="sira">Varsayılan</option>
+            <option value="zorluk">Zorluk</option>
+            <option value="durum">Durum</option>
+          </PillSelect>
+          <button
+            onClick={() => setSiralamaYon((y) => (y === 'asc' ? 'desc' : 'asc'))}
+            disabled={siralamaFld === 'sira'}
+            className="h-8 w-8 grid place-items-center rounded-lg border border-line text-ink-mute hover:text-ink hover:border-line-strong disabled:opacity-40 disabled:hover:text-ink-mute transition-colors"
+            title={siralamaYon === 'asc' ? 'Artan' : 'Azalan'}
+          >
+            <Icon name={siralamaYon === 'asc' ? 'ChevronUp' : 'ChevronDown'} size={14} />
+          </button>
+        </div>
+      </div>
+
+      {/* Kart satırları — staggered, premium */}
+      <motion.div
+        key={`${zorlukFiltre}|${uniteFiltre}|${etiketFiltre}|${durumFiltre}|${siralamaFld}|${siralamaYon}|${guvenliSayfa}`}
+        variants={listeVar}
+        initial="hidden"
+        animate="show"
+        className="space-y-3"
+      >
+        {sayfadakiler
+          .filter((s) => !(oneCikanGoster && devamSoru && s.id === devamSoru.id))
+          .map((s) => {
+            const cozulmus = !!ilerleme.cozulenler[s.id];
+            const yanlisSayi = ilerleme.yanlislar[s.id] || 0;
+            const durumIkon = cozulmus ? (
+              <Icon name="CheckCircle2" size={20} className="text-success" />
+            ) : yanlisSayi > 0 ? (
+              <Icon name="XCircle" size={20} className="text-danger" />
+            ) : (
+              <Icon name="Circle" size={20} className="text-ink-quiet" />
+            );
+            return (
+              <motion.button
+                key={s.id}
+                variants={satirVar}
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.995 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                onClick={() =>
+                  nav(`/problemler/${s.id}`, { state: { liste: filtreli.map((x) => x.id) } })
+                }
+                className={`group relative w-full text-left bg-surface border border-line rounded-2xl px-5 sm:px-6 py-5 flex items-center gap-4 sm:gap-5 overflow-hidden hover:border-line-strong hover:shadow-[0_14px_36px_-22px_rgba(26,37,56,0.35)] transition-all ${
+                  cozulmus ? 'opacity-[0.62] hover:opacity-100' : ''
+                }`}
+              >
+                {/* hover'da soldan giren mavi aksan */}
+                <span
+                  className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full bg-brand scale-y-0 group-hover:scale-y-100 origin-center transition-transform duration-300"
+                  aria-hidden
+                />
+                <div className="flex-none">{durumIkon}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2.5 flex-wrap">
+                    <h3 className="font-display text-[17px] sm:text-[19px] font-bold text-ink leading-tight group-hover:text-brand-deep transition-colors">
+                      {s.baslik}
+                    </h3>
                     <span
-                      className={`text-[9px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[s.zorluk]}`}
+                      className={`text-[10px] tracking-[0.16em] uppercase font-bold ${ZORLUK_STIL[s.zorluk]}`}
                     >
                       {ZORLUK_AD[s.zorluk]}
                     </span>
+                    {cozulmus && (
+                      <span className="inline-flex items-center gap-1 text-[9.5px] tracking-[0.14em] uppercase font-bold text-success bg-success-soft px-2 py-0.5 rounded-full">
+                        <Icon name="Check" size={10} />
+                        Çözüldü
+                      </span>
+                    )}
                   </div>
-                  {etiketlerAcik && (s.etiketler ?? []).length > 0 && (
-                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                      <EtiketChipler etiketler={s.etiketler ?? []} maxKavram={4} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Desktop (md+) — tablo */}
-              <div className="hidden md:grid grid-cols-12 gap-3 px-4 py-3 items-center">
-                <div className="col-span-1">{durumIkon}</div>
-                <div className="col-span-9">
-                  <div className="font-display text-base leading-tight font-bold">{s.baslik}</div>
-                  <div className="text-xs text-ink-mute line-clamp-1 mt-0.5 font-medium">
+                  <p className="text-[13.5px] text-ink-mute line-clamp-1 mt-1.5 font-medium">
                     {s.senaryo}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                    <span className="font-mono text-[10.5px] text-ink-quiet tracking-wide">
+                      {ZORLUK_PUAN[s.zorluk]} puan
+                    </span>
+                    {(s.etiketler ?? []).length > 0 && (
+                      <>
+                        <span className="text-ink-quiet text-[10px]">·</span>
+                        <EtiketChipler etiketler={s.etiketler ?? []} maxKavram={4} />
+                      </>
+                    )}
                   </div>
-                  {etiketlerAcik && (s.etiketler ?? []).length > 0 && (
-                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                      <EtiketChipler etiketler={s.etiketler ?? []} maxKavram={6} />
-                    </div>
-                  )}
                 </div>
-                <div className="col-span-2">
-                  <span
-                    className={`text-[10px] tracking-[0.2em] uppercase font-bold ${ZORLUK_STIL[s.zorluk]}`}
-                  >
-                    {ZORLUK_AD[s.zorluk]}
-                  </span>
+                <div className="flex-none hidden sm:inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-[0.16em] font-bold text-ink-mute group-hover:text-brand-deep group-hover:gap-2.5 transition-all">
+                  Çöz <Icon name="ArrowRight" size={14} />
                 </div>
-              </div>
-            </button>
-          );
-        })}
+              </motion.button>
+            );
+          })}
         {filtreli.length === 0 && (
           <EmptyState
             ikon="Search"
@@ -359,7 +529,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
             }}
           />
         )}
-      </div>
+      </motion.div>
 
       {/* Sayfalama */}
       {filtreli.length > 0 && (
