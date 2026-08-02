@@ -1,7 +1,7 @@
 import { Icon } from './Icon';
-import { HESAP_PLANI } from '../data/hesap-plani';
 import { paraFormat } from '../lib/format';
 import { useEsc } from '../lib/hooks/use-esc';
+import { THesaplari, hesapAdBul } from './THesabi';
 import type { Soru } from '../types';
 
 interface Props {
@@ -63,6 +63,17 @@ export const CozumModal = ({ soru, onKapat }: Props) => {
           </button>
         </div>
         <div className="p-8">
+          {/* T-Hesabı görünümü — kaydın büyük deftere yansıması */}
+          <div className="mb-6">
+            <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-3 font-bold">
+              T-Hesabı Görünümü
+            </div>
+            <THesaplari satirlar={soru.cozum} />
+          </div>
+
+          <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute mb-2 font-bold">
+            Yevmiye Kaydı
+          </div>
           <div className="bg-surface border border-ink/20 mb-6 rounded-xl overflow-hidden">
             <div className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-ink/20 bg-bg-tint text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold">
               <div className="col-span-2">Kod</div>
@@ -71,7 +82,7 @@ export const CozumModal = ({ soru, onKapat }: Props) => {
               <div className="col-span-3 text-right">Alacak</div>
             </div>
             {soru.cozum.map((k, i) => {
-              const ad = HESAP_PLANI.find((h) => h.kod === k.kod)?.ad || '';
+              const ad = hesapAdBul(k.kod);
               return (
                 <div key={i} className="border-b border-ink/5">
                   <div className="grid grid-cols-12 gap-2 px-4 pt-3 pb-1 text-sm">
