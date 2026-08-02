@@ -53,6 +53,7 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
     user?.email?.split('@')[0] ||
     'Kullanıcı';
 
+  const aktifAna = pathname === '/';
   const aktifKesfet = pathname === '/kesfet' || pathname.startsWith('/kesfet/');
   const aktifIsletme = pathname === '/isletmeler' || pathname.startsWith('/isletmeler/');
   const aktifProblem = pathname === '/problemler' || pathname.startsWith('/problemler/');
@@ -66,6 +67,7 @@ export const Navbar = ({ ilerleme, onTemaDegistir, onHesapPlaniAc }: Props) => {
   // olduğu için dropdown (üye) + footer (herkes/SEO) üzerinden erişilir;
   // SEO trafiği zaten doğrudan derin sözlük sayfalarına düşer.
   const linkler = [
+    { id: '/', ad: 'Ana Sayfa', aktif: aktifAna },
     { id: '/kesfet', ad: 'Keşfet', aktif: aktifKesfet },
     { id: '/isletmeler', ad: 'İşletmeler', aktif: aktifIsletme },
     { id: '/problemler', ad: 'Problemler', aktif: aktifProblem },

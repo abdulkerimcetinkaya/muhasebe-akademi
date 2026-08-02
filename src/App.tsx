@@ -458,7 +458,7 @@ const App = () => {
           oturumYukleniyor={oturumYukleniyor}
         />
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1">
         <Suspense fallback={<SayfaYukleniyor />}>
           <Routes>
             <Route
