@@ -58,6 +58,24 @@ const SOL_TABLAR: { key: SolTab; ad: string }[] = [
   { key: 'cozum', ad: 'Çözüm' },
 ];
 
+// Her soruda geçerli evrensel kayıt kuralları (soruya özel değil → spoiler değil)
+const ALTIN_KURALLAR = [
+  'Her kayıtta borç toplamı = alacak toplamı olmalı (çift taraflı kayıt).',
+  'Varlık (aktif) hesapları: artış borçta, azalış alacakta.',
+  'Kaynak ve özkaynak (pasif): artış alacakta, azalış borçta.',
+  'Giderler borçta, gelirler alacakta izlenir.',
+  'Alışta İndirilecek KDV borç (191), satışta Hesaplanan KDV alacak (391).',
+];
+
+// İşlem türüne göre pratikte sık birlikte kullanılan hesap kümeleri (genel referans)
+const HESAP_KUMELERI: { baslik: string; hesaplar: string }[] = [
+  { baslik: 'Mal alışı', hesaplar: '153 Ticari Mallar · 191 İnd. KDV · 100/102/320' },
+  { baslik: 'Mal satışı', hesaplar: '100/102/120 · 600 Yurtiçi Satışlar · 391 Hes. KDV' },
+  { baslik: 'Tahsilat / ödeme', hesaplar: '100 Kasa · 102 Bankalar · 120 Alıcılar · 320 Satıcılar' },
+  { baslik: 'Personel ücreti', hesaplar: '770/720 · 335 · 360 · 361' },
+  { baslik: 'Duran varlık alışı', hesaplar: '252/253/254/255 · 191 · 103/320' },
+];
+
 interface CozumYardim {
   kullanilanAi?: boolean;
   cozumGosterildi?: boolean;
@@ -780,6 +798,50 @@ const SoruEkraniIci = ({
                       )}
                     </div>
                   )}
+
+                  {/* Altın kurallar — evrensel referans */}
+                  <div>
+                    <div className="text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-2">
+                      Altın kurallar
+                    </div>
+                    <ul className="space-y-1.5">
+                      {ALTIN_KURALLAR.map((k, i) => (
+                        <li
+                          key={i}
+                          className="flex gap-2 text-[13px] leading-relaxed text-ink-soft font-medium"
+                        >
+                          <Icon
+                            name="Check"
+                            size={13}
+                            className="text-success dark:text-success flex-shrink-0 mt-0.5"
+                          />
+                          <span>{k}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Birlikte kullanılan hesaplar — genel referans */}
+                  <div>
+                    <div className="text-[10px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-2">
+                      Birlikte kullanılan hesaplar
+                    </div>
+                    <div className="rounded-xl border border-line divide-y divide-line-soft overflow-hidden">
+                      {HESAP_KUMELERI.map((k) => (
+                        <div key={k.baslik} className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-3 px-3 py-2">
+                          <span className="text-[12px] font-bold text-ink flex-shrink-0 sm:w-32">
+                            {k.baslik}
+                          </span>
+                          <span className="font-mono text-[11.5px] text-ink-soft leading-relaxed">
+                            {k.hesaplar}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-ink-quiet mt-1.5">
+                      Genel referans — bu soruya özel değil.
+                    </p>
+                  </div>
 
                   {/* Nasıl kaydederim — statik mini rehber */}
                   <details className="group rounded-xl border border-line bg-surface-2/30 overflow-hidden">
