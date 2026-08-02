@@ -603,7 +603,7 @@ const SoruEkraniIci = ({
   const ipucuVar = ipucuMetni.length > 0 || kodEtiketleri.length > 0;
 
   return (
-    <main className="max-w-[1500px] mx-auto px-4 lg:px-6 py-5">
+    <main className="w-full px-4 lg:px-6 py-5">
       {/* ÜST ŞERİT — kimlik + navigasyon + araçlar */}
       <div className="mb-4">
         <button
