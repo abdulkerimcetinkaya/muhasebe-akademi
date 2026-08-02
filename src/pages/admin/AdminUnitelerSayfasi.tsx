@@ -54,16 +54,16 @@ export const AdminUnitelerSayfasi = () => {
 
   const yukle = async () => {
     setYukleniyor(true);
-    const uniteR = await supabase.from('unites').select('*').order('sira');
+    const uniteR = await supabase.from('isletmeler').select('*').order('sira');
     if (uniteR.error) {
       setHata(uniteR.error.message);
       setYukleniyor(false);
       return;
     }
-    const sayim = await supabase.from('sorular').select('unite_id');
+    const sayim = await supabase.from('sorular').select('isletme_id');
     const dagilim: Record<string, number> = {};
     (sayim.data ?? []).forEach((r) => {
-      dagilim[r.unite_id] = (dagilim[r.unite_id] ?? 0) + 1;
+      dagilim[r.isletme_id] = (dagilim[r.isletme_id] ?? 0) + 1;
     });
     setUniteler(
       (uniteR.data ?? []).map((u) => ({ ...u, soruSayisi: dagilim[u.id] ?? 0 })),
@@ -99,7 +99,7 @@ export const AdminUnitelerSayfasi = () => {
       return;
     }
     if (!confirm(`"${u.ad}" işletmesini silmek istediğinden emin misin?`)) return;
-    const r = await supabase.from('unites').delete().eq('id', u.id);
+    const r = await supabase.from('isletmeler').delete().eq('id', u.id);
     if (r.error) {
       alert('Silme hatası: ' + r.error.message);
       return;
@@ -109,7 +109,7 @@ export const AdminUnitelerSayfasi = () => {
 
   const siraDegistir = async (u: UnitesRow, yeniSira: number) => {
     if (yeniSira === u.sira) return;
-    const r = await supabase.from('unites').update({ sira: yeniSira }).eq('id', u.id);
+    const r = await supabase.from('isletmeler').update({ sira: yeniSira }).eq('id', u.id);
     if (r.error) {
       alert('Sıra güncelleme hatası: ' + r.error.message);
       return;
@@ -221,7 +221,7 @@ export const AdminUnitelerSayfasi = () => {
                 </div>
                 <div className="flex items-center justify-end gap-1.5">
                   <button
-                    onClick={() => nav(`/admin/uniteler/${u.id}/moduller`)}
+                    onClick={() => nav(`/admin/isletmeler/${u.id}/moduller`)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-surface-2 text-ink text-[11.5px] font-bold tracking-wide hover:bg-line-soft transition"
                     title="Atölye modülleri (sıralı atölye yapısı)"
                   >
@@ -229,7 +229,7 @@ export const AdminUnitelerSayfasi = () => {
                     Modüller
                   </button>
                   <button
-                    onClick={() => nav(`/admin/uniteler/${u.id}/icerik`)}
+                    onClick={() => nav(`/admin/isletmeler/${u.id}/icerik`)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink text-bg text-[11.5px] font-bold tracking-wide hover:opacity-90 transition"
                     title="Notion-tarzı işletme içerik editörü"
                   >
@@ -315,8 +315,8 @@ const UniteForm = ({ duzenleniyor, onKapat, onKaydet, mevcutSiralar }: UniteForm
       aktif,
     };
     const r = yeni
-      ? await supabase.from('unites').insert(veri)
-      : await supabase.from('unites').update(veri).eq('id', duzenleniyor!.id);
+      ? await supabase.from('isletmeler').insert(veri)
+      : await supabase.from('isletmeler').update(veri).eq('id', duzenleniyor!.id);
     setKaydediyor(false);
     if (r.error) {
       setHata(r.error.message);

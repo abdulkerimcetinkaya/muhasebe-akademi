@@ -32,7 +32,7 @@ const gruplar: Grup[] = [
   {
     baslik: 'İçerik',
     items: [
-      { to: '/admin/uniteler', etiket: 'İşletmeler', icon: 'LayoutGrid', end: true, rol: 'icerik' },
+      { to: '/admin/isletmeler', etiket: 'İşletmeler', icon: 'LayoutGrid', end: true, rol: 'icerik' },
       { to: '/admin/kesfet', etiket: 'Keşfet', icon: 'Search', end: false, rol: 'icerik' },
       { to: '/admin/sorular', etiket: 'Sorular', icon: 'FileText', end: true, rol: 'icerik' },
       { to: '/admin/sorular/yeni', etiket: 'Yeni Soru', icon: 'PlusCircle', end: true, rol: 'icerik' },

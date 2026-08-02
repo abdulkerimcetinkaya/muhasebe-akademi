@@ -36,7 +36,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
 
   useEffect(() => {
     if (!unite) {
-      nav('/uniteler', { replace: true });
+      nav('/isletmeler', { replace: true });
       return;
     }
 
@@ -53,7 +53,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
     );
 
     if (cozulen > 0 && ilkTamamlanmamisKonu) {
-      nav(`/uniteler/${unite.id}/${ilkTamamlanmamisKonu.id}`, { replace: true });
+      nav(`/isletmeler/${unite.id}/${ilkTamamlanmamisKonu.id}`, { replace: true });
     }
     // Hiç başlamadıysa veya tüm konular tamamsa → overview'da kal
   }, [unite, ilerleme, nav, overviewIstendi]);
@@ -97,7 +97,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <button
-        onClick={() => nav('/uniteler')}
+        onClick={() => nav('/isletmeler')}
         className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-6 font-semibold"
       >
         <Icon name="ArrowLeft" size={14} />
@@ -122,7 +122,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
           </p>
           {modulleriVar && ilkAcikModul ? (
             <button
-              onClick={() => nav(`/uniteler/${unite.id}/modul/${ilkAcikModul.id}`)}
+              onClick={() => nav(`/isletmeler/${unite.id}/modul/${ilkAcikModul.id}`)}
               className="mt-6 bg-brand-deep hover:bg-brand-deep dark:bg-brand text-bg px-6 py-3 text-sm tracking-wide uppercase font-bold transition inline-flex items-center gap-2 rounded-xl shadow-md"
             >
               <Icon name="Zap" size={14} />
@@ -131,7 +131,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
             </button>
           ) : konulariVar && ilkTamamlanmamisKonu ? (
             <button
-              onClick={() => nav(`/uniteler/${unite.id}/${ilkTamamlanmamisKonu.id}`)}
+              onClick={() => nav(`/isletmeler/${unite.id}/${ilkTamamlanmamisKonu.id}`)}
               className="mt-6 bg-brand-deep hover:bg-brand-deep dark:bg-brand text-bg px-6 py-3 text-sm tracking-wide uppercase font-bold transition inline-flex items-center gap-2 rounded-xl shadow-md"
             >
               <Icon name="Zap" size={14} />
@@ -234,7 +234,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
                 <button
                   key={m.id}
                   onClick={() =>
-                    !tiklanamaz && nav(`/uniteler/${unite.id}/modul/${m.id}`)
+                    !tiklanamaz && nav(`/isletmeler/${unite.id}/modul/${m.id}`)
                   }
                   disabled={tiklanamaz}
                   title={
@@ -362,7 +362,7 @@ export const UniteSayfasi = ({ ilerleme }: Props) => {
               return (
                 <button
                   key={k.id}
-                  onClick={() => nav(`/uniteler/${unite.id}/${k.id}`)}
+                  onClick={() => nav(`/isletmeler/${unite.id}/${k.id}`)}
                   className={`text-left bg-surface border rounded-xl p-5 transition active:scale-[0.99] group ${
  kKilitli
  ? 'border-line opacity-60 hover:opacity-90'

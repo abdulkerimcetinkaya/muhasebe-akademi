@@ -23,7 +23,7 @@ const bos = (): YeniSozlukTerimi => ({
   uzun_icerik: '',
   ornek: null,
   ilgili_terimler: [],
-  ilgili_unite_ids: [],
+  ilgili_isletme_ids: [],
   ilgili_hesap_kodlari: [],
   yayinda: true,
   mevzuat: bosMevzuat(),
@@ -101,7 +101,7 @@ export const AdminSozlukSayfasi = () => {
       uzun_icerik: t.uzun_icerik,
       ornek: t.ornek,
       ilgili_terimler: t.ilgili_terimler,
-      ilgili_unite_ids: t.ilgili_unite_ids,
+      ilgili_isletme_ids: t.ilgili_isletme_ids,
       ilgili_hesap_kodlari: t.ilgili_hesap_kodlari,
       yayinda: t.yayinda,
       mevzuat: {

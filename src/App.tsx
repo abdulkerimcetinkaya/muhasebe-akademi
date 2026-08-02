@@ -497,16 +497,14 @@ const App = () => {
             <Route path="/kesfet" element={<KesfetSayfasi />} />
             <Route path="/kesfet/:kart" element={<KesfetKartSayfasi />} />
             <Route path="/kesfet/:kart/:item" element={<KesfetItemSayfasi />} />
-            {/* İşletmeler (dönem simülasyonu) — aynı bileşenler, track pathname'den. */}
-            <Route path="/isletmeler" element={<KesfetSayfasi />} />
-            <Route path="/isletmeler/:kart" element={<KesfetKartSayfasi />} />
-            <Route path="/isletmeler/:kart/:item" element={<KesfetItemSayfasi />} />
+            {/* Eski /uniteler linkleri artık İşletmeler'e yönlensin (rename sonrası). */}
+            <Route path="/uniteler/*" element={<Navigate to="/isletmeler" replace />} />
             <Route path="/premium" element={<PremiumSayfasi />} />
             <Route path="/premium/sonuc" element={<PremiumSonucSayfasi />} />
             <Route path="/premium/kurum-odeme" element={<KurumOdemeSayfasi />} />
-            <Route path="/uniteler" element={<UnitelerSayfasi />} />
+            <Route path="/isletmeler" element={<UnitelerSayfasi />} />
             <Route
-              path="/uniteler/:uniteId"
+              path="/isletmeler/:uniteId"
               element={
                 <ProtectedRoute>
                   <UniteSayfasi ilerleme={ilerleme} />
@@ -514,7 +512,7 @@ const App = () => {
               }
             />
             <Route
-              path="/uniteler/:uniteId/modul/:modulId"
+              path="/isletmeler/:uniteId/modul/:modulId"
               element={
                 <ProtectedRoute>
                   <ModulSayfasi ilerleme={ilerleme} />
@@ -522,7 +520,7 @@ const App = () => {
               }
             />
             <Route
-              path="/uniteler/:uniteId/modul/:modulId/alt/:altBaslikId"
+              path="/isletmeler/:uniteId/modul/:modulId/alt/:altBaslikId"
               element={
                 <ProtectedRoute>
                   <AltBaslikSayfasi ilerleme={ilerleme} />
@@ -530,7 +528,7 @@ const App = () => {
               }
             />
             <Route
-              path="/uniteler/:uniteId/:konuId"
+              path="/isletmeler/:uniteId/:konuId"
               element={
                 <ProtectedRoute>
                   <KonuSayfasi ilerleme={ilerleme} />
@@ -571,7 +569,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler"
+              path="/admin/isletmeler"
               element={
                 <ProtectedAdminRoute>
                   <AdminUnitelerSayfasi />
@@ -579,7 +577,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/icerik"
+              path="/admin/isletmeler/:uniteId/icerik"
               element={
                 <ProtectedAdminRoute>
                   <AdminIcerikSayfasi />
@@ -587,7 +585,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/konular"
+              path="/admin/isletmeler/:uniteId/konular"
               element={
                 <ProtectedAdminRoute>
                   <AdminKonularSayfasi />
@@ -595,7 +593,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/konular/:konuId/icerik"
+              path="/admin/isletmeler/:uniteId/konular/:konuId/icerik"
               element={
                 <ProtectedAdminRoute>
                   <AdminKonuIcerikSayfasi />
@@ -603,7 +601,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/moduller"
+              path="/admin/isletmeler/:uniteId/moduller"
               element={
                 <ProtectedAdminRoute>
                   <AdminModullerSayfasi />
@@ -611,7 +609,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/moduller/:modulId/icerik"
+              path="/admin/isletmeler/:uniteId/moduller/:modulId/icerik"
               element={
                 <ProtectedAdminRoute>
                   <AdminModulIcerikSayfasi />
@@ -619,7 +617,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar"
+              path="/admin/isletmeler/:uniteId/moduller/:modulId/alt-basliklar"
               element={
                 <ProtectedAdminRoute>
                   <AdminAltBasliklarSayfasi />
@@ -627,7 +625,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar/:altId/icerik"
+              path="/admin/isletmeler/:uniteId/moduller/:modulId/alt-basliklar/:altId/icerik"
               element={
                 <ProtectedAdminRoute>
                   <AdminAltBaslikIcerikSayfasi />
@@ -635,7 +633,7 @@ const App = () => {
               }
             />
             <Route
-              path="/admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar/:altId/sorular"
+              path="/admin/isletmeler/:uniteId/moduller/:modulId/alt-basliklar/:altId/sorular"
               element={
                 <ProtectedAdminRoute>
                   <AdminAtolyeSorulariSayfasi />

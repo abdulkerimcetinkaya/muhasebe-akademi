@@ -16,7 +16,7 @@ import type { Belge } from '../types';
 
 export interface SoruFormDegerleri {
   id: string;
-  unite_id: string;
+  isletme_id: string;
   konu_id: string;
   alt_baslik_id: string;
   baslik: string;
@@ -32,7 +32,7 @@ export interface SoruFormDegerleri {
 
 export const bosForm = (): SoruFormDegerleri => ({
   id: '',
-  unite_id: '',
+  isletme_id: '',
   konu_id: '',
   alt_baslik_id: '',
   baslik: '',
@@ -67,7 +67,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
 
   useEffect(() => {
     supabase
-      .from('unites')
+      .from('isletmeler')
       .select('*')
       .order('sira')
       .then(({ data }) => {
@@ -86,7 +86,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
 
   // İşletme değişince modülleri + alt başlıkları yükle. alt_baslik_id işletme ile uyumsuzsa sıfırla.
   useEffect(() => {
-    if (!d.unite_id) {
+    if (!d.isletme_id) {
       setModuller([]);
       setAltBasliklar([]);
       if (d.alt_baslik_id) setD((p) => ({ ...p, alt_baslik_id: '' }));
@@ -95,9 +95,9 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
     let iptal = false;
     (async () => {
       const { data: modData } = await supabase
-        .from('unite_modulleri')
+        .from('isletme_modulleri')
         .select('*')
-        .eq('unite_id', d.unite_id)
+        .eq('isletme_id', d.isletme_id)
         .order('sira');
       if (iptal) return;
       const modList = (modData ?? []) as UniteModuluRow[];
@@ -123,7 +123,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
       iptal = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [d.unite_id]);
+  }, [d.isletme_id]);
 
   const toplamBorc = useMemo(
     () => d.cozumler.reduce((acc, c) => acc + (parseFloat(c.borc) || 0), 0),
@@ -153,7 +153,7 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
 
   const dogrula = (): string | null => {
     if (duzenleme && !d.id.trim()) return 'ID gerekli.';
-    if (!d.unite_id) return 'İşletme seç.';
+    if (!d.isletme_id) return 'İşletme seç.';
     if (!d.baslik.trim()) return 'Başlık gerekli.';
     if (!d.senaryo.trim()) return 'Senaryo gerekli.';
     const dolular = d.cozumler.filter((c) => c.kod.trim());
@@ -216,8 +216,8 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
               İşletme *
             </label>
             <select
-              value={d.unite_id}
-              onChange={(e) => setD({ ...d, unite_id: e.target.value })}
+              value={d.isletme_id}
+              onChange={(e) => setD({ ...d, isletme_id: e.target.value })}
               required
               className="w-full px-3 py-2 bg-bg-tint border border-line-strong focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none text-sm rounded-lg font-medium"
             >
@@ -255,11 +255,11 @@ export const SoruForm = ({ baslangic, duzenleme, onKaydet, onIptal }: Props) => 
           <select
             value={d.alt_baslik_id}
             onChange={(e) => setD({ ...d, alt_baslik_id: e.target.value })}
-            disabled={!d.unite_id || altBasliklar.length === 0}
+            disabled={!d.isletme_id || altBasliklar.length === 0}
             className="w-full px-3 py-2 bg-bg-tint border border-line-strong focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none text-sm rounded-lg font-medium disabled:opacity-50"
           >
             <option value="">
-              {!d.unite_id
+              {!d.isletme_id
                 ? '— Önce işletme seç —'
                 : moduller.length === 0
                   ? '— Bu işletmede modül yok —'

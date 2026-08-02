@@ -152,7 +152,7 @@ export type SoruMuavin = {
 
 export type SorularRow = {
   id: string;
-  unite_id: string;
+  isletme_id: string;
   konu_id: string | null;
   alt_baslik_id: string | null;
   baslik: string;
@@ -181,7 +181,7 @@ export type SorularRow = {
 
 export type UniteKonusuRow = {
   id: string;
-  unite_id: string;
+  isletme_id: string;
   ad: string;
   aciklama: string | null;
   icerik: unknown | null;
@@ -197,7 +197,7 @@ export type ModulZorlukDb = 'baslangic' | 'orta' | 'ileri' | 'sinav';
 
 export type UniteModuluRow = {
   id: string;
-  unite_id: string;
+  isletme_id: string;
   sira: number;
   baslik: string;
   aciklama: string | null;
@@ -500,7 +500,7 @@ export type SozlukTerimiRow = {
   uzun_icerik: string;
   ornek: string | null;
   ilgili_terimler: string[];
-  ilgili_unite_ids: number[];
+  ilgili_isletme_ids: number[];
   ilgili_hesap_kodlari: string[];
   mevzuat: {
     maddeler?: { kanun: string; madde: string; baslik: string; lafiz: string }[];
@@ -641,7 +641,7 @@ export type Database = {
         Update: Partial<AtolyeSoruRow>;
         Relationships: [];
       };
-      unites: {
+      isletmeler: {
         Row: UnitesRow;
         Insert: Omit<UnitesRow, 'created_at' | 'icerik' | 'icerik_guncellendi' | 'aktif'> & {
           created_at?: string;
@@ -826,7 +826,7 @@ export type Database = {
         Update: Partial<MevzuatChunkRow>;
         Relationships: [];
       };
-      unite_konulari: {
+      isletme_konulari: {
         Row: UniteKonusuRow;
         Insert: Omit<UniteKonusuRow, 'created_at' | 'updated_at' | 'icerik' | 'icerik_guncellendi' | 'aciklama' | 'sira' | 'aktif'> & {
           created_at?: string;
@@ -840,7 +840,7 @@ export type Database = {
         Update: Partial<UniteKonusuRow>;
         Relationships: [];
       };
-      unite_modulleri: {
+      isletme_modulleri: {
         Row: UniteModuluRow;
         Insert: Omit<
           UniteModuluRow,
@@ -925,7 +925,7 @@ export type Database = {
           | 'goruntuleme_sayisi'
           | 'yayinda'
           | 'ilgili_terimler'
-          | 'ilgili_unite_ids'
+          | 'ilgili_isletme_ids'
           | 'ilgili_hesap_kodlari'
           | 'ornek'
           | 'mevzuat'
@@ -935,7 +935,7 @@ export type Database = {
           goruntuleme_sayisi?: number;
           yayinda?: boolean;
           ilgili_terimler?: string[];
-          ilgili_unite_ids?: number[];
+          ilgili_isletme_ids?: number[];
           ilgili_hesap_kodlari?: string[];
           ornek?: string | null;
           mevzuat?: SozlukTerimiRow['mevzuat'];

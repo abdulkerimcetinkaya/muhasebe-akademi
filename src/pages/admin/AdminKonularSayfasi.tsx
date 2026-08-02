@@ -20,7 +20,7 @@ interface FormDurum {
 
 /**
  * Bir işletmenin alt-konularını yönetir (CRUD + sıralama).
- * URL: /admin/uniteler/:uniteId/konular
+ * URL: /admin/isletmeler/:uniteId/konular
  */
 export const AdminKonularSayfasi = () => {
   const { uniteId } = useParams<{ uniteId: string }>();
@@ -38,9 +38,9 @@ export const AdminKonularSayfasi = () => {
     if (!uniteId) return;
     setYukleniyor(true);
     const [uniteR, konuR, soruR] = await Promise.all([
-      supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
-      supabase.from('unite_konulari').select('*').eq('unite_id', uniteId).order('sira'),
-      supabase.from('sorular').select('konu_id').eq('unite_id', uniteId),
+      supabase.from('isletmeler').select('*').eq('id', uniteId).maybeSingle(),
+      supabase.from('isletme_konulari').select('*').eq('isletme_id', uniteId).order('sira'),
+      supabase.from('sorular').select('konu_id').eq('isletme_id', uniteId),
     ]);
     if (uniteR.error) {
       setHata(uniteR.error.message);
@@ -105,7 +105,7 @@ export const AdminKonularSayfasi = () => {
     } else if (!confirm(`"${k.ad}" konusunu silmek istediğinden emin misin?`)) {
       return;
     }
-    const r = await supabase.from('unite_konulari').delete().eq('id', k.id);
+    const r = await supabase.from('isletme_konulari').delete().eq('id', k.id);
     if (r.error) {
       alert('Silme hatası: ' + r.error.message);
       return;
@@ -116,7 +116,7 @@ export const AdminKonularSayfasi = () => {
 
   const siraDegistir = async (k: UniteKonusuRow, yeniSira: number) => {
     if (yeniSira === k.sira) return;
-    const r = await supabase.from('unite_konulari').update({ sira: yeniSira }).eq('id', k.id);
+    const r = await supabase.from('isletme_konulari').update({ sira: yeniSira }).eq('id', k.id);
     if (r.error) {
       alert('Sıra güncelleme hatası: ' + r.error.message);
       return;
@@ -130,7 +130,7 @@ export const AdminKonularSayfasi = () => {
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
         <button
-          onClick={() => nav('/admin/uniteler')}
+          onClick={() => nav('/admin/isletmeler')}
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >
           <Icon name="ArrowLeft" size={12} />
@@ -247,7 +247,7 @@ export const AdminKonularSayfasi = () => {
                 </div>
                 <div className="flex items-center justify-end gap-1.5">
                   <button
-                    onClick={() => nav(`/admin/uniteler/${uniteId}/konular/${k.id}/icerik`)}
+                    onClick={() => nav(`/admin/isletmeler/${uniteId}/konular/${k.id}/icerik`)}
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink text-bg text-[11.5px] font-bold tracking-wide hover:opacity-90 transition"
                     title="Konunun BlockNote içeriğini düzenle"
                   >
@@ -332,15 +332,15 @@ const KonuForm = ({
     setHata(null);
     const veri = {
       id: id.trim(),
-      unite_id: uniteId,
+      isletme_id: uniteId,
       ad: ad.trim(),
       aciklama: aciklama.trim() || null,
       sira,
     };
     const r = yeni
-      ? await supabase.from('unite_konulari').insert(veri)
+      ? await supabase.from('isletme_konulari').insert(veri)
       : await supabase
-          .from('unite_konulari')
+          .from('isletme_konulari')
           .update({
             ad: veri.ad,
             aciklama: veri.aciklama,

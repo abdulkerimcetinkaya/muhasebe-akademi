@@ -21,7 +21,7 @@ import { authDonusYaz } from '../lib/auth-donus';
 import { aktifMuavinleriYukle, type MuavinHesap } from '../lib/muavin';
 import { UNVAN_ETIKETLERI } from '../lib/katkici';
 import { hesapAdiBul } from '../lib/hesap';
-import { soruBelgeleriniYukle } from '../lib/uniteler-loader';
+import { soruBelgeleriniYukle } from '../lib/isletmeler-loader';
 import { supabase } from '../lib/supabase';
 import type {
   Belge,

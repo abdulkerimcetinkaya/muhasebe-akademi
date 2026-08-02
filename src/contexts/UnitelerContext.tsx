@@ -5,7 +5,7 @@ import {
   uniteleriCacheeYaz,
   uniteleriYukle,
   type UnitelerVerisi,
-} from '../lib/uniteler-loader';
+} from '../lib/isletmeler-loader';
 
 interface UnitelerDurumu extends UnitelerVerisi {
   yukleniyor: boolean;

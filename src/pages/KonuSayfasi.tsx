@@ -7,7 +7,7 @@ import { TamamRozeti } from '../components/TamamRozeti';
 import { useUniteler } from '../contexts/UnitelerContext';
 import { ZORLUK_AD, ZORLUK_PUAN, ZORLUK_STIL } from '../data/sabitler';
 import { kilidiAcanKonu, konuKilitliMi } from '../lib/konu-kilit';
-import { konuIcerikYukle } from '../lib/uniteler-loader';
+import { konuIcerikYukle } from '../lib/isletmeler-loader';
 import type { Ilerleme } from '../types';
 
 const icerikDolu = (icerik: unknown | null | undefined): boolean =>
@@ -35,11 +35,11 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
 
   useEffect(() => {
     if (!unite) {
-      nav('/uniteler', { replace: true });
+      nav('/isletmeler', { replace: true });
       return;
     }
     if (!konu) {
-      nav(`/uniteler/${uniteId}`, { replace: true });
+      nav(`/isletmeler/${uniteId}`, { replace: true });
     }
   }, [unite, konu, uniteId, nav]);
 
@@ -99,14 +99,14 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1.5 text-[12px] mb-5 flex-wrap text-bg-tint">
             <button
-              onClick={() => nav('/uniteler')}
+              onClick={() => nav('/isletmeler')}
               className="hover:text-bg transition font-semibold"
             >
               İşletmeler
             </button>
             <Icon name="ChevronRight" size={11} className="opacity-60" />
             <button
-              onClick={() => nav(`/uniteler/${unite.id}?overview=1`)}
+              onClick={() => nav(`/isletmeler/${unite.id}?overview=1`)}
               className="hover:text-bg transition font-semibold"
             >
               {unite.ad}
@@ -188,7 +188,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
                 ) : null}
 
                 <button
-                  onClick={() => nav(`/uniteler/${unite.id}?overview=1`)}
+                  onClick={() => nav(`/isletmeler/${unite.id}?overview=1`)}
                   className="inline-flex items-center gap-2 border border-brand-soft hover:bg-brand-deep/40 px-4 py-2.5 text-[12px] tracking-[0.2em] uppercase font-bold rounded-lg transition"
                 >
                   <Icon name="ArrowLeft" size={12} />
@@ -217,7 +217,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
               <div className="text-[12.5px] leading-relaxed">
                 Önce{' '}
                 <button
-                  onClick={() => nav(`/uniteler/${unite.id}/${acanKonu.id}`)}
+                  onClick={() => nav(`/isletmeler/${unite.id}/${acanKonu.id}`)}
                   className="font-bold underline underline-offset-2 hover:text-premium-deep dark:hover:text-premium-soft transition"
                 >
                   {acanKonu.ad}
@@ -376,7 +376,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
               <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 {oncekiKonu ? (
                   <button
-                    onClick={() => nav(`/uniteler/${unite.id}/${oncekiKonu.id}`)}
+                    onClick={() => nav(`/isletmeler/${unite.id}/${oncekiKonu.id}`)}
                     className="group text-left bg-surface border border-line hover:border-ink rounded-xl p-4 transition"
                   >
                     <div className="flex items-center gap-2 text-[10px] tracking-[0.22em] uppercase text-ink-mute font-bold mb-1.5">
@@ -392,7 +392,7 @@ export const KonuSayfasi = ({ ilerleme }: Props) => {
                 )}
                 {sonrakiKonu ? (
                   <button
-                    onClick={() => nav(`/uniteler/${unite.id}/${sonrakiKonu.id}`)}
+                    onClick={() => nav(`/isletmeler/${unite.id}/${sonrakiKonu.id}`)}
                     className={`group text-right bg-surface border rounded-xl p-4 transition ${
  tamamlandi
  ? 'border-success-soft dark:border-success/50 hover:border-success'

@@ -26,7 +26,7 @@ interface FormDurum {
 
 /**
  * Bir işletmenin atölye modüllerini yönetir (CRUD + sıralama).
- * URL: /admin/uniteler/:uniteId/moduller
+ * URL: /admin/isletmeler/:uniteId/moduller
  */
 export const AdminModullerSayfasi = () => {
   const { uniteId } = useParams<{ uniteId: string }>();
@@ -44,10 +44,10 @@ export const AdminModullerSayfasi = () => {
     if (!uniteId) return;
     setYukleniyor(true);
     const [uniteR, modulR, altR, soruR] = await Promise.all([
-      supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
-      supabase.from('unite_modulleri').select('*').eq('unite_id', uniteId).order('sira'),
+      supabase.from('isletmeler').select('*').eq('id', uniteId).maybeSingle(),
+      supabase.from('isletme_modulleri').select('*').eq('isletme_id', uniteId).order('sira'),
       supabase.from('modul_alt_basliklari').select('id, modul_id'),
-      supabase.from('sorular').select('alt_baslik_id').eq('unite_id', uniteId),
+      supabase.from('sorular').select('alt_baslik_id').eq('isletme_id', uniteId),
     ]);
     if (uniteR.error) {
       setHata(uniteR.error.message);
@@ -126,7 +126,7 @@ export const AdminModullerSayfasi = () => {
     } else if (!confirm(`"${m.baslik}" modülünü silmek istediğinden emin misin?`)) {
       return;
     }
-    const r = await supabase.from('unite_modulleri').delete().eq('id', m.id);
+    const r = await supabase.from('isletme_modulleri').delete().eq('id', m.id);
     if (r.error) {
       alert('Silme hatası: ' + r.error.message);
       return;
@@ -137,7 +137,7 @@ export const AdminModullerSayfasi = () => {
 
   const siraDegistir = async (m: UniteModuluRow, yeniSira: number) => {
     if (yeniSira === m.sira) return;
-    const r = await supabase.from('unite_modulleri').update({ sira: yeniSira }).eq('id', m.id);
+    const r = await supabase.from('isletme_modulleri').update({ sira: yeniSira }).eq('id', m.id);
     if (r.error) {
       alert('Sıra güncelleme hatası: ' + r.error.message);
       return;
@@ -152,7 +152,7 @@ export const AdminModullerSayfasi = () => {
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
         <button
-          onClick={() => nav('/admin/uniteler')}
+          onClick={() => nav('/admin/isletmeler')}
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >
           <Icon name="ArrowLeft" size={12} />
@@ -286,7 +286,7 @@ export const AdminModullerSayfasi = () => {
                 <div className="flex items-center justify-end gap-1.5">
                   <button
                     onClick={() =>
-                      nav(`/admin/uniteler/${uniteId}/moduller/${m.id}/icerik`)
+                      nav(`/admin/isletmeler/${uniteId}/moduller/${m.id}/icerik`)
                     }
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-line hover:border-ink text-[11.5px] font-bold tracking-wide transition"
                     title="Modülün Genel Bakış içeriğini düzenle (BlockNote)"
@@ -296,7 +296,7 @@ export const AdminModullerSayfasi = () => {
                   </button>
                   <button
                     onClick={() =>
-                      nav(`/admin/uniteler/${uniteId}/moduller/${m.id}/alt-basliklar`)
+                      nav(`/admin/isletmeler/${uniteId}/moduller/${m.id}/alt-basliklar`)
                     }
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-ink text-bg text-[11.5px] font-bold tracking-wide hover:opacity-90 transition"
                     title="Alt başlıkları yönet"
@@ -386,9 +386,9 @@ const ModulForm = ({
     setKaydediyor(true);
     setHata(null);
     if (yeni) {
-      const r = await supabase.from('unite_modulleri').insert({
+      const r = await supabase.from('isletme_modulleri').insert({
         id: id.trim(),
-        unite_id: uniteId,
+        isletme_id: uniteId,
         sira,
         baslik: baslik.trim(),
         aciklama: aciklama.trim() || null,
@@ -403,7 +403,7 @@ const ModulForm = ({
       }
     } else {
       const r = await supabase
-        .from('unite_modulleri')
+        .from('isletme_modulleri')
         .update({
           baslik: baslik.trim(),
           aciklama: aciklama.trim() || null,

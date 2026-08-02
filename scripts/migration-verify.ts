@@ -14,11 +14,11 @@ const env = Object.fromEntries(
 const sb = createClient(env.VITE_SUPABASE_URL, env.VITE_SUPABASE_ANON_KEY);
 
 async function main() {
-  const u = await sb.from('unites').select('id,ad,sira').order('sira');
-  const s = await sb.from('sorular').select('unite_id');
+  const u = await sb.from('isletmeler').select('id,ad,sira').order('sira');
+  const s = await sb.from('sorular').select('isletme_id');
   const dagilim: Record<string, number> = {};
-  (s.data ?? []).forEach((r: { unite_id: string }) => {
-    dagilim[r.unite_id] = (dagilim[r.unite_id] ?? 0) + 1;
+  (s.data ?? []).forEach((r: { isletme_id: string }) => {
+    dagilim[r.isletme_id] = (dagilim[r.isletme_id] ?? 0) + 1;
   });
 
   console.log(`\nToplam ünite: ${u.data?.length}`);

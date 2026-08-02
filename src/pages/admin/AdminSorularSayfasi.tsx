@@ -52,8 +52,8 @@ export const AdminSorularSayfasi = () => {
     setYukleniyor(true);
     const [soruR, uniteR, konuR] = await Promise.all([
       supabase.from('sorular').select('*').order('created_at', { ascending: false }),
-      supabase.from('unites').select('*').order('sira'),
-      supabase.from('unite_konulari').select('*').order('sira'),
+      supabase.from('isletmeler').select('*').order('sira'),
+      supabase.from('isletme_konulari').select('*').order('sira'),
     ]);
     if (soruR.error) {
       setHata(soruR.error.message);
@@ -97,7 +97,7 @@ export const AdminSorularSayfasi = () => {
   // İşletme filtresi seçiliyse o işletmenin konuları, değilse tüm konular
   const konuSecenekleri = useMemo(() => {
     if (uniteFiltre === 'hepsi') return konular;
-    return konular.filter((k) => k.unite_id === uniteFiltre);
+    return konular.filter((k) => k.isletme_id === uniteFiltre);
   }, [konular, uniteFiltre]);
 
   // İşletme değişince konu filtresi geçersizse sıfırla
@@ -113,7 +113,7 @@ export const AdminSorularSayfasi = () => {
     return sorular.filter((s) => {
       if (durumFiltre !== 'hepsi' && s.durum !== durumFiltre) return false;
       if (zorlukFiltre !== 'hepsi' && s.zorluk !== zorlukFiltre) return false;
-      if (uniteFiltre !== 'hepsi' && s.unite_id !== uniteFiltre) return false;
+      if (uniteFiltre !== 'hepsi' && s.isletme_id !== uniteFiltre) return false;
       if (konuFiltre === 'baglanti-yok' && s.konu_id !== null) return false;
       if (
         konuFiltre !== 'hepsi' &&
@@ -329,7 +329,7 @@ export const AdminSorularSayfasi = () => {
             {konuSecenekleri.map((k) => (
               <option key={k.id} value={k.id}>
                 {uniteFiltre === 'hepsi'
-                  ? `${uniteAdMap[k.unite_id] ?? k.unite_id} · ${k.ad}`
+                  ? `${uniteAdMap[k.isletme_id] ?? k.isletme_id} · ${k.ad}`
                   : k.ad}
               </option>
             ))}
@@ -380,7 +380,7 @@ export const AdminSorularSayfasi = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-ink-soft font-medium">
-                      {uniteAdMap[s.unite_id] ?? s.unite_id}
+                      {uniteAdMap[s.isletme_id] ?? s.isletme_id}
                     </td>
                     <td className="px-4 py-3">
                       {s.konu_id ? (

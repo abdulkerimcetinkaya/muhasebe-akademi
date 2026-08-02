@@ -60,7 +60,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
   const siradaki: SiradakiAdres | null = useMemo(() => {
     if (aktif?.konu) {
       return {
-        href: `/uniteler/${aktif.unite.id}/${aktif.konu.id}`,
+        href: `/isletmeler/${aktif.unite.id}/${aktif.konu.id}`,
         baslik: aktif.konu.ad,
         altBaslik: aktif.unite.ad,
         yeni: stat.cozulenSayi === 0,
@@ -397,7 +397,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
             </span>
           </div>
           <button
-            onClick={() => nav('/uniteler')}
+            onClick={() => nav('/isletmeler')}
             className="text-[12px] text-ink-mute hover:text-ink font-bold inline-flex items-center gap-1 transition"
           >
             Hepsini gör
@@ -416,7 +416,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
               const aktifKonuAdi = aktif.konu?.ad;
               return (
                 <button
-                  onClick={() => nav(`/uniteler/${u.id}`)}
+                  onClick={() => nav(`/isletmeler/${u.id}`)}
                   className="text-left bg-brand-soft/50 border-2 border-brand-soft rounded-2xl p-5 transition active:scale-[0.99] hover:border-brand-deep dark:hover:border-brand group"
                 >
                   <div className="flex items-center gap-1.5 mb-3">
@@ -481,7 +481,7 @@ export const DashboardSayfasi = ({ ilerleme, stat }: Props) => {
                   return (
                     <li key={u.id}>
                       <button
-                        onClick={() => nav(`/uniteler/${u.id}`)}
+                        onClick={() => nav(`/isletmeler/${u.id}`)}
                         className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-bg-tint transition group"
                       >
                         <Thiings name={u.thiingsIcon} size={28} />

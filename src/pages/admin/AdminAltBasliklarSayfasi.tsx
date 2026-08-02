@@ -24,7 +24,7 @@ interface FormDurum {
 
 /**
  * Bir modülün alt başlıklarını yönetir (CRUD + sıralama).
- * URL: /admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar
+ * URL: /admin/isletmeler/:uniteId/moduller/:modulId/alt-basliklar
  */
 export const AdminAltBasliklarSayfasi = () => {
   const { uniteId, modulId } = useParams<{ uniteId: string; modulId: string }>();
@@ -43,8 +43,8 @@ export const AdminAltBasliklarSayfasi = () => {
     if (!uniteId || !modulId) return;
     setYukleniyor(true);
     const [uniteR, modulR, altR, soruR, atolyeR] = await Promise.all([
-      supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
-      supabase.from('unite_modulleri').select('*').eq('id', modulId).maybeSingle(),
+      supabase.from('isletmeler').select('*').eq('id', uniteId).maybeSingle(),
+      supabase.from('isletme_modulleri').select('*').eq('id', modulId).maybeSingle(),
       supabase
         .from('modul_alt_basliklari')
         .select('*')
@@ -166,7 +166,7 @@ export const AdminAltBasliklarSayfasi = () => {
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
         <button
-          onClick={() => nav(`/admin/uniteler/${uniteId}/moduller`)}
+          onClick={() => nav(`/admin/isletmeler/${uniteId}/moduller`)}
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >
           <Icon name="ArrowLeft" size={12} />
@@ -310,7 +310,7 @@ export const AdminAltBasliklarSayfasi = () => {
                   <button
                     onClick={() =>
                       nav(
-                        `/admin/uniteler/${uniteId}/moduller/${modulId}/alt-basliklar/${a.id}/icerik`,
+                        `/admin/isletmeler/${uniteId}/moduller/${modulId}/alt-basliklar/${a.id}/icerik`,
                       )
                     }
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-line hover:border-ink text-[11.5px] font-bold tracking-wide transition"
@@ -322,7 +322,7 @@ export const AdminAltBasliklarSayfasi = () => {
                   <button
                     onClick={() =>
                       nav(
-                        `/admin/uniteler/${uniteId}/moduller/${modulId}/alt-basliklar/${a.id}/sorular`,
+                        `/admin/isletmeler/${uniteId}/moduller/${modulId}/alt-basliklar/${a.id}/sorular`,
                       )
                     }
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-line hover:border-ink text-[11.5px] font-bold tracking-wide transition"

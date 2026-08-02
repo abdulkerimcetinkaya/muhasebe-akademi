@@ -35,11 +35,11 @@ export interface UnitelerVerisi {
 
 // Liste yüklemesinde çekilen kolonlar — icerik/icerik_guncellendi YOK
 const SORU_LISTE_KOLONLARI =
-  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, unite_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler, olay_id, tip';
+  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, isletme_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler, olay_id, tip';
 const MODUL_LISTE_KOLONLARI =
-  'id, unite_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
+  'id, isletme_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
 const ALT_BASLIK_LISTE_KOLONLARI = 'id, modul_id, sira, baslik, karma, aktif';
-const KONU_LISTE_KOLONLARI = 'id, unite_id, ad, aciklama, sira, aktif';
+const KONU_LISTE_KOLONLARI = 'id, isletme_id, ad, aciklama, sira, aktif';
 
 const duzleTumSorular = (uniteler: Unite[]): SoruWithUnite[] =>
   uniteler.flatMap((u) =>
@@ -64,9 +64,9 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
     v2SatirlarR,
     muavinKodR,
   ] = await Promise.all([
-    supabase.from('unites').select('*').order('sira'),
-    supabase.from('unite_konulari').select(KONU_LISTE_KOLONLARI).order('sira'),
-    supabase.from('unite_modulleri').select(MODUL_LISTE_KOLONLARI).order('sira'),
+    supabase.from('isletmeler').select('*').order('sira'),
+    supabase.from('isletme_konulari').select(KONU_LISTE_KOLONLARI).order('sira'),
+    supabase.from('isletme_modulleri').select(MODUL_LISTE_KOLONLARI).order('sira'),
     supabase
       .from('modul_alt_basliklari')
       .select(ALT_BASLIK_LISTE_KOLONLARI)
@@ -75,7 +75,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       .from('sorular')
       .select(SORU_LISTE_KOLONLARI)
       .eq('durum', 'onayli')
-      .order('unite_id')
+      .order('isletme_id')
       .order('id'),
     // Legacy cevap anahtarı — eski cozumler (grain=satır). V2 olmayan sorular için.
     supabase.from('cozumler').select('*').order('soru_id').order('sira'),
@@ -143,7 +143,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
   const sorularByKonu: Record<string, Soru[]> = {};
   const soruById: Record<string, Soru> = {};
   (sorularR.data ?? []).forEach((s) => {
-    if (!sorularByUnite[s.unite_id]) sorularByUnite[s.unite_id] = [];
+    if (!sorularByUnite[s.isletme_id]) sorularByUnite[s.isletme_id] = [];
     const altBaslikId = (s as { alt_baslik_id?: string | null }).alt_baslik_id ?? null;
     const muavinlerRaw = (s as { muavinler?: unknown }).muavinler;
     const muavinler = Array.isArray(muavinlerRaw)
@@ -175,7 +175,7 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       ekleyenId: s.ekleyen_id ?? null,
     };
     soruById[s.id] = soru;
-    sorularByUnite[s.unite_id].push(soru);
+    sorularByUnite[s.isletme_id].push(soru);
     if (s.konu_id) {
       if (!sorularByKonu[s.konu_id]) sorularByKonu[s.konu_id] = [];
       sorularByKonu[s.konu_id].push(soru);
@@ -195,10 +195,10 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
 
   const konularByUnite: Record<string, Konu[]> = {};
   (konularR.data ?? []).forEach((k) => {
-    if (!konularByUnite[k.unite_id]) konularByUnite[k.unite_id] = [];
-    konularByUnite[k.unite_id].push({
+    if (!konularByUnite[k.isletme_id]) konularByUnite[k.isletme_id] = [];
+    konularByUnite[k.isletme_id].push({
       id: k.id,
-      uniteId: k.unite_id,
+      uniteId: k.isletme_id,
       ad: k.ad,
       aciklama: k.aciklama ?? null,
       // icerik lazy — KonuSayfasi açılınca konuIcerikYukle çağrılır
@@ -230,10 +230,10 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
   // Modülleri işletmelere bağla
   const modullerByUnite: Record<string, Modul[]> = {};
   (modullerR.data ?? []).forEach((m) => {
-    if (!modullerByUnite[m.unite_id]) modullerByUnite[m.unite_id] = [];
-    modullerByUnite[m.unite_id].push({
+    if (!modullerByUnite[m.isletme_id]) modullerByUnite[m.isletme_id] = [];
+    modullerByUnite[m.isletme_id].push({
       id: m.id,
-      uniteId: m.unite_id,
+      uniteId: m.isletme_id,
       sira: m.sira,
       baslik: m.baslik,
       aciklama: m.aciklama ?? null,
@@ -286,7 +286,7 @@ export const modulIcerikYukle = async (
   modulId: string,
 ): Promise<{ icerik: unknown[] | null; icerikGuncellendi: string | null }> => {
   const { data, error } = await supabase
-    .from('unite_modulleri')
+    .from('isletme_modulleri')
     .select('icerik, icerik_guncellendi')
     .eq('id', modulId)
     .maybeSingle();
@@ -330,7 +330,7 @@ export const altBaslikIcerikYukle = async (
  */
 export const konuIcerikYukle = async (konuId: string): Promise<unknown> => {
   const { data, error } = await supabase
-    .from('unite_konulari')
+    .from('isletme_konulari')
     .select('icerik')
     .eq('id', konuId)
     .maybeSingle();

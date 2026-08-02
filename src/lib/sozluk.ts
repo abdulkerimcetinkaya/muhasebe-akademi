@@ -25,7 +25,7 @@ export interface SozlukTerimi {
   uzun_icerik: string;
   ornek: string | null;
   ilgili_terimler: string[];
-  ilgili_unite_ids: number[];
+  ilgili_isletme_ids: number[];
   ilgili_hesap_kodlari: string[];
   mevzuat: MevzuatKatmani;
   goruntuleme_sayisi: number;

@@ -13,7 +13,7 @@ interface CozumGiris {
 }
 
 interface SoruGiris {
-  unite_id: string;
+  isletme_id: string;
   baslik: string;
   zorluk: Zorluk;
   senaryo: string;
@@ -41,7 +41,7 @@ const idUret = (): string => {
 
 const ORNEK_JSON = `[
   {
-    "unite_id": "mal",
+    "isletme_id": "mal",
     "baslik": "Peşin Mal Satışı",
     "zorluk": "kolay",
     "senaryo": "İşletme 10.000 TL'lik malı %20 KDV ile peşin satmıştır.",
@@ -69,7 +69,7 @@ export const AdminTopluEkleSayfasi = () => {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('unites').select('id'),
+      supabase.from('isletmeler').select('id'),
       // Muavin kodları kabul ediyoruz (cozumler.kod -> muavin_hesaplar FK)
       supabase.from('muavin_hesaplar').select('kod').eq('aktif', true),
     ]).then(([uR, mR]) => {
@@ -86,8 +86,8 @@ export const AdminTopluEkleSayfasi = () => {
     }
     const o = s as Record<string, unknown>;
 
-    if (typeof o.unite_id !== 'string' || !o.unite_id) hatalar.push('unite_id yok.');
-    else if (!uniteIdler.has(o.unite_id)) hatalar.push(`unite_id bulunamadı: ${o.unite_id}`);
+    if (typeof o.isletme_id !== 'string' || !o.isletme_id) hatalar.push('isletme_id yok.');
+    else if (!uniteIdler.has(o.isletme_id)) hatalar.push(`isletme_id bulunamadı: ${o.isletme_id}`);
 
     if (typeof o.baslik !== 'string' || !o.baslik.trim()) hatalar.push('baslik yok/boş.');
     if (typeof o.senaryo !== 'string' || !o.senaryo.trim()) hatalar.push('senaryo yok/boş.');
@@ -139,7 +139,7 @@ export const AdminTopluEkleSayfasi = () => {
 
     return {
       veri: {
-        unite_id: o.unite_id as string,
+        isletme_id: o.isletme_id as string,
         baslik: (o.baslik as string).trim(),
         zorluk: zorluk as Zorluk,
         senaryo: (o.senaryo as string).trim(),
@@ -201,7 +201,7 @@ export const AdminTopluEkleSayfasi = () => {
 
     const soruSatirlari = gecerli.map((s) => ({
       id: s.yeniId,
-      unite_id: s.veri.unite_id,
+      isletme_id: s.veri.isletme_id,
       konu_id: null,
       baslik: s.veri.baslik,
       zorluk: s.veri.zorluk,
@@ -290,7 +290,7 @@ export const AdminTopluEkleSayfasi = () => {
           value={metin}
           onChange={(e) => setMetin(e.target.value)}
           rows={14}
-          placeholder='[{"unite_id": "...", "baslik": "...", "zorluk": "kolay", "senaryo": "...", "cozumler": [...]}]'
+          placeholder='[{"isletme_id": "...", "baslik": "...", "zorluk": "kolay", "senaryo": "...", "cozumler": [...]}]'
           className="w-full px-3 py-2 bg-bg-tint border border-line-strong focus:border-ink focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/30 outline-none text-xs rounded-lg font-mono mb-3"
         />
 
@@ -348,7 +348,7 @@ export const AdminTopluEkleSayfasi = () => {
                       <div className="text-xs text-ink-mute font-mono mt-0.5">{s.yeniId}</div>
                     </td>
                     <td className="px-4 py-2 text-ink-soft text-xs pt-3">
-                      {s.veri.unite_id || '—'}
+                      {s.veri.isletme_id || '—'}
                     </td>
                     <td className="px-4 py-2 pt-3">
                       {s.hatalar.length === 0 ? (

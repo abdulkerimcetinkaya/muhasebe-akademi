@@ -398,7 +398,7 @@ const KullaniciPaneli = ({ ilerleme, stat }: Props) => {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line">
           {[
-            { yol: '/uniteler', baslik: 'İşletmeler', alt: 'Konu konu pratik', icon: 'LayoutGrid' },
+            { yol: '/isletmeler', baslik: 'İşletmeler', alt: 'Konu konu pratik', icon: 'LayoutGrid' },
             { yol: '/problemler', baslik: 'Tüm Sorular', alt: 'Filtrele, ara', icon: 'ListChecks' },
             { yol: '/profil', baslik: 'Profil', alt: 'Rozet · İstatistik', icon: 'User' },
           ].map((l) => (

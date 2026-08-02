@@ -32,7 +32,7 @@ const supabase = createClient(url, key);
 
 interface Soru {
   id: string;
-  unite_id: string;
+  isletme_id: string;
   baslik: string;
   senaryo: string;
 }
@@ -43,7 +43,7 @@ const ilike = (text: string, pattern: string) =>
 const yeniUniteIdHesapla = (s: Soru): string => {
   const b = s.baslik;
   const sen = s.senaryo;
-  const eski = s.unite_id;
+  const eski = s.isletme_id;
 
   if (eski === 'kasa' || eski === 'banka') return 'hazir-degerler';
 
@@ -127,8 +127,8 @@ const yeniUniteIdHesapla = (s: Soru): string => {
 async function main() {
   const { data, error } = await supabase
     .from('sorular')
-    .select('id, unite_id, baslik, senaryo')
-    .order('unite_id')
+    .select('id, isletme_id, baslik, senaryo')
+    .order('isletme_id')
     .order('id');
 
   if (error) {
@@ -142,7 +142,7 @@ async function main() {
   // Eski ünitelere göre dağılım
   const eskiDagilim: Record<string, number> = {};
   sorular.forEach((s) => {
-    eskiDagilim[s.unite_id] = (eskiDagilim[s.unite_id] ?? 0) + 1;
+    eskiDagilim[s.isletme_id] = (eskiDagilim[s.isletme_id] ?? 0) + 1;
   });
   console.log('═══════════ ESKİ DAĞILIM (mevcut DB) ═══════════');
   Object.entries(eskiDagilim)
@@ -157,8 +157,8 @@ async function main() {
   sorular.forEach((s) => {
     const yeni = yeniUniteIdHesapla(s);
     yeniDagilim[yeni] = (yeniDagilim[yeni] ?? 0) + 1;
-    if (!transferRapor[s.unite_id]) transferRapor[s.unite_id] = {};
-    transferRapor[s.unite_id][yeni] = (transferRapor[s.unite_id][yeni] ?? 0) + 1;
+    if (!transferRapor[s.isletme_id]) transferRapor[s.isletme_id] = {};
+    transferRapor[s.isletme_id][yeni] = (transferRapor[s.isletme_id][yeni] ?? 0) + 1;
   });
 
   console.log('\n═══════════ YENİ DAĞILIM (migration sonrası) ═══════════');

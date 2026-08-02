@@ -222,7 +222,7 @@ export const AdminBildirimlerSayfasi = () => {
                     type="text"
                     value={link}
                     onChange={(e) => setLink(e.target.value)}
-                    placeholder="/uniteler/3 — tıklanırsa bu route'a gider"
+                    placeholder="/isletmeler/3 — tıklanırsa bu route'a gider"
                     className="w-full px-3 py-2.5 bg-bg-tint border border-line-strong rounded-lg text-sm font-mono outline-none focus:border-ink"
                   />
                 </div>

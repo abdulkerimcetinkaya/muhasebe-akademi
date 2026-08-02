@@ -47,7 +47,7 @@ export const AdminIcerikSayfasi = () => {
     let iptal = false;
     setYukleniyor(true);
     supabase
-      .from('unites')
+      .from('isletmeler')
       .select('*')
       .eq('id', uniteId)
       .maybeSingle()
@@ -77,7 +77,7 @@ export const AdminIcerikSayfasi = () => {
     setDurum('kaydediliyor');
     setHataMesaji(null);
     const { error } = await supabase
-      .from('unites')
+      .from('isletmeler')
       .update({
         icerik: bloklar,
         icerik_guncellendi: new Date().toISOString(),
@@ -129,7 +129,7 @@ export const AdminIcerikSayfasi = () => {
           <div className="mb-6 flex items-start justify-between gap-6 flex-wrap">
             <div className="min-w-0">
               <button
-                onClick={() => nav('/admin/uniteler')}
+                onClick={() => nav('/admin/isletmeler')}
                 className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
               >
                 <Icon name="ArrowLeft" size={12} />

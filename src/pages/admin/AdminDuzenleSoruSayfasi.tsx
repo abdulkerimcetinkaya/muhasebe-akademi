@@ -34,7 +34,7 @@ export const AdminDuzenleSoruSayfasi = () => {
       const s = soruR.data;
       setBaslangic({
         id: s.id,
-        unite_id: s.unite_id,
+        isletme_id: s.isletme_id,
         konu_id: s.konu_id ?? '',
         alt_baslik_id: s.alt_baslik_id ?? '',
         baslik: s.baslik,
@@ -64,7 +64,7 @@ export const AdminDuzenleSoruSayfasi = () => {
     const { error: soruErr } = await supabase
       .from('sorular')
       .update({
-        unite_id: d.unite_id,
+        isletme_id: d.isletme_id,
         konu_id: d.konu_id || null,
         alt_baslik_id: d.alt_baslik_id || null,
         baslik: d.baslik,

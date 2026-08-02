@@ -187,7 +187,7 @@ export type EskiIcerik = {
 /** Eski sistemdeki dolu içerikleri (modül genel bakış + alt başlık) getirir. */
 export const eskiIceriklerYukle = async (): Promise<EskiIcerik[]> => {
   const [modR, altR] = await Promise.all([
-    supabase.from('unite_modulleri').select('id, baslik, icerik'),
+    supabase.from('isletme_modulleri').select('id, baslik, icerik'),
     supabase.from('modul_alt_basliklari').select('id, baslik, icerik'),
   ]);
   if (modR.error) throw modR.error;

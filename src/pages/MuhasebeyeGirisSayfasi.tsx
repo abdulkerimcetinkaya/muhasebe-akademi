@@ -50,7 +50,7 @@ interface Cta {
 }
 
 const CTA_LISTESI: Cta[] = [
-  { etiket: 'Temelleri Öğrenmeye Başla', ikon: 'BookOpen', rota: '/uniteler' },
+  { etiket: 'Temelleri Öğrenmeye Başla', ikon: 'BookOpen', rota: '/isletmeler' },
   { etiket: 'İlk Sorunu Çöz', ikon: 'ListChecks', rota: '/problemler' },
   // TODO: Ayrı bir "muhasebe olayları" (KUR) galerisi rotası eklenirse buraya bağla.
   //       Şimdilik en yakın mevcut hedef olan problemler listesine yönlendiriyor.

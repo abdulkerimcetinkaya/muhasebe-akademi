@@ -7,7 +7,7 @@
 //
 // Sol sidebar:
 //  - Modülün başlığı + zorluk badge'i (kompakt)
-//  - "Genel Bakış" satırı (en üstte) — link `/uniteler/:uniteId/modul/:modulId`
+//  - "Genel Bakış" satırı (en üstte) — link `/isletmeler/:uniteId/modul/:modulId`
 //  - Tüm alt başlıklar (atölyeler) listesi — kilit/tamamlandı/başlandı durumu
 //  - Aktif olan vurgulu (border-l-2 brand)
 //
@@ -64,7 +64,7 @@ export const ModulLayout = ({
       {/* Breadcrumb satırı: geri + önceki/sonraki modül */}
       <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
         <button
-          onClick={() => nav(`/uniteler/${unite.id}?overview=1`)}
+          onClick={() => nav(`/isletmeler/${unite.id}?overview=1`)}
           className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink font-semibold"
         >
           <Icon name="ArrowLeft" size={14} />
@@ -76,7 +76,7 @@ export const ModulLayout = ({
             onClick={() =>
               oncekiModul &&
               !oncekiKilitli &&
-              nav(`/uniteler/${unite.id}/modul/${oncekiModul.id}`)
+              nav(`/isletmeler/${unite.id}/modul/${oncekiModul.id}`)
             }
             disabled={!oncekiModul || oncekiKilitli}
             title={
@@ -104,7 +104,7 @@ export const ModulLayout = ({
             onClick={() =>
               sonrakiModul &&
               !sonrakiKilitli &&
-              nav(`/uniteler/${unite.id}/modul/${sonrakiModul.id}`)
+              nav(`/isletmeler/${unite.id}/modul/${sonrakiModul.id}`)
             }
             disabled={!sonrakiModul || sonrakiKilitli}
             title={
@@ -164,7 +164,7 @@ export const ModulLayout = ({
             <nav className="px-2 py-2 lg:py-3 flex flex-col gap-0.5">
               {/* Genel Bakış */}
               <button
-                onClick={() => nav(`/uniteler/${unite.id}/modul/${modul.id}`)}
+                onClick={() => nav(`/isletmeler/${unite.id}/modul/${modul.id}`)}
                 className={`text-left flex items-center gap-3 px-3 py-2.5 rounded-lg transition border-l-2 ${
                   aktifAltBaslikId === null
                     ? 'bg-brand-soft/40 dark:bg-brand-soft/15 border-brand-deep text-ink font-semibold'
@@ -199,7 +199,7 @@ export const ModulLayout = ({
                       key={a.id}
                       onClick={() =>
                         !tiklanamaz &&
-                        nav(`/uniteler/${unite.id}/modul/${modul.id}/alt/${a.id}`)
+                        nav(`/isletmeler/${unite.id}/modul/${modul.id}/alt/${a.id}`)
                       }
                       disabled={tiklanamaz}
                       title={pasif ? 'Bu atölye henüz hazırlanıyor' : undefined}

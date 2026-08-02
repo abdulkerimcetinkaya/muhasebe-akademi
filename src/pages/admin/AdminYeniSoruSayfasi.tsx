@@ -54,15 +54,15 @@ export const AdminYeniSoruSayfasi = () => {
       let uniteId = '';
       if (alt?.modul_id) {
         const { data: mod } = await supabase
-          .from('unite_modulleri')
-          .select('unite_id')
+          .from('isletme_modulleri')
+          .select('isletme_id')
           .eq('id', alt.modul_id)
           .maybeSingle();
-        uniteId = mod?.unite_id ?? '';
+        uniteId = mod?.isletme_id ?? '';
       }
       setBaslangic({
         ...bosForm(),
-        unite_id: uniteId,
+        isletme_id: uniteId,
         alt_baslik_id: altId,
       });
     })();
@@ -75,7 +75,7 @@ export const AdminYeniSoruSayfasi = () => {
 
     const { error: soruErr } = await supabase.from('sorular').insert({
       id: yeniId,
-      unite_id: d.unite_id,
+      isletme_id: d.isletme_id,
       konu_id: d.konu_id || null,
       alt_baslik_id: d.alt_baslik_id || null,
       baslik: d.baslik,

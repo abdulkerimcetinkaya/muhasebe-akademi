@@ -69,7 +69,7 @@ export const UnitelerSayfasi = () => {
             return (
               <button
                 key={u.id}
-                onClick={() => !pasif && nav(`/uniteler/${u.id}?overview=1`)}
+                onClick={() => !pasif && nav(`/isletmeler/${u.id}?overview=1`)}
                 disabled={pasif}
                 className={`relative text-left bg-surface border rounded-2xl p-5 transition group min-h-[200px] flex flex-col justify-between ${
                   pasif

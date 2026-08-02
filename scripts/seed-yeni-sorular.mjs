@@ -51,8 +51,8 @@ for (const dosya of dosyalar) {
 
   veri.forEach((soru, i) => {
     const etiket = `${dosya}#${i + 1}`;
-    if (!GECERLI_UNITE.has(soru.unite_id)) {
-      hatalar.push(`${etiket}: geçersiz unite_id "${soru.unite_id}"`);
+    if (!GECERLI_UNITE.has(soru.isletme_id)) {
+      hatalar.push(`${etiket}: geçersiz isletme_id "${soru.isletme_id}"`);
     }
     if (!soru.baslik || soru.baslik.length > 80) {
       hatalar.push(`${etiket}: başlık eksik veya çok uzun`);
@@ -103,16 +103,16 @@ const idSayaci = new Map();
 const sqlParcalar = ['begin;', ''];
 
 for (const soru of tumSorular) {
-  const sira = (idSayaci.get(soru.unite_id) ?? 0) + 1;
-  idSayaci.set(soru.unite_id, sira);
-  const id = `${soru.unite_id}-ek-${sira}`;
+  const sira = (idSayaci.get(soru.isletme_id) ?? 0) + 1;
+  idSayaci.set(soru.isletme_id, sira);
+  const id = `${soru.isletme_id}-ek-${sira}`;
   const ipucu = soru.ipucu ? dolarKaynak(soru.ipucu) : 'null';
   const aciklama = soru.aciklama ? dolarKaynak(soru.aciklama) : 'null';
   sqlParcalar.push(
-    `insert into sorular (id, unite_id, baslik, zorluk, senaryo, ipucu, aciklama, belgeler, durum, kaynak, yayinlanma_tarihi) values`,
-    `  ('${id}', '${soru.unite_id}', ${dolarKaynak(soru.baslik)}, '${soru.zorluk}', ${dolarKaynak(soru.senaryo)}, ${ipucu}, ${aciklama}, $ml$[]$ml$::jsonb, 'onayli', 'ai', now())`,
+    `insert into sorular (id, isletme_id, baslik, zorluk, senaryo, ipucu, aciklama, belgeler, durum, kaynak, yayinlanma_tarihi) values`,
+    `  ('${id}', '${soru.isletme_id}', ${dolarKaynak(soru.baslik)}, '${soru.zorluk}', ${dolarKaynak(soru.senaryo)}, ${ipucu}, ${aciklama}, $ml$[]$ml$::jsonb, 'onayli', 'ai', now())`,
     `  on conflict (id) do update set`,
-    `    unite_id = excluded.unite_id,`,
+    `    isletme_id = excluded.isletme_id,`,
     `    baslik = excluded.baslik,`,
     `    zorluk = excluded.zorluk,`,
     `    senaryo = excluded.senaryo,`,
@@ -145,5 +145,5 @@ writeFileSync(MIG_OUT, baslik + sqlParcalar.join('\n') + '\n');
 console.log(`✓ Migration yazıldı: ${MIG_OUT.replace(ROOT + '/', '')}`);
 console.log(`  Eklenecek soru: ${tumSorular.length}`);
 const ozet = {};
-for (const s of tumSorular) ozet[s.unite_id] = (ozet[s.unite_id] || 0) + 1;
+for (const s of tumSorular) ozet[s.isletme_id] = (ozet[s.isletme_id] || 0) + 1;
 console.log('  Ünite başına:', ozet);

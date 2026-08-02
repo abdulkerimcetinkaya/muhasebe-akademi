@@ -15,7 +15,7 @@ import { TamamRozeti } from '../components/TamamRozeti';
 import { useUniteler } from '../contexts/UnitelerContext';
 import { ZORLUK_AD, ZORLUK_PUAN, ZORLUK_STIL } from '../data/sabitler';
 import { altBaslikTamamlandiMi, modulKilitDurumu } from '../lib/modul-kilit';
-import { altBaslikIcerikYukle } from '../lib/uniteler-loader';
+import { altBaslikIcerikYukle } from '../lib/isletmeler-loader';
 import type { Ilerleme } from '../types';
 
 interface Props {
@@ -70,7 +70,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <button
-          onClick={() => nav('/uniteler')}
+          onClick={() => nav('/isletmeler')}
           className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-6 font-semibold"
         >
           <Icon name="ArrowLeft" size={14} />
@@ -240,7 +240,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
       {/* Sayfa sonu navigasyon */}
       <div className="mt-8 pt-6 border-t border-line flex items-center justify-between gap-4 flex-wrap">
         <button
-          onClick={() => nav(`/uniteler/${unite.id}/modul/${modul.id}`)}
+          onClick={() => nav(`/isletmeler/${unite.id}/modul/${modul.id}`)}
           className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink font-semibold transition"
         >
           <Icon name="ArrowLeft" size={14} />
@@ -250,7 +250,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
         {sonrakiAlt ? (
           <button
             onClick={() =>
-              nav(`/uniteler/${unite.id}/modul/${modul.id}/alt/${sonrakiAlt.id}`)
+              nav(`/isletmeler/${unite.id}/modul/${modul.id}/alt/${sonrakiAlt.id}`)
             }
             className="bg-ink text-bg px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase inline-flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition"
           >
@@ -261,7 +261,7 @@ export const AltBaslikSayfasi = ({ ilerleme }: Props) => {
           <button
             onClick={() =>
               nav(
-                `/uniteler/${unite.id}/modul/${sonrakiModul.id}/alt/${sonrakiModulIlk.id}`,
+                `/isletmeler/${unite.id}/modul/${sonrakiModul.id}/alt/${sonrakiModulIlk.id}`,
               )
             }
             className="bg-ink text-bg px-5 py-2.5 rounded-xl text-sm font-bold tracking-wide uppercase inline-flex items-center gap-2 hover:opacity-90 active:scale-[0.98] transition"

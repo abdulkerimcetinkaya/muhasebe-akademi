@@ -29,7 +29,7 @@ const DURUM_RENK: Record<KayitDurum, string> = {
 
 /**
  * Konu içerik editörü — bir alt-konunun BlockNote dökümanını düzenler.
- * URL: /admin/uniteler/:uniteId/konular/:konuId/icerik
+ * URL: /admin/isletmeler/:uniteId/konular/:konuId/icerik
  */
 export const AdminKonuIcerikSayfasi = () => {
   const { uniteId, konuId } = useParams<{ uniteId: string; konuId: string }>();
@@ -51,8 +51,8 @@ export const AdminKonuIcerikSayfasi = () => {
     let iptal = false;
     setYukleniyor(true);
     Promise.all([
-      supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
-      supabase.from('unite_konulari').select('*').eq('id', konuId).maybeSingle(),
+      supabase.from('isletmeler').select('*').eq('id', uniteId).maybeSingle(),
+      supabase.from('isletme_konulari').select('*').eq('id', konuId).maybeSingle(),
     ]).then(([uniteR, konuR]) => {
       if (iptal) return;
       if (uniteR.error) {
@@ -85,7 +85,7 @@ export const AdminKonuIcerikSayfasi = () => {
     setDurum('kaydediliyor');
     setHataMesaji(null);
     const { error } = await supabase
-      .from('unite_konulari')
+      .from('isletme_konulari')
       .update({
         icerik: bloklar,
         icerik_guncellendi: new Date().toISOString(),
@@ -133,7 +133,7 @@ export const AdminKonuIcerikSayfasi = () => {
           <div className="mb-6 flex items-start justify-between gap-6 flex-wrap">
             <div className="min-w-0">
               <button
-                onClick={() => nav(`/admin/uniteler/${uniteId}/konular`)}
+                onClick={() => nav(`/admin/isletmeler/${uniteId}/konular`)}
                 className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
               >
                 <Icon name="ArrowLeft" size={12} />

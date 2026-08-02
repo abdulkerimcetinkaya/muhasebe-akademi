@@ -29,7 +29,7 @@ interface AtanmisSoru {
  *     sayfasında filtre için). Aynı kalır.
  *   - `atolye_sorulari` junction'ı ise "atölyenin müfredatı". Bu sayfa onu yönetir.
  *
- * URL: /admin/uniteler/:uniteId/moduller/:modulId/alt-basliklar/:altId/sorular
+ * URL: /admin/isletmeler/:uniteId/moduller/:modulId/alt-basliklar/:altId/sorular
  */
 export const AdminAtolyeSorulariSayfasi = () => {
   const { uniteId, modulId, altId } = useParams<{
@@ -60,8 +60,8 @@ export const AdminAtolyeSorulariSayfasi = () => {
     setYukleniyor(true);
 
     const [uniteR, modulR, altR] = await Promise.all([
-      supabase.from('unites').select('*').eq('id', uniteId).maybeSingle(),
-      supabase.from('unite_modulleri').select('*').eq('id', modulId).maybeSingle(),
+      supabase.from('isletmeler').select('*').eq('id', uniteId).maybeSingle(),
+      supabase.from('isletme_modulleri').select('*').eq('id', modulId).maybeSingle(),
       supabase
         .from('modul_alt_basliklari')
         .select('*')
@@ -109,7 +109,7 @@ export const AdminAtolyeSorulariSayfasi = () => {
 
     // Havuz: kapsama göre sorular (atanmamış olanlar)
     let havuzQuery = supabase.from('sorular').select('*').order('id');
-    if (kapsam === 'unite') havuzQuery = havuzQuery.eq('unite_id', uniteId);
+    if (kapsam === 'unite') havuzQuery = havuzQuery.eq('isletme_id', uniteId);
     const { data: tumSorular, error: hErr } = await havuzQuery;
     if (hErr) {
       setHata('Havuz yüklenemedi: ' + hErr.message);
@@ -229,7 +229,7 @@ export const AdminAtolyeSorulariSayfasi = () => {
       <div className="flex-1 min-w-0">
         <button
           onClick={() =>
-            nav(`/admin/uniteler/${uniteId}/moduller/${modulId}/alt-basliklar`)
+            nav(`/admin/isletmeler/${uniteId}/moduller/${modulId}/alt-basliklar`)
           }
           className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
         >

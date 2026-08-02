@@ -130,7 +130,7 @@ export const AdminAltBaslikIcerikSayfasi = () => {
             <div className="min-w-0">
               <button
                 onClick={() =>
-                  nav(`/admin/uniteler/${uniteId}/moduller/${modulId}/alt-basliklar`)
+                  nav(`/admin/isletmeler/${uniteId}/moduller/${modulId}/alt-basliklar`)
                 }
                 className="inline-flex items-center gap-2 text-[12px] text-ink-mute hover:text-ink font-semibold mb-3 transition"
               >

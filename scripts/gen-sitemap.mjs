@@ -39,7 +39,7 @@ const STATIK = [
   ['/sozluk', 'weekly', '0.9'],
   ['/kesfet', 'weekly', '0.8'],
   ['/isletmeler', 'weekly', '0.8'],
-  ['/uniteler', 'weekly', '0.7'],
+  ['/isletmeler', 'weekly', '0.7'],
   ['/problemler', 'weekly', '0.7'],
   ['/premium', 'monthly', '0.5'],
 ];

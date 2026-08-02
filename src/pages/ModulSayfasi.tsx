@@ -16,7 +16,7 @@ import {
   modulIlerlemeYuzde,
   modulKilitDurumu,
 } from '../lib/modul-kilit';
-import { modulIcerikYukle } from '../lib/uniteler-loader';
+import { modulIcerikYukle } from '../lib/isletmeler-loader';
 import type { AltBaslik, Ilerleme } from '../types';
 
 interface Props {
@@ -39,7 +39,7 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <button
-          onClick={() => nav('/uniteler')}
+          onClick={() => nav('/isletmeler')}
           className="flex items-center gap-2 text-sm text-ink-mute hover:text-ink mb-6 font-semibold"
         >
           <Icon name="ArrowLeft" size={14} />
@@ -153,7 +153,7 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
           <div className="text-sm text-ink leading-relaxed">
             Bu modül kilitli. Açmak için önce{' '}
             <button
-              onClick={() => nav(`/uniteler/${unite.id}/modul/${acanModul.id}`)}
+              onClick={() => nav(`/isletmeler/${unite.id}/modul/${acanModul.id}`)}
               className="font-bold underline underline-offset-2 hover:text-brand dark:hover:text-brand-mute"
             >
               {acanModul.baslik}
@@ -199,7 +199,7 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
           </div>
           <button
             onClick={() =>
-              nav(`/uniteler/${unite.id}/modul/${modul.id}/alt/${ilkAcikAlt.id}`)
+              nav(`/isletmeler/${unite.id}/modul/${modul.id}/alt/${ilkAcikAlt.id}`)
             }
             className="flex-shrink-0 bg-brand-deep hover:bg-brand-deep dark:bg-brand text-bg px-5 py-2.5 text-sm tracking-wide uppercase font-bold transition inline-flex items-center gap-2 rounded-xl shadow-md"
           >

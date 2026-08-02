@@ -60,7 +60,7 @@ export const YetkinlikView = ({ ilerleme, uniteler }: Props) => {
           {yetkinlikler.map((y) => (
             <li key={y.uniteId}>
               <button
-                onClick={() => nav(`/uniteler/${y.uniteId}`)}
+                onClick={() => nav(`/isletmeler/${y.uniteId}`)}
                 className="w-full text-left py-4 group hover:bg-bg-tint/60 transition active:scale-[0.998] -mx-2 px-2 rounded-lg"
               >
                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
