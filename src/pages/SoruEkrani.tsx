@@ -235,7 +235,7 @@ const SoruEkraniIci = ({
   const [belgeAcik, setBelgeAcik] = useState(false);
   const [solTab, setSolTab] = useState<SolTab>('senaryo');
   const [belgeSekme, setBelgeSekme] = useState(0);
-  const [ipucuAcik, setIpucuAcik] = useState(false);
+  const [ipucuSeviye, setIpucuSeviye] = useState(0);
   const [solGenislik, setSolGenislik] = useState<number>(() => {
     try {
       const v = Number(localStorage.getItem(SOL_GENISLIK_KEY));
@@ -350,7 +350,7 @@ const SoruEkraniIci = ({
     setBelgeAcik(false);
     setSolTab('senaryo');
     setBelgeSekme(0);
-    setIpucuAcik(false);
+    setIpucuSeviye(0);
     setAiMetin(null);
     setAiHata(null);
 
@@ -618,7 +618,11 @@ const SoruEkraniIci = ({
   const kavramlar = etiketler.filter((e) => !/^\d{2,4}$/.test(e));
   const kodEtiketleri = etiketler.filter((e) => /^\d{2,4}$/.test(e));
   const ipucuMetni = soru.ipucu?.trim() || '';
-  const ipucuVar = ipucuMetni.length > 0 || kodEtiketleri.length > 0;
+  // Kademeli ipucu: önce metin, sonra ilgili hesap kodları (varsa)
+  const ipucuTierlar: ('metin' | 'kodlar')[] = [];
+  if (ipucuMetni) ipucuTierlar.push('metin');
+  if (kodEtiketleri.length > 0) ipucuTierlar.push('kodlar');
+  const ipucuVar = ipucuTierlar.length > 0;
 
   return (
     <main className="w-full px-4 lg:px-6 py-5">
@@ -750,49 +754,76 @@ const SoruEkraniIci = ({
                     </div>
                   )}
 
-                  {/* İpucu — opt-in (metin + ilgili hesap kodları) */}
+                  {/* İpucu — kademeli açılır (drip-fed) */}
                   {ipucuVar && (
                     <div className="rounded-xl border border-premium/40 dark:border-premium-deep/30 bg-premium-soft/30 overflow-hidden">
-                      <button
-                        onClick={() => setIpucuAcik((v) => !v)}
-                        className="w-full flex items-center gap-2 px-3.5 py-2.5 text-left"
-                      >
+                      <div className="flex items-center gap-2 px-3.5 py-2.5">
                         <Icon name="Lightbulb" size={14} className="text-premium-deep flex-shrink-0" />
-                        <span className="text-[12px] font-bold text-premium-deep">
-                          İpucu
-                        </span>
-                        <span className="text-[11px] text-ink-mute font-medium">
-                          {ipucuAcik ? 'gizle' : 'göster'}
-                        </span>
-                        <Icon
-                          name="ChevronRight"
-                          size={13}
-                          className={`ml-auto text-premium-deep transition-transform ${ipucuAcik ? 'rotate-90' : ''}`}
-                        />
-                      </button>
-                      {ipucuAcik && (
+                        <span className="text-[12px] font-bold text-premium-deep">İpucu</span>
+                        {ipucuSeviye > 0 && (
+                          <span className="text-[10px] text-ink-mute font-semibold">
+                            {Math.min(ipucuSeviye, ipucuTierlar.length)}/{ipucuTierlar.length}
+                          </span>
+                        )}
+                        {ipucuSeviye > 0 && (
+                          <button
+                            onClick={() => setIpucuSeviye(0)}
+                            className="ml-auto text-[11px] text-ink-mute hover:text-ink font-medium"
+                          >
+                            gizle
+                          </button>
+                        )}
+                      </div>
+
+                      {ipucuSeviye === 0 ? (
+                        <div className="px-3.5 pb-3.5">
+                          <button
+                            onClick={() => setIpucuSeviye(1)}
+                            className="inline-flex items-center gap-1.5 text-[12px] font-bold text-premium-deep hover:gap-2 transition-all"
+                          >
+                            İpucu al <Icon name="ArrowRight" size={12} />
+                          </button>
+                        </div>
+                      ) : (
                         <div className="px-3.5 pb-3.5 pt-0 space-y-3">
-                          {ipucuMetni && (
-                            <p className="text-[13px] leading-relaxed text-ink-soft font-medium">
-                              {ipucuMetni}
-                            </p>
+                          {ipucuTierlar.slice(0, ipucuSeviye).map((tier) =>
+                            tier === 'metin' ? (
+                              <p
+                                key="metin"
+                                className="text-[13px] leading-relaxed text-ink-soft font-medium"
+                              >
+                                {ipucuMetni}
+                              </p>
+                            ) : (
+                              <div key="kodlar">
+                                <div className="text-[9px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-1.5">
+                                  İlgili hesap kodları
+                                </div>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {kodEtiketleri.map((k) => (
+                                    <span
+                                      key={k}
+                                      className="font-mono text-[12px] font-bold text-brand-deep bg-blue-soft/50 border border-brand/30 rounded px-2 py-0.5"
+                                    >
+                                      {k}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            ),
                           )}
-                          {kodEtiketleri.length > 0 && (
-                            <div>
-                              <div className="text-[9px] tracking-[0.2em] uppercase text-ink-mute font-bold mb-1.5">
-                                İlgili hesap kodları
-                              </div>
-                              <div className="flex flex-wrap gap-1.5">
-                                {kodEtiketleri.map((k) => (
-                                  <span
-                                    key={k}
-                                    className="font-mono text-[12px] font-bold text-brand-deep bg-blue-soft/50 border border-brand/30 rounded px-2 py-0.5"
-                                  >
-                                    {k}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
+
+                          {ipucuSeviye < ipucuTierlar.length ? (
+                            <button
+                              onClick={() => setIpucuSeviye((v) => v + 1)}
+                              className="inline-flex items-center gap-1.5 text-[12px] font-bold text-premium-deep hover:gap-2 transition-all"
+                            >
+                              Sonraki ipucu <Icon name="ArrowRight" size={12} />
+                            </button>
+                          ) : (
+                            <p className="text-[11px] text-ink-quiet">
+                              Hâlâ takıldıysan tam kaydı <strong>Çözüm</strong> sekmesinden görebilirsin.
+                            </p>
                           )}
                         </div>
                       )}

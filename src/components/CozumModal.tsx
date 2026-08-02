@@ -9,6 +9,31 @@ interface Props {
   onKapat: () => void;
 }
 
+// Hesap sınıfı + tarafından kısa gerekçe türet (Altın Kurallar mantığı)
+const satirGerekce = (kod: string, borc: number): string => {
+  const borcTarafi = borc > 0;
+  const s = kod.charAt(0);
+  const iki = kod.slice(0, 2);
+  if (kod.startsWith('191')) return 'Alışta yüklenilen KDV indirilir → borç';
+  if (kod.startsWith('391')) return 'Satışta hesaplanan KDV → alacak';
+  if (s === '1' || s === '2')
+    return borcTarafi ? 'Varlık (aktif) arttı → borç' : 'Varlık azaldı → alacak';
+  if (s === '3' || s === '4')
+    return borcTarafi
+      ? 'Yükümlülük azaldı / ödendi → borç'
+      : 'Yükümlülük (kaynak) arttı → alacak';
+  if (s === '5')
+    return borcTarafi ? 'Özkaynak azaldı → borç' : 'Özkaynak arttı → alacak';
+  if (s === '6') {
+    const gelir = ['60', '64', '67'].includes(iki);
+    if (gelir) return 'Gelir doğdu → alacak';
+    return borcTarafi ? 'Gider oluştu → borç' : 'Gider düzeltmesi → alacak';
+  }
+  if (s === '7')
+    return borcTarafi ? 'Maliyet / gider → borç' : 'Maliyet yansıtma → alacak';
+  return borcTarafi ? 'Borç tarafına yazılır' : 'Alacak tarafına yazılır';
+};
+
 export const CozumModal = ({ soru, onKapat }: Props) => {
   useEsc(onKapat);
   const toplamBorc = soru.cozum.reduce((a, k) => a + (+k.borc || 0), 0);
@@ -48,17 +73,20 @@ export const CozumModal = ({ soru, onKapat }: Props) => {
             {soru.cozum.map((k, i) => {
               const ad = HESAP_PLANI.find((h) => h.kod === k.kod)?.ad || '';
               return (
-                <div
-                  key={i}
-                  className="grid grid-cols-12 gap-2 px-4 py-3 border-b border-ink/5 text-sm"
-                >
-                  <div className="col-span-2 font-mono font-bold">{k.kod}</div>
-                  <div className="col-span-5 font-medium">{ad}</div>
-                  <div className="col-span-2 text-right font-mono font-semibold">
-                    {k.borc > 0 ? paraFormat(k.borc) : ''}
+                <div key={i} className="border-b border-ink/5">
+                  <div className="grid grid-cols-12 gap-2 px-4 pt-3 pb-1 text-sm">
+                    <div className="col-span-2 font-mono font-bold">{k.kod}</div>
+                    <div className="col-span-5 font-medium">{ad}</div>
+                    <div className="col-span-2 text-right font-mono font-semibold">
+                      {k.borc > 0 ? paraFormat(k.borc) : ''}
+                    </div>
+                    <div className="col-span-3 text-right font-mono font-semibold">
+                      {k.alacak > 0 ? paraFormat(k.alacak) : ''}
+                    </div>
                   </div>
-                  <div className="col-span-3 text-right font-mono font-semibold">
-                    {k.alacak > 0 ? paraFormat(k.alacak) : ''}
+                  <div className="px-4 pb-2.5 flex items-center gap-1.5 text-[11px] text-ink-mute">
+                    <Icon name="ArrowRight" size={10} className="flex-shrink-0" />
+                    <span className="italic">{satirGerekce(k.kod, k.borc)}</span>
                   </div>
                 </div>
               );
