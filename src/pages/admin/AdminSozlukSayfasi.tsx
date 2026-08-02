@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   slugUret,
   sozlukTerimSil,
@@ -166,26 +167,21 @@ export const AdminSozlukSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-8">
-          <div className="flex items-baseline justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                Mali Sözlük
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
-                SEO için her terim ayrı sayfa. Türkçe karakter slug'da otomatik
-                ASCII'ye çevrilir.
-              </p>
-            </div>
-            {duzenlenen && (
-              <button
-                onClick={yeniBaslat}
-                className="inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold border border-line-strong rounded-lg hover:bg-bg-tint transition"
-              >
-                <Icon name="Plus" size={12} />
-                Yeni Terim
-              </button>
-            )}
-          </div>
+          <AdminSayfaBaslik
+            baslik="Mali Sözlük"
+            aciklama="SEO için her terim ayrı sayfa. Türkçe karakter slug'da otomatik ASCII'ye çevrilir."
+            aksiyon={
+              duzenlenen && (
+                <button
+                  onClick={yeniBaslat}
+                  className="inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold border border-line-strong rounded-lg hover:bg-bg-tint transition"
+                >
+                  <Icon name="Plus" size={12} />
+                  Yeni Terim
+                </button>
+              )
+            }
+          />
 
           {/* Form */}
           <section className="bg-surface border border-line rounded-2xl p-6">

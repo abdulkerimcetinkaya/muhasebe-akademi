@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { Icon } from '../../components/Icon';
 import { supabase } from '../../lib/supabase';
 import type { SoruDurum, Zorluk } from '../../lib/database.types';
@@ -255,21 +256,19 @@ export const AdminTopluEkleSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight mb-1">Toplu Soru Ekle</h1>
-            <p className="text-sm text-ink-soft font-medium">
-              JSON olarak birden çok soruyu tek seferde ekle. ID'ler otomatik üretilir.
-            </p>
-          </div>
-          <button
-            onClick={ornekYukle}
-            className="text-sm text-ink-soft hover:text-ink font-semibold flex items-center gap-2"
-          >
-            <Icon name="FileCode" size={14} />
-            Örnek yükle
-          </button>
-        </div>
+        <AdminSayfaBaslik
+          baslik="Toplu Soru Ekle"
+          aciklama="JSON olarak birden çok soruyu tek seferde ekle. ID'ler otomatik üretilir."
+          aksiyon={
+            <button
+              onClick={ornekYukle}
+              className="text-sm text-ink-soft hover:text-ink font-semibold flex items-center gap-2"
+            >
+              <Icon name="FileCode" size={14} />
+              Örnek yükle
+            </button>
+          }
+        />
 
         {sonuc && (
           <div className="flex items-start gap-2 p-4 bg-success-soft border border-success-soft rounded-lg text-sm text-success font-medium mb-4">

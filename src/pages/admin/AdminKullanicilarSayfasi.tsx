@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   tumKullanicilariYukle,
   type KullaniciOzet,
@@ -61,12 +62,10 @@ export const AdminKullanicilarSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div className="flex items-baseline justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                Kullanıcılar
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
+          <AdminSayfaBaslik
+            baslik="Kullanıcılar"
+            aciklama={
+              <>
                 Toplam <strong>{list.length}</strong> kullanıcı —{' '}
                 <strong>{premiumSayisi}</strong> aktif premium
                 {banliSayisi > 0 && (
@@ -77,9 +76,9 @@ export const AdminKullanicilarSayfasi = () => {
                     </strong> banlı
                   </>
                 )}
-              </p>
-            </div>
-          </div>
+              </>
+            }
+          />
 
           <div className="flex items-center gap-2 flex-wrap">
             <input

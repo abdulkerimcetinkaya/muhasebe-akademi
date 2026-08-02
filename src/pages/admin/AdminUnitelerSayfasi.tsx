@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { Thiings } from '../../components/Thiings';
 import { EmptyState } from '../../components/EmptyState';
 import { SkeletonSatirlar } from '../../components/Skeleton';
@@ -121,20 +122,19 @@ export const AdminUnitelerSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
-          <h1 className="font-display text-3xl font-bold tracking-tight">İşletmeler</h1>
-          <button
-            onClick={() => setForm({ acik: true, duzenleniyor: null })}
-            className="btn btn-primary"
-          >
-            <Icon name="PlusCircle" size={14} />
-            Yeni İşletme
-          </button>
-        </div>
-        <p className="text-sm text-ink-soft font-medium mb-6">
-          İşletmeleri ekle, düzenle, sil ve sıralarını değiştir. Sorular bağlı olan işletmeler
-          silinemez.
-        </p>
+        <AdminSayfaBaslik
+          baslik="İşletmeler"
+          aciklama="İşletmeleri ekle, düzenle, sil ve sıralarını değiştir. Sorular bağlı olan işletmeler silinemez."
+          aksiyon={
+            <button
+              onClick={() => setForm({ acik: true, duzenleniyor: null })}
+              className="btn btn-primary"
+            >
+              <Icon name="PlusCircle" size={14} />
+              Yeni İşletme
+            </button>
+          }
+        />
 
         <div className="mb-4">
           <div className="relative max-w-md">

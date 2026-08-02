@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
   kartGuncelle,
@@ -121,10 +122,10 @@ export const AdminKesfetSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline justify-between flex-wrap gap-2 mb-6">
-            <h1 className="font-display text-2xl font-bold tracking-tight text-ink">Keşfet Kartları</h1>
-            <span className="text-[12px] text-ink-mute tnum">{kartlar.length} kart</span>
-          </div>
+          <AdminSayfaBaslik
+            baslik="Keşfet Kartları"
+            aksiyon={<span className="text-[12px] text-ink-mute tnum">{kartlar.length} kart</span>}
+          />
 
           {/* Form */}
           <div className="bg-surface border border-line rounded-xl p-5 mb-8">

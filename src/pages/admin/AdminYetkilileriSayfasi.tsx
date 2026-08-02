@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   adminCikar,
   adminEkle,
@@ -150,23 +151,23 @@ export const AdminYetkilileriSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div className="flex items-baseline justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                Admin Yetkilileri
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
+          <AdminSayfaBaslik
+            baslik="Admin Yetkilileri"
+            aciklama={
+              <>
                 Toplam <strong>{admins.length}</strong> admin · admin tüm içerik ve kullanıcı yönetimi yetkisine sahip
-              </p>
-            </div>
-            <button
-              onClick={() => setEkleModalAcik(true)}
-              className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:opacity-90 active:scale-[0.98] transition"
-            >
-              <Icon name="UserPlus" size={12} />
-              Admin Ekle
-            </button>
-          </div>
+              </>
+            }
+            aksiyon={
+              <button
+                onClick={() => setEkleModalAcik(true)}
+                className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:opacity-90 active:scale-[0.98] transition"
+              >
+                <Icon name="UserPlus" size={12} />
+                Admin Ekle
+              </button>
+            }
+          />
 
           {hata && (
             <div className="flex items-start gap-2 p-3 bg-danger-soft border border-danger-soft rounded-lg text-[13px] text-danger font-medium">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { SoruForm } from '../../components/SoruForm';
 import type { SoruFormDegerleri } from '../../components/SoruForm';
 import { useUniteler } from '../../contexts/UnitelerContext';
@@ -128,8 +129,10 @@ export const AdminDuzenleSoruSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <h1 className="font-display text-3xl font-bold tracking-tight mb-1">Soruyu Düzenle</h1>
-        <p className="text-sm text-ink-soft font-mono mb-6">{baslangic.id}</p>
+        <AdminSayfaBaslik
+          baslik="Soruyu Düzenle"
+          aciklama={<span className="font-mono">{baslangic.id}</span>}
+        />
         <SoruForm
           baslangic={baslangic}
           duzenleme={true}

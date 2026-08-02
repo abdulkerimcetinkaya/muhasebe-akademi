@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   indirimKoduGuncelle,
   indirimKoduOlustur,
@@ -121,24 +122,20 @@ export const AdminIndirimKodlariSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div className="flex items-baseline justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                İndirim Kodları
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
-                Pazarlama kampanyaları + okul fulfillment için. %100 kod = ücretsiz aktivasyon.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setFormAcik(!formAcik)}
-              className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2.5 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:opacity-90 transition"
-            >
-              <Icon name={formAcik ? 'X' : 'Plus'} size={12} />
-              {formAcik ? 'Kapat' : 'Yeni Kod'}
-            </button>
-          </div>
+          <AdminSayfaBaslik
+            baslik="İndirim Kodları"
+            aciklama="Pazarlama kampanyaları + okul fulfillment için. %100 kod = ücretsiz aktivasyon."
+            aksiyon={
+              <button
+                type="button"
+                onClick={() => setFormAcik(!formAcik)}
+                className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2.5 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:opacity-90 transition"
+              >
+                <Icon name={formAcik ? 'X' : 'Plus'} size={12} />
+                {formAcik ? 'Kapat' : 'Yeni Kod'}
+              </button>
+            }
+          />
 
           {hata && (
             <div className="p-3 rounded-lg bg-danger-soft border border-danger-soft text-[13px] text-danger">

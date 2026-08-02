@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   adminLogYukle,
   ISLEM_ETIKETLERI,
@@ -83,25 +84,25 @@ export const AdminLogSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div className="flex items-baseline justify-between flex-wrap gap-3">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                Admin Log
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
+          <AdminSayfaBaslik
+            baslik="Admin Log"
+            aciklama={
+              <>
                 Hangi admin ne zaman ne yaptı? Son <strong>{filtreli.length}</strong> işlem
                 {(filtreIslem || filtreAdmin) && ' (filtreli)'}.
-              </p>
-            </div>
-            <button
-              onClick={yukle}
-              disabled={yukleniyor}
-              className="inline-flex items-center gap-2 border border-line-strong px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:bg-bg-tint transition disabled:opacity-50"
-            >
-              <Icon name="RefreshCw" size={12} className={yukleniyor ? 'animate-spin' : ''} />
-              Yenile
-            </button>
-          </div>
+              </>
+            }
+            aksiyon={
+              <button
+                onClick={yukle}
+                disabled={yukleniyor}
+                className="inline-flex items-center gap-2 border border-line-strong px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold rounded-lg hover:bg-bg-tint transition disabled:opacity-50"
+              >
+                <Icon name="RefreshCw" size={12} className={yukleniyor ? 'animate-spin' : ''} />
+                Yenile
+              </button>
+            }
+          />
 
           {/* Filtreler */}
           <div className="flex items-center gap-3 flex-wrap">

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   bildirimGuncelle,
   bildirimSil,
@@ -154,12 +155,10 @@ export const AdminBildirimlerSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-8">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight">Bildirimler</h1>
-            <p className="text-[13.5px] text-ink-soft mt-1">
-              Yayınladığın bildirim, oturum açmış tüm kullanıcıların çan ikonunda görünür.
-            </p>
-          </div>
+          <AdminSayfaBaslik
+            baslik="Bildirimler"
+            aciklama="Yayınladığın bildirim, oturum açmış tüm kullanıcıların çan ikonunda görünür."
+          />
 
           {/* Yeni bildirim formu */}
           <section className="bg-surface border border-line rounded-2xl p-6">

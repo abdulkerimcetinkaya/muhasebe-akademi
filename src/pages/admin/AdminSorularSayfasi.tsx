@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { EmptyState } from '../../components/EmptyState';
 import { SkeletonSatirlar } from '../../components/Skeleton';
 import { supabase } from '../../lib/supabase';
@@ -215,42 +216,40 @@ export const AdminSorularSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight">Sorular</h1>
-            <p className="text-sm text-ink-soft font-medium mt-1">
-              {filtreli.length} / {sorular.length} soru görüntüleniyor
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={topluBelgeUret}
-              disabled={topluUretiliyor || filtreliBelgesizler.length === 0}
-              className="flex items-center gap-2 bg-surface border border-line-strong text-ink px-4 py-2 rounded-lg text-sm font-bold hover:border-ink active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Filtrelenmiş, belgesi olmayan sorular için AI ile belge üretir"
-            >
-              {topluUretiliyor ? (
-                <>
-                  <Icon name="Loader" size={14} className="animate-spin" />
-                  Üretiliyor {topluProgress.tamamlanan}/{topluProgress.hedef}
-                </>
-              ) : (
-                <>
-                  <Icon name="FileText" size={14} />
-                  Belgesizler için Üret ({filtreliBelgesizler.length})
-                </>
-              )}
-            </button>
-            <Link
-              to="/admin/sorular/yeni"
-              className="flex items-center gap-2 bg-ink text-bg px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 active:scale-[0.98] transition"
-            >
-              <Icon name="Plus" size={14} />
-              Yeni Soru
-            </Link>
-          </div>
-        </div>
+        <AdminSayfaBaslik
+          baslik="Sorular"
+          aciklama={`${filtreli.length} / ${sorular.length} soru görüntüleniyor`}
+          aksiyon={
+            <>
+              <button
+                type="button"
+                onClick={topluBelgeUret}
+                disabled={topluUretiliyor || filtreliBelgesizler.length === 0}
+                className="flex items-center gap-2 bg-surface border border-line-strong text-ink px-4 py-2 rounded-lg text-sm font-bold hover:border-ink active:scale-[0.98] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Filtrelenmiş, belgesi olmayan sorular için AI ile belge üretir"
+              >
+                {topluUretiliyor ? (
+                  <>
+                    <Icon name="Loader" size={14} className="animate-spin" />
+                    Üretiliyor {topluProgress.tamamlanan}/{topluProgress.hedef}
+                  </>
+                ) : (
+                  <>
+                    <Icon name="FileText" size={14} />
+                    Belgesizler için Üret ({filtreliBelgesizler.length})
+                  </>
+                )}
+              </button>
+              <Link
+                to="/admin/sorular/yeni"
+                className="flex items-center gap-2 bg-ink text-bg px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 active:scale-[0.98] transition"
+              >
+                <Icon name="Plus" size={14} />
+                Yeni Soru
+              </Link>
+            </>
+          }
+        />
 
         {topluHatalar.length > 0 && (
           <div className="bg-danger-soft border border-danger-soft rounded-xl p-4 mb-4">

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { HESAP_PLANI } from '../../data/hesap-plani';
 import {
   MUAVIN_SINIFLARI,
@@ -191,26 +192,26 @@ export const AdminMuavinHesaplarSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-8">
-          <div className="flex items-baseline justify-between flex-wrap gap-2">
-            <div>
-              <h1 className="font-display text-3xl font-bold tracking-tight">
-                Muavin Hesaplar
-              </h1>
-              <p className="text-[13.5px] text-ink-soft mt-1">
+          <AdminSayfaBaslik
+            baslik="Muavin Hesaplar"
+            aciklama={
+              <>
                 Alt/yardımcı hesaplar — örn: <code className="font-mono">120.001 ABC Ticaret</code>.
                 Bir ana hesabın muavini varsa, soru editörü ana hesap kullanımını uyaracak.
-              </p>
-            </div>
-            {duzenlenen && (
-              <button
-                onClick={yeniBaslat}
-                className="inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold border border-line-strong rounded-lg hover:bg-bg-tint transition"
-              >
-                <Icon name="Plus" size={12} />
-                Yeni Muavin
-              </button>
-            )}
-          </div>
+              </>
+            }
+            aksiyon={
+              duzenlenen && (
+                <button
+                  onClick={yeniBaslat}
+                  className="inline-flex items-center gap-2 px-3 py-2 text-[11px] tracking-[0.2em] uppercase font-bold border border-line-strong rounded-lg hover:bg-bg-tint transition"
+                >
+                  <Icon name="Plus" size={12} />
+                  Yeni Muavin
+                </button>
+              )
+            }
+          />
 
           {/* Form */}
           <section className="bg-surface border border-line rounded-2xl p-6">

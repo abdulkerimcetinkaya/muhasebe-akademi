@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { SoruForm, bosForm } from '../../components/SoruForm';
 import type { SoruFormDegerleri } from '../../components/SoruForm';
 import { useUniteler } from '../../contexts/UnitelerContext';
@@ -132,10 +133,10 @@ export const AdminYeniSoruSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <h1 className="font-display text-3xl font-bold tracking-tight mb-1">Yeni Soru</h1>
-        <p className="text-sm text-ink-soft font-medium mb-6">
-          Manuel soru ekleme. Onaylı durumda kaydedilirse hemen yayında olur.
-        </p>
+        <AdminSayfaBaslik
+          baslik="Yeni Soru"
+          aciklama="Manuel soru ekleme. Onaylı durumda kaydedilirse hemen yayında olur."
+        />
         {baslangic && (
           <SoruForm
             baslangic={baslangic}

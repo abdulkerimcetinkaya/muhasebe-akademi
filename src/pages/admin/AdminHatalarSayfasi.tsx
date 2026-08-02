@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { EmptyState } from '../../components/EmptyState';
 import { SkeletonSatirlar } from '../../components/Skeleton';
 import { supabase } from '../../lib/supabase';
@@ -174,12 +175,10 @@ export const AdminHatalarSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0">
-        <div className="mb-6">
-          <h1 className="font-display text-3xl font-bold tracking-tight">Hata Bildirimleri</h1>
-          <p className="text-sm text-ink-soft font-medium mt-1">
-            Kullanıcıların bildirdiği soru hatalarını incele ve durum güncelle.
-          </p>
-        </div>
+        <AdminSayfaBaslik
+          baslik="Hata Bildirimleri"
+          aciklama="Kullanıcıların bildirdiği soru hatalarını incele ve durum güncelle."
+        />
 
         <div className="flex flex-wrap gap-2 mb-4">
           {filtreButon('acik', 'Açık')}

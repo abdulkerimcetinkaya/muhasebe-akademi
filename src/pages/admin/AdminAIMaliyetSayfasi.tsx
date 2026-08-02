@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { supabase } from '../../lib/supabase';
 
 // Gemini 2.5 Flash fiyatlandırması (USD / 1M token)
@@ -209,28 +210,24 @@ export const AdminAIMaliyetSayfasi = () => {
     <main className="max-w-7xl mx-auto px-6 py-8 flex gap-8">
       <AdminYanMenu />
       <div className="flex-1 min-w-0 space-y-8">
-        <header className="flex items-start justify-between gap-6">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight mb-1">
-              AI Maliyet İzleme
-            </h1>
-            <p className="text-sm text-ink-soft font-medium">
-              Gemini 2.5 Flash çağrı maliyeti — bugün ve son 7 gün.
-            </p>
-          </div>
-          <label className="flex items-center gap-2 text-xs text-ink-mute font-semibold">
-            USD/TL:
-            <input
-              type="number"
-              min={1}
-              max={200}
-              step={0.5}
-              value={usdTl}
-              onChange={(e) => usdTlGuncelle(Number(e.target.value) || VARSAYILAN_USD_TL)}
-              className="w-20 px-2 py-1 border border-line rounded-lg bg-surface text-ink text-sm font-mono"
-            />
-          </label>
-        </header>
+        <AdminSayfaBaslik
+          baslik="AI Maliyet İzleme"
+          aciklama="Gemini 2.5 Flash çağrı maliyeti — bugün ve son 7 gün."
+          aksiyon={
+            <label className="flex items-center gap-2 text-xs text-ink-mute font-semibold">
+              USD/TL:
+              <input
+                type="number"
+                min={1}
+                max={200}
+                step={0.5}
+                value={usdTl}
+                onChange={(e) => usdTlGuncelle(Number(e.target.value) || VARSAYILAN_USD_TL)}
+                className="w-20 px-2 py-1 border border-line rounded-lg bg-surface text-ink text-sm font-mono"
+              />
+            </label>
+          }
+        />
 
         {hata && (
           <div className="rounded-xl border border-danger/40 bg-danger-soft p-4 text-sm text-danger font-medium">

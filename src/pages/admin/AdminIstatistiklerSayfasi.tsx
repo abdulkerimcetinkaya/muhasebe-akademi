@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { paraFormat } from '../../lib/format';
 import { supabase } from '../../lib/supabase';
 
@@ -140,14 +141,10 @@ export const AdminIstatistiklerSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight">
-              İstatistikler
-            </h1>
-            <p className="text-[13.5px] text-ink-soft mt-1">
-              Gerçek zamanlı kullanıcı, ödeme ve çözüm metrikleri
-            </p>
-          </div>
+          <AdminSayfaBaslik
+            baslik="İstatistikler"
+            aciklama="Gerçek zamanlı kullanıcı, ödeme ve çözüm metrikleri"
+          />
 
           {hata && (
             <div className="flex items-start gap-2 p-3 bg-danger-soft border border-danger-soft rounded-lg text-[13px] text-danger font-medium">

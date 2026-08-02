@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
+import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import {
   basvuruOnayla,
   basvuruReddet,
@@ -115,16 +116,16 @@ export const AdminKatkicilarSayfasi = () => {
       <div className="flex gap-8">
         <AdminYanMenu />
         <main className="flex-1 min-w-0 space-y-6">
-          <div>
-            <h1 className="font-display text-3xl font-bold tracking-tight">
-              Katkıcı Başvuruları
-            </h1>
-            <p className="text-[13.5px] text-ink-soft mt-1">
-              <strong className="text-premium-deep">{sayilar.bekleyen}</strong> bekleyen ·{' '}
-              <strong className="text-success dark:text-success">{sayilar.onayli}</strong> onaylı ·{' '}
-              <strong className="text-danger dark:text-danger">{sayilar.reddedilen}</strong> reddedilen
-            </p>
-          </div>
+          <AdminSayfaBaslik
+            baslik="Katkıcı Başvuruları"
+            aciklama={
+              <>
+                <strong className="text-premium-deep">{sayilar.bekleyen}</strong> bekleyen ·{' '}
+                <strong className="text-success dark:text-success">{sayilar.onayli}</strong> onaylı ·{' '}
+                <strong className="text-danger dark:text-danger">{sayilar.reddedilen}</strong> reddedilen
+              </>
+            }
+          />
 
           <div className="flex items-center gap-2 flex-wrap">
             {(['beklemede', 'onayli', 'reddedildi', 'hepsi'] as const).map((f) => (
