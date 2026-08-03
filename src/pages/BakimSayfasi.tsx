@@ -9,7 +9,7 @@ export const BakimSayfasi = () => (
     <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-blue-soft/40 via-transparent to-transparent" />
 
     <div className="relative text-center">
-      <div className="text-[11px] sm:text-[12px] tracking-[0.35em] uppercase text-brand-deep font-bold mb-6">
+      <div className="font-display text-xl sm:text-2xl tracking-tight text-brand-deep mb-6">
         MuhasebeAkademi
       </div>
 
