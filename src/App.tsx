@@ -72,11 +72,11 @@ const KesfetKartSayfasi = lazy(() => import('./pages/KesfetKartSayfasi').then((m
 const KesfetItemSayfasi = lazy(() => import('./pages/KesfetItemSayfasi').then((m) => ({ default: m.KesfetItemSayfasi })));
 
 /**
- * Bakım/çok-yakında kapısı: bakım modu açıkken admin olmayan herkese BakimSayfasi
- * gösterilir. Giriş/kayıt yolları (erken erişim) ve adminler muaf.
+ * Bakım/çok-yakında kapısı: bakım açıkken anonim ziyaretçi normal siteyi
+ * (ana sayfa, public sayfalar, kayıt) görür; giriş yapmış ama admin OLMAYAN
+ * kullanıcıya "çok yakında" gösterilir; adminler normal siteyi görür.
  */
 const BakimGate = ({ children }: { children: ReactNode }) => {
-  const location = useLocation();
   const { user, adminRoller } = useAuth();
   const [bakim, setBakim] = useState<boolean | null>(null);
   useEffect(() => {
@@ -85,22 +85,21 @@ const BakimGate = ({ children }: { children: ReactNode }) => {
       .catch(() => setBakim(false));
   }, []);
   const isAdmin = (adminRoller ?? []).length > 0;
-  const authYolu =
-    location.pathname.startsWith('/giris') || location.pathname.startsWith('/sifre');
   const bos = <div className="min-h-[100dvh] bg-bg-tint" />;
 
-  // Durum belli olana dek boş bırak (siteyi ziyaretçiye yanlışlıkla göstermemek için)
+  // Durum belli olana dek boş bırak
   if (bakim === null) return bos;
   if (!bakim) return <>{children}</>;
 
-  // Bakım AÇIK — önce kayıt/giriş duvarı:
-  if (!user) {
-    // Anonim: giriş/kayıt sayfasını görebilir; başka her yerden kayıt moduna yönlenir.
-    return authYolu ? <>{children}</> : <Navigate to="/giris?mod=kayit" replace />;
-  }
+  // Bakım AÇIK:
+  // - Anonim → normal site (ana sayfa, public sayfalar, kayıt/giriş) görebilir.
+  //   Landing'deki "kayıt ol" ile kaydolur → kayıt listesi toplanır.
+  // - Giriş yapmış ama admin değil → "çok yakında" (ürün henüz kapalı).
+  // - Admin → normal site.
+  if (!user) return <>{children}</>;
   if (adminRoller === null) return bos; // roller yükleniyor
-  if (isAdmin) return <>{children}</>; // admin → normal site
-  return <BakimSayfasi />; // giriş yapmış ama admin değil → çok yakında
+  if (isAdmin) return <>{children}</>;
+  return <BakimSayfasi />;
 };
 const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));
 const AdminKesfetKartSayfasi = lazy(() => import('./pages/admin/AdminKesfetKartSayfasi').then((m) => ({ default: m.AdminKesfetKartSayfasi })));
