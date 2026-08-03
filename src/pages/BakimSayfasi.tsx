@@ -17,10 +17,11 @@ export const BakimSayfasi = () => (
         Çok yakında{' '}
         <span className="font-display-italic font-normal text-ink-soft">buradayız</span>
       </h1>
+    </div>
 
-      <div className="mt-14 text-[12px] text-ink-quiet font-medium">
-        © 2026 MuhasebeAkademi
-      </div>
+    {/* En altta sabit telif */}
+    <div className="absolute bottom-6 left-0 right-0 text-center text-[12px] text-ink-quiet font-medium">
+      © 2026 MuhasebeAkademi
     </div>
   </main>
 );
