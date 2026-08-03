@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { useAuth } from '../contexts/AuthContext';
 import { girisYap, googleIleGiris, kayitOl } from '../lib/auth';
@@ -16,8 +16,11 @@ type AdDurum = 'bos' | 'kontrol' | 'uygun' | 'kullanimda' | 'gecersiz';
 
 export const GirisSayfasi = () => {
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, yukleniyor: oturumYukleniyor } = useAuth();
-  const [mod, setMod] = useState<Mod>('giris');
+  const [mod, setMod] = useState<Mod>(
+    searchParams.get('mod') === 'kayit' ? 'kayit' : 'giris',
+  );
   const [email, setEmail] = useState('');
   const [sifre, setSifre] = useState('');
   const [sifreTekrar, setSifreTekrar] = useState('');

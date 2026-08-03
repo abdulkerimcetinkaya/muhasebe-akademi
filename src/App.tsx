@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
@@ -10,6 +10,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { RozetToast } from './components/RozetToast';
 import { HesapPlaniModal } from './components/HesapPlaniModal';
 import { HesapPlaniYanPanel } from './components/HesapPlaniYanPanel';
+import { BakimSayfasi } from './pages/BakimSayfasi';
+import { bakimModuGetir } from './lib/bakim';
 
 // Tüm route sayfaları lazy — initial JS bundle'ı 1MB+ küçülüyor (BlockNote pulled by
 // UniteSayfasi/SoruEkrani/KonuSayfasi yalnızca o route'a girince yüklenir).
@@ -68,6 +70,32 @@ const MuhasebeyeGirisSayfasi = lazy(() => import('./pages/MuhasebeyeGirisSayfasi
 const KesfetSayfasi = lazy(() => import('./pages/KesfetSayfasi').then((m) => ({ default: m.KesfetSayfasi })));
 const KesfetKartSayfasi = lazy(() => import('./pages/KesfetKartSayfasi').then((m) => ({ default: m.KesfetKartSayfasi })));
 const KesfetItemSayfasi = lazy(() => import('./pages/KesfetItemSayfasi').then((m) => ({ default: m.KesfetItemSayfasi })));
+
+/**
+ * Bakım/çok-yakında kapısı: bakım modu açıkken admin olmayan herkese BakimSayfasi
+ * gösterilir. Giriş/kayıt yolları (erken erişim) ve adminler muaf.
+ */
+const BakimGate = ({ children }: { children: ReactNode }) => {
+  const location = useLocation();
+  const { user, adminRoller } = useAuth();
+  const [bakim, setBakim] = useState<boolean | null>(null);
+  useEffect(() => {
+    bakimModuGetir()
+      .then(setBakim)
+      .catch(() => setBakim(false));
+  }, []);
+  const isAdmin = (adminRoller ?? []).length > 0;
+  const authYolu =
+    location.pathname.startsWith('/giris') || location.pathname.startsWith('/sifre');
+  // Durum belli olana dek boş bırak (siteyi ziyaretçiye yanlışlıkla göstermemek için)
+  if (bakim === null) return <div className="min-h-[100dvh] bg-bg-tint" />;
+  if (bakim && !authYolu) {
+    // Kullanıcı var ama roller yükleniyorsa admin'e coming-soon flaşı gösterme
+    if (user && adminRoller === null) return <div className="min-h-[100dvh] bg-bg-tint" />;
+    if (!isAdmin) return <BakimSayfasi />;
+  }
+  return <>{children}</>;
+};
 const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));
 const AdminKesfetKartSayfasi = lazy(() => import('./pages/admin/AdminKesfetKartSayfasi').then((m) => ({ default: m.AdminKesfetKartSayfasi })));
 const AdminKesfetItemIcerikSayfasi = lazy(() => import('./pages/admin/AdminKesfetItemIcerikSayfasi').then((m) => ({ default: m.AdminKesfetItemIcerikSayfasi })));
@@ -446,6 +474,7 @@ const App = () => {
     <BrowserRouter>
       <ScrollToTop />
       <SiteLoader />
+      <BakimGate>
       <div className="min-h-screen flex flex-col bg-bg-tint text-ink transition-colors">
         <Navbar
           ilerleme={ilerleme}
@@ -823,6 +852,7 @@ const App = () => {
         <Analytics />
         <SpeedInsights />
       </div>
+      </BakimGate>
     </BrowserRouter>
   );
 };

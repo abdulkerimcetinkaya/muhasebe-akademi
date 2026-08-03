@@ -130,6 +130,13 @@ export type AtolyeSoruRow = {
   eklenme: string;
 };
 
+export type SiteAyarlariRow = {
+  id: number;
+  bakim_modu: boolean;
+  guncelleyen: string | null;
+  guncellendi: string;
+};
+
 export type UnitesRow = {
   id: string;
   ad: string;
@@ -522,6 +529,12 @@ export type Database = {
         Row: HesapPlaniRow;
         Insert: HesapPlaniRow;
         Update: Partial<HesapPlaniRow>;
+        Relationships: [];
+      };
+      site_ayarlari: {
+        Row: SiteAyarlariRow;
+        Insert: Partial<SiteAyarlariRow>;
+        Update: Partial<SiteAyarlariRow>;
         Relationships: [];
       };
       adminler: {

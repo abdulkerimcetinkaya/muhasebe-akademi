@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../../components/Icon';
 import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { supabase } from '../../lib/supabase';
+import { useHasAdminRol } from '../../contexts/AuthContext';
+import { bakimModuGetir, bakimModuAyarla } from '../../lib/bakim';
 
 interface Sayilar {
   toplam: number;
@@ -29,6 +31,35 @@ const baslangic: Sayilar = {
 export const AdminAnaSayfa = () => {
   const [s, setS] = useState<Sayilar>(baslangic);
   const [yukleniyor, setYukleniyor] = useState(true);
+
+  // Site bakım/çok-yakında modu — yalnızca super admin
+  const superAdmin = useHasAdminRol('super');
+  const [bakim, setBakim] = useState<boolean | null>(null);
+  const [bakimKaydediliyor, setBakimKaydediliyor] = useState(false);
+  const [bakimHata, setBakimHata] = useState(false);
+
+  useEffect(() => {
+    if (!superAdmin) return;
+    bakimModuGetir()
+      .then(setBakim)
+      .catch(() => setBakim(false));
+  }, [superAdmin]);
+
+  const bakimToggle = async () => {
+    if (bakim === null || bakimKaydediliyor) return;
+    const yeni = !bakim;
+    setBakim(yeni);
+    setBakimKaydediliyor(true);
+    setBakimHata(false);
+    try {
+      await bakimModuAyarla(yeni);
+    } catch {
+      setBakim(!yeni);
+      setBakimHata(true);
+    } finally {
+      setBakimKaydediliyor(false);
+    }
+  };
 
   useEffect(() => {
     const yukle = async () => {
@@ -126,6 +157,65 @@ export const AdminAnaSayfa = () => {
         <p className="text-sm text-ink-soft font-medium mb-8">
           İçeriği yönet, aksiyon bekleyenleri gör, hızlıca işlem yap.
         </p>
+
+        {/* Site durumu — yalnızca super admin */}
+        {superAdmin && (
+          <section className="mb-8">
+            <div
+              className={`flex items-center gap-4 rounded-xl border px-5 py-4 transition-colors ${
+                bakim
+                  ? 'border-premium/50 bg-premium-soft/40'
+                  : 'border-success/40 bg-success-soft/40'
+              }`}
+            >
+              <Icon
+                name={bakim ? 'Lock' : 'Globe'}
+                size={20}
+                className={bakim ? 'text-premium-deep' : 'text-success'}
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-display font-bold text-base tracking-tight">
+                    Site {bakim === null ? '…' : bakim ? 'kapalı' : 'yayında'}
+                  </span>
+                  <span
+                    className={`text-[9px] tracking-[0.2em] uppercase font-bold px-2 py-0.5 rounded ${
+                      bakim ? 'bg-premium-soft text-premium-deep' : 'bg-success-soft text-success'
+                    }`}
+                  >
+                    {bakim === null ? '—' : bakim ? 'Çok yakında' : 'Canlı'}
+                  </span>
+                </div>
+                <p className="text-[13px] text-ink-soft font-medium mt-0.5">
+                  {bakim
+                    ? 'Ziyaretçiler "çok yakında" ekranını görüyor; sadece adminler siteyi kullanabiliyor. Kayıt/giriş açık.'
+                    : 'Site herkese açık. Kapatırsan ziyaretçilere "çok yakında" ekranı gösterilir.'}
+                  {bakimHata && (
+                    <span className="text-danger font-semibold"> · Güncellenemedi, tekrar dene.</span>
+                  )}
+                </p>
+              </div>
+              {/* Switch */}
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!!bakim}
+                onClick={bakimToggle}
+                disabled={bakim === null || bakimKaydediliyor}
+                title={bakim ? 'Siteyi yayına al' : 'Siteyi kapat (çok yakında)'}
+                className={`relative flex-shrink-0 w-12 h-7 rounded-full transition-colors disabled:opacity-50 ${
+                  bakim ? 'bg-premium' : 'bg-line-strong'
+                }`}
+              >
+                <span
+                  className={`absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                    bakim ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+          </section>
+        )}
 
         {/* Aksiyon bekleyenler */}
         <section className="mb-8">
