@@ -1,4 +1,4 @@
-import { useMemo, useRef, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useInView } from 'framer-motion';
 import { Icon } from '../components/Icon';
@@ -11,6 +11,7 @@ import { useUniteler } from '../contexts/UnitelerContext';
 import { gununSorusu } from '../lib/gunun-sorusu';
 import { devamEtSorusu, enCokYanlisSoru } from '../lib/oneriler';
 import { bugununTarihi } from '../lib/format';
+import { bakimModuGetir } from '../lib/bakim';
 import { ZORLUK_AD, ZORLUK_PUAN } from '../data/sabitler';
 import type { Ilerleme, Istatistik, SoruWithUnite, Zorluk } from '../types';
 
@@ -571,9 +572,28 @@ const Reveal = ({ children, delay = 0, className, y = 24, as = 'div' }: RevealPr
 
 const AnonimAnaSayfa = () => {
   const nav = useNavigate();
+  const [bakim, setBakim] = useState(false);
+  useEffect(() => {
+    bakimModuGetir()
+      .then(setBakim)
+      .catch(() => {});
+  }, []);
 
   return (
     <main>
+      {/* Bakım açıkken: beklenti şeridi (yakında açılıyoruz) */}
+      {bakim && (
+        <div className="bg-ink text-bg text-center text-[13px] sm:text-sm font-semibold px-4 py-2.5 flex items-center justify-center gap-x-2 gap-y-1 flex-wrap">
+          <span>Yakında açılıyoruz — kaydol, açılışta ilk sen haberdar ol.</span>
+          <button
+            onClick={() => nav('/giris?mod=kayit')}
+            className="underline underline-offset-2 hover:opacity-80"
+          >
+            Kayıt ol
+          </button>
+        </div>
+      )}
+
       {/* ===========================================================
           HERO — Açık defter sayfası (cursor parallax + typewriter)
       =========================================================== */}
