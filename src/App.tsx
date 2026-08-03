@@ -87,14 +87,20 @@ const BakimGate = ({ children }: { children: ReactNode }) => {
   const isAdmin = (adminRoller ?? []).length > 0;
   const authYolu =
     location.pathname.startsWith('/giris') || location.pathname.startsWith('/sifre');
+  const bos = <div className="min-h-[100dvh] bg-bg-tint" />;
+
   // Durum belli olana dek boş bırak (siteyi ziyaretçiye yanlışlıkla göstermemek için)
-  if (bakim === null) return <div className="min-h-[100dvh] bg-bg-tint" />;
-  if (bakim && !authYolu) {
-    // Kullanıcı var ama roller yükleniyorsa admin'e coming-soon flaşı gösterme
-    if (user && adminRoller === null) return <div className="min-h-[100dvh] bg-bg-tint" />;
-    if (!isAdmin) return <BakimSayfasi />;
+  if (bakim === null) return bos;
+  if (!bakim) return <>{children}</>;
+
+  // Bakım AÇIK — önce kayıt/giriş duvarı:
+  if (!user) {
+    // Anonim: giriş/kayıt sayfasını görebilir; başka her yerden kayıt moduna yönlenir.
+    return authYolu ? <>{children}</> : <Navigate to="/giris?mod=kayit" replace />;
   }
-  return <>{children}</>;
+  if (adminRoller === null) return bos; // roller yükleniyor
+  if (isAdmin) return <>{children}</>; // admin → normal site
+  return <BakimSayfasi />; // giriş yapmış ama admin değil → çok yakında
 };
 const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));
 const AdminKesfetKartSayfasi = lazy(() => import('./pages/admin/AdminKesfetKartSayfasi').then((m) => ({ default: m.AdminKesfetKartSayfasi })));
