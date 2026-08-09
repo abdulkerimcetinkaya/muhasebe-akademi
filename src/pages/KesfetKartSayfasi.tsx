@@ -63,10 +63,11 @@ export const KesfetKartSayfasi = () => {
   }
 
   const hepsi = kartItemlari(kart);
-  const toplam = hepsi.length;
-  const biten = hepsi.filter((x) => tamamlanan.has(x.item.id)).length;
+  const hazirlar = hepsi.filter((x) => Array.isArray(x.item.icerik) && x.item.icerik.length > 0);
+  const toplam = hazirlar.length;
+  const biten = hazirlar.filter((x) => tamamlanan.has(x.item.id)).length;
   const yuzde = toplam ? Math.round((biten / toplam) * 100) : 0;
-  const sirada = hepsi.find((x) => !tamamlanan.has(x.item.id)) ?? hepsi[0];
+  const sirada = hazirlar.find((x) => !tamamlanan.has(x.item.id)) ?? hazirlar[0];
 
   const R = 30;
   const C = 2 * Math.PI * R;
@@ -157,11 +158,13 @@ export const KesfetKartSayfasi = () => {
             <div className="border-t border-line-strong">
               {bolum.itemlar.map((item, ii) => {
                 const bitti = tamamlanan.has(item.id);
+                const hazir = Array.isArray(item.icerik) && item.icerik.length > 0;
                 return (
                   <button
                     key={item.id}
-                    onClick={() => nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
-                    className="group relative w-full flex items-center gap-4 py-3.5 pr-1 border-b border-line-soft text-left transition-all"
+                    onClick={() => hazir && nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
+                    disabled={!hazir}
+                    className={`group relative w-full flex items-center gap-4 py-3.5 pr-1 border-b border-line-soft text-left transition-all ${!hazir ? 'opacity-55 cursor-not-allowed' : ''}`}
                   >
                     {/* hover'da sola kayan mavi vurgu */}
                     <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand scale-y-0 group-hover:scale-y-100 transition-transform duration-200 origin-center" />
@@ -174,7 +177,7 @@ export const KesfetKartSayfasi = () => {
                       }`}
                     >
                       <Icon
-                        name={bitti ? 'CheckCircle2' : item.tip === 'ders' ? 'BookOpen' : 'Pencil'}
+                        name={!hazir ? 'Hourglass' : bitti ? 'CheckCircle2' : item.tip === 'ders' ? 'BookOpen' : 'Pencil'}
                         size={16}
                       />
                     </span>
@@ -182,15 +185,15 @@ export const KesfetKartSayfasi = () => {
                       {item.ad}
                     </span>
                     <span className="hidden sm:inline font-mono text-[10px] tracking-[0.16em] uppercase text-ink-mute flex-none">
-                      {item.tip === 'ders' ? 'Ders' : 'Alıştırma'}
+                      {hazir ? (item.tip === 'ders' ? 'Ders' : 'Alıştırma') : 'Hazırlanıyor'}
                     </span>
                     <span className="font-mono text-[11px] text-ink-quiet tnum flex-none w-14 text-right">
-                      ~{item.tip === 'ders' ? 3 : 6} dk
+                      {hazir ? `~${item.tip === 'ders' ? 3 : 6} dk` : '—'}
                     </span>
                     <Icon
                       name="ArrowRight"
                       size={15}
-                      className="flex-none text-ink-quiet opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                      className={`flex-none text-ink-quiet transition-all ${hazir ? 'opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0' : 'opacity-0'}`}
                     />
                   </button>
                 );

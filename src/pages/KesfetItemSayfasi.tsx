@@ -109,8 +109,10 @@ export const KesfetItemSayfasi = () => {
   const proseBloklar = tumBloklar.filter((b) => b?.type !== 'kontrol' && b?.type !== 'kayit');
   const icerikVar = proseBloklar.length > 0;
   const testVar = testSorulari.length > 0;
+  const yayinlanabilir = tumBloklar.length > 0;
 
   const tamamlaVeIlerle = () => {
+    if (!yayinlanabilir) return;
     void tamamla(mevcut.item.id);
     if (sonraki) nav(`${ayar.taban}/${kart.slug}/${sonraki.item.id}`);
     else nav(`${ayar.taban}/${kart.slug}`);
@@ -314,6 +316,10 @@ export const KesfetItemSayfasi = () => {
               <button onClick={() => setTestAcik(true)} className="btn btn-primary active:scale-[0.98]">
                 Teste Başla
                 <Icon name="ArrowRight" size={16} className="ml-1" />
+              </button>
+            ) : !yayinlanabilir ? (
+              <button onClick={() => nav(`${ayar.taban}/${kart.slug}`)} className="btn btn-soft">
+                Karta dön
               </button>
             ) : (
               <button onClick={tamamlaVeIlerle} className="btn btn-primary active:scale-[0.98]">

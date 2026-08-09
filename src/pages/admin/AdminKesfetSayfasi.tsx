@@ -5,6 +5,11 @@ import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
+  TEMELLER_HEDEF_DERSLER,
+  dersAdiNormalize,
+  hedefDersMevcutMu,
+} from '../../data/temeller-mufredat-denetimi';
+import {
   kartGuncelle,
   kartOlustur,
   kartSil,
@@ -117,6 +122,33 @@ export const AdminKesfetSayfasi = () => {
     'w-full px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink';
   const labelCls = 'block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5';
 
+  const kesfetKartlari = kartlar.filter((k) => k.tip === 'kesfet');
+  const tumBolumler = kesfetKartlari.flatMap((k) => k.bolumler.map((b) => ({ kart: k, bolum: b })));
+  const tumItemlar = tumBolumler.flatMap(({ kart, bolum }) =>
+    bolum.itemlar.map((item) => ({ kart, bolum, item })),
+  );
+  const icerikVar = (icerik: unknown): boolean => Array.isArray(icerik) && icerik.length > 0;
+  const etkilesimliBlokSayisi = (icerik: unknown): number =>
+    Array.isArray(icerik)
+      ? icerik.filter((blok) => {
+          const tip = (blok as { type?: string })?.type;
+          return tip === 'kontrol' || tip === 'kayit';
+        }).length
+      : 0;
+  const doluItem = tumItemlar.filter(({ item }) => icerikVar(item.icerik)).length;
+  const etkilesimliItem = tumItemlar.filter(({ item }) => etkilesimliBlokSayisi(item.icerik) > 0).length;
+  const kullaniciyaAcik = tumItemlar.filter(({ kart, item }) =>
+    kart.durum === 'acik' && icerikVar(item.icerik),
+  ).length;
+  const temelAdlari = new Set(
+    tumItemlar
+      .filter(({ kart }) => kart.kategori.toLocaleLowerCase('tr').includes('temel'))
+      .map(({ item }) => dersAdiNormalize(item.ad)),
+  );
+  const mufredatEksikleri = TEMELLER_HEDEF_DERSLER.filter(
+    (hedef) => !hedefDersMevcutMu(hedef, temelAdlari),
+  );
+
   return (
     <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8">
       <div className="flex gap-8">
@@ -126,6 +158,28 @@ export const AdminKesfetSayfasi = () => {
             baslik="Keşfet Kartları"
             aksiyon={<span className="text-[12px] text-ink-mute tnum">{kartlar.length} kart</span>}
           />
+
+          {!yukleniyor && (
+            <section className="mb-8 border-y border-line py-4" aria-label="Keşfet içerik özeti">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-x-5 gap-y-4">
+                {[
+                  ['Kart', kesfetKartlari.length],
+                  ['Bölüm', tumBolumler.length],
+                  ['Item', tumItemlar.length],
+                  ['İçerik hazır', doluItem],
+                  ['İçerik eksik', tumItemlar.length - doluItem],
+                  ['Etkileşimli', etkilesimliItem],
+                  ['Kullanıcıya açık', kullaniciyaAcik],
+                  ['Yakında kart', kesfetKartlari.filter((k) => k.durum === 'yakinda').length],
+                ].map(([etiket, deger]) => (
+                  <div key={etiket}>
+                    <div className="font-display text-xl font-bold text-ink tnum">{deger}</div>
+                    <div className="font-mono text-[9px] tracking-[0.14em] uppercase text-ink-mute mt-0.5">{etiket}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Form */}
           <div className="bg-surface border border-line rounded-xl p-5 mb-8">
@@ -287,6 +341,72 @@ export const AdminKesfetSayfasi = () => {
                 </div>
               ))}
             </div>
+          )}
+
+          {!yukleniyor && tumItemlar.length > 0 && (
+            <section className="mt-10">
+              <div className="flex items-end justify-between gap-4 mb-3">
+                <div>
+                  <h2 className="font-display text-xl font-bold tracking-tight text-ink">İçerik denetimi</h2>
+                  <p className="text-[12px] text-ink-mute mt-1">Kullanıcı görünürlüğü kart durumundan; içerik durumu item bloklarından hesaplanır.</p>
+                </div>
+                <span className="font-mono text-[10px] text-ink-mute tnum">{tumItemlar.length} item</span>
+              </div>
+              <div className="border-t border-line-strong">
+                {tumItemlar.map(({ kart, bolum, item }) => {
+                  const dolu = icerikVar(item.icerik);
+                  const acik = kart.durum === 'acik' && dolu;
+                  return (
+                    <div key={item.id} className="grid lg:grid-cols-[1fr_auto] gap-3 py-3 border-b border-line-soft items-center">
+                      <div className="min-w-0 flex items-start gap-3">
+                        <Icon name={item.tip === 'ders' ? 'BookOpen' : 'Pencil'} size={14} className="text-ink-quiet mt-0.5 flex-none" />
+                        <div className="min-w-0">
+                          <div className="text-[13px] font-semibold text-ink truncate">{item.ad}</div>
+                          <div className="text-[10.5px] text-ink-mute mt-0.5 truncate">{kart.ad} · {bolum.ad}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-wrap lg:justify-end">
+                        <span className={`chip ${dolu ? 'chip-success' : ''}`}>{dolu ? 'İçerik var' : 'İçerik boş'}</span>
+                        <span className="chip">{item.soru_id ? 'Soru bağlı' : 'Soru bağlı değil'}</span>
+                        <span className={`chip ${etkilesimliBlokSayisi(item.icerik) > 0 ? 'chip-success' : ''}`}>
+                          {etkilesimliBlokSayisi(item.icerik)} etkileşim
+                        </span>
+                        <span className="chip">{item.tip === 'ders' ? 'Ders' : 'Alıştırma'}</span>
+                        <span className={`chip ${acik ? 'chip-success' : ''}`}>{acik ? 'Kullanıcıya açık' : kart.durum === 'yakinda' ? 'Kart yakında' : 'İçerik eksik'}</span>
+                        <button onClick={() => nav(`/admin/kesfet/${kart.id}/item/${item.id}`)} className="btn btn-soft btn-sm">Düzenle</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {!yukleniyor && (
+            <section className="mt-10 bg-surface border border-line rounded-xl p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-display text-lg font-bold text-ink">Temeller müfredat denetimi</h2>
+                  <p className="text-[12px] text-ink-mute mt-1">19 hedef ders, yalnız admin ekranında gerçek item adlarıyla karşılaştırılır.</p>
+                </div>
+                <span className={`chip ${mufredatEksikleri.length === 0 ? 'chip-success' : ''}`}>
+                  {19 - mufredatEksikleri.length}/19 mevcut
+                </span>
+              </div>
+              {mufredatEksikleri.length > 0 ? (
+                <div className="mt-4 border-t border-line-soft divide-y divide-line-soft">
+                  {mufredatEksikleri.map((hedef) => (
+                    <div key={hedef.no} className="py-3 flex items-center gap-3">
+                      <span className="font-mono text-[10px] text-danger tnum w-6">{String(hedef.no).padStart(2, '0')}</span>
+                      <div className="flex-1"><span className="text-[13px] font-semibold text-ink">{hedef.ad}</span><span className="block text-[10.5px] text-ink-mute">{hedef.bolum}</span></div>
+                      <span className="chip">Müfredat eksiği</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[12px] text-success mt-4">Hedef müfredatın tamamı mevcut item kayıtlarıyla karşılanıyor.</p>
+              )}
+            </section>
           )}
         </div>
       </div>

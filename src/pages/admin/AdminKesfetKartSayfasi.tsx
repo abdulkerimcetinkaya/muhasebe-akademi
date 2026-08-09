@@ -223,6 +223,22 @@ export const AdminKesfetKartSayfasi = () => {
                             />
                             İçerik
                           </button>
+                          <span className={`chip ${Array.isArray(it.icerik) && it.icerik.length > 0 ? 'chip-success' : ''}`}>
+                            {Array.isArray(it.icerik) && it.icerik.length > 0 ? 'İçerik var' : 'İçerik boş'}
+                          </span>
+                          <span className="chip">{it.soru_id ? 'Soru bağlı' : 'Soru bağlı değil'}</span>
+                          <span className="chip">
+                            {Array.isArray(it.icerik)
+                              ? it.icerik.filter((blok) => {
+                                  const tip = (blok as { type?: string })?.type;
+                                  return tip === 'kontrol' || tip === 'kayit';
+                                }).length
+                              : 0}{' '}
+                            etkileşim
+                          </span>
+                          <span className={`chip ${kart.durum === 'acik' ? 'chip-success' : ''}`}>
+                            {kart.durum === 'acik' ? 'Kullanıcıya açık' : 'Yakında'}
+                          </span>
                           <select
                             value={it.tip}
                             onChange={(e) => itemTipDegistir(it, e.target.value as 'ders' | 'alistirma')}
