@@ -1,12 +1,12 @@
 /**
  * Yalnız admin içerik denetiminde kullanılan hedef müfredat.
  *
- * KANONİK KAYNAK: Muhasebe2.docx — 3 kart · 10 bölüm · 39 ders.
- * Bkz. docs/adr/ADR-003-kanonik-temeller-mufredati.md
+ * KANONİK KAYNAK: ADR-004 (V3, beceri merkezli) — 3 kart · 26 öğrenme birimi.
+ * Bkz. docs/adr/ADR-004-v3-beceri-merkezli-mufredat.md
  *
- * Aşağıdaki `TEMELLER_V2_SEED_DERSLER` (19 ders) TARİHSELDİR; yalnız
- * 20260809000002 migration'ının sözleşme testi için durur. Denetim ekranı
- * `TEMELLER_HEDEF_DERSLER`i (39 ders) kullanır.
+ * Tarihsel listeler: `TEMELLER_V2_SEED_DERSLER` (19 ders, 20260809000002
+ * sözleşme testi) ve `TEMELLER_V4_DERSLER` (39 ders, ADR-003 dönemi).
+ * Denetim ekranı `TEMELLER_HEDEF_DERSLER`i (26 birim) kullanır.
  */
 export interface HedefDers {
   no: number;
@@ -65,13 +65,51 @@ export const TEMELLER_V2_SEED_DERSLER: HedefDers[] = [
 ];
 
 /**
- * KANONİK hedef müfredat — Muhasebe2.docx nihai yapısı.
- * 3 kart · 10 bölüm · 39 ders. 20260809000005 migration'ıyla birebir aynıdır.
+ * KANONİK hedef müfredat — V5 / ADR-004: 3 kart · 26 öğrenme birimi.
+ * 20260811000002 migration'ındaki `t26_hedefler` ile birebir aynıdır.
  *
- * `eslesenAdlar` hem yeni hem eski ders adını kabul eder; böylece migration
- * uygulanmadan önce de denetim ekranı doğru ölçer.
+ * `eslesenAdlar` hem yeni birim adını hem birleşme öncesi kanonik ders adını
+ * kabul eder; böylece denetim ekranı migration'dan önce de sonra da doğru ölçer.
  */
 export const TEMELLER_HEDEF_DERSLER: HedefDers[] = [
+  // ── Kart 1 — İşletmeyi Muhasebe Gibi Görmek (10 birim) ──
+  { no: 1, kart: 'muhasebe-baslangic', bolum: 'Muhasebeye neden ihtiyaç var?', ad: 'Muhasebe Neden Gereklidir?', eslesenAdlar: tek('Muhasebe Neden Gereklidir?') },
+  { no: 2, kart: 'muhasebe-baslangic', bolum: 'Muhasebeye neden ihtiyaç var?', ad: 'Muhasebe Ne Yapar?', eslesenAdlar: tek('Muhasebe Ne Yapar?', 'Muhasebe Nedir?') },
+  { no: 3, kart: 'muhasebe-baslangic', bolum: 'Muhasebenin konusu', ad: 'İşletme ile Sahibinin Ayrılması', eslesenAdlar: tek('İşletme ile Sahibinin Ayrılması', 'İşletme ile Sahibinin İşlemlerini Ayırmak') },
+  { no: 4, kart: 'muhasebe-baslangic', bolum: 'Muhasebenin konusu', ad: 'Mali Nitelikteki Olay', eslesenAdlar: tek('Mali Nitelikteki Olay') },
+  { no: 5, kart: 'muhasebe-baslangic', bolum: 'Muhasebenin konusu', ad: 'Belge ve Ekonomik Olay', eslesenAdlar: tek('Belge ve Ekonomik Olay', 'Belge: Ekonomik Olayın Kayıt Dayanağı', 'Belge Nedir?', 'Belge') },
+  { no: 6, kart: 'muhasebe-baslangic', bolum: 'İşletmenin ekonomik yapısı', ad: 'Varlıklar', eslesenAdlar: tek('Varlıklar', 'İşletmenin Varlıkları') },
+  { no: 7, kart: 'muhasebe-baslangic', bolum: 'İşletmenin ekonomik yapısı', ad: 'Borçlar ve Özkaynak', eslesenAdlar: tek('Borçlar ve Özkaynak', 'Varlıklar Nereden Gelir? Borçlar ve Özkaynak', 'Varlıkların Kaynakları') },
+  { no: 8, kart: 'muhasebe-baslangic', bolum: 'İşletmenin ekonomik yapısı', ad: 'Temel Muhasebe Denklemi', eslesenAdlar: tek('Temel Muhasebe Denklemi', 'Temel Muhasebe Denklemi: Varlıklar = Borçlar + Özkaynak') },
+  { no: 9, kart: 'muhasebe-baslangic', bolum: 'İşletmenin ekonomik yapısı', ad: 'İşlemler Denklemi Nasıl Değiştirir?', eslesenAdlar: tek('İşlemler Denklemi Nasıl Değiştirir?', 'İşlemlerin Muhasebe Denklemine Etkisi', 'İşlemlerin Denkleme Etkisi') },
+  { no: 10, kart: 'muhasebe-baslangic', bolum: 'İşletmenin ekonomik yapısı', ad: 'Gelir, Gider ve Özkaynak', eslesenAdlar: tek('Gelir, Gider ve Özkaynak', 'Gelir, Gider ve Özkaynak İlişkisi') },
+
+  // ── Kart 2 — Olaydan Muhasebe Kaydına (10 birim) ──
+  { no: 11, kart: 'hesap-kayit-mantigi', bolum: 'Hesap mantığı', ad: 'Neden Hesaplara İhtiyaç Var?', eslesenAdlar: tek('Neden Hesaplara İhtiyaç Var?', 'Hesap Nedir ve Neden Hesaplara İhtiyaç Duyarız?', 'Hesap Nedir?') },
+  { no: 12, kart: 'hesap-kayit-mantigi', bolum: 'Hesap mantığı', ad: 'Hesabın İki Tarafı: Borç ve Alacak', eslesenAdlar: tek('Hesabın İki Tarafı: Borç ve Alacak', 'Hesaplar Neden İki Taraflıdır?') },
+  { no: 13, kart: 'hesap-kayit-mantigi', bolum: 'Hesapların çalışma mantığı', ad: 'Varlık, Borç ve Özkaynak Hesaplarının Çalışması', eslesenAdlar: tek('Varlık, Borç ve Özkaynak Hesaplarının Çalışması', 'Varlık Hesapları') },
+  { no: 14, kart: 'hesap-kayit-mantigi', bolum: 'Hesapların çalışma mantığı', ad: 'Gelir ve Gider Hesaplarının Çalışması', eslesenAdlar: tek('Gelir ve Gider Hesaplarının Çalışması', 'Gelir ve Gider Hesapları') },
+  { no: 15, kart: 'hesap-kayit-mantigi', bolum: 'Hesapların çalışma mantığı', ad: 'Hesabın Bakiyesi', eslesenAdlar: tek('Hesabın Bakiyesi', 'Hesabın Doğal Yönü: Normal Bakiye', 'Normal Bakiye Mantığı') },
+  { no: 16, kart: 'hesap-kayit-mantigi', bolum: 'Olayı kayda dönüştürmek', ad: 'İşlem Analizi', eslesenAdlar: tek('İşlem Analizi', 'Bir İşlem Neden En Az İki Hesabı Etkiler?') },
+  { no: 17, kart: 'hesap-kayit-mantigi', bolum: 'Olayı kayda dönüştürmek', ad: 'İlk Yevmiye Kaydın', eslesenAdlar: tek('İlk Yevmiye Kaydın', 'Yevmiye Kaydı Nedir?', 'Yevmiye Kaydı') },
+  { no: 18, kart: 'hesap-kayit-mantigi', bolum: 'Olayı kayda dönüştürmek', ad: 'Basit Yevmiye Kayıtları', eslesenAdlar: tek('Basit Yevmiye Kayıtları', 'Basit Muhasebe Kaydı') },
+  { no: 19, kart: 'hesap-kayit-mantigi', bolum: 'Olayı kayda dönüştürmek', ad: 'Birden Fazla Hesaplı Kayıt', eslesenAdlar: tek('Birden Fazla Hesaplı Kayıt') },
+  { no: 20, kart: 'hesap-kayit-mantigi', bolum: 'Olayı kayda dönüştürmek', ad: 'Hesap Planında Hesabı Bulmak', eslesenAdlar: tek('Hesap Planında Hesabı Bulmak', 'Hesabı Ezberlemek Yerine Bulmak') },
+
+  // ── Kart 3 — Kayıttan Finansal Tabloya (6 birim) ──
+  { no: 21, kart: 'kayittan-finansal-tabloya', bolum: 'Kaydın yolculuğu', ad: 'Yevmiye Kaydının Yapısı', eslesenAdlar: tek('Yevmiye Kaydının Yapısı', 'Bir Yevmiye Kaydının Anatomisi') },
+  { no: 22, kart: 'kayittan-finansal-tabloya', bolum: 'Kaydın yolculuğu', ad: 'Büyük Defter ve Hesap Bakiyesi', eslesenAdlar: tek('Büyük Defter ve Hesap Bakiyesi', 'Büyük Defter: Kayıtları Hesaplara Göre Toplamak', 'Büyük Defter (Defteri Kebir)') },
+  { no: 23, kart: 'kayittan-finansal-tabloya', bolum: 'Kontrol', ad: 'Mizan', eslesenAdlar: tek('Mizan', 'Mizan: Hesapları Tek Yerde Görmek') },
+  { no: 24, kart: 'kayittan-finansal-tabloya', bolum: 'Sonuç', ad: 'Bilanço ve Gelir Tablosu', eslesenAdlar: tek('Bilanço ve Gelir Tablosu', 'Bilanço / Finansal Durum Tablosu', 'Bilanço') },
+  { no: 25, kart: 'kayittan-finansal-tabloya', bolum: 'Sonuç', ad: 'Kâr ile Nakit Aynı Şey Değildir', eslesenAdlar: tek('Kâr ile Nakit Aynı Şey Değildir', 'Kâr ile Nakit Neden Aynı Şey Değildir?') },
+  { no: 26, kart: 'kayittan-finansal-tabloya', bolum: 'Sonuç', ad: 'Muhasebe Döngüsü — Baştan Sona', eslesenAdlar: tek('Muhasebe Döngüsü — Baştan Sona', 'Kayıttan Finansal Tabloya: Muhasebe Döngüsü') },
+];
+
+/**
+ * TARİHSEL — V4 yapısı (Muhasebe2.docx, 39 ders; ADR-003 dönemi).
+ * 20260809000005 migration'ının kaydı olarak durur; denetim ekranı kullanmaz.
+ */
+export const TEMELLER_V4_DERSLER: HedefDers[] = [
   // ── Kart 1 — Muhasebenin Mantığı (13 ders) ──
   { no: 1, kart: 'muhasebe-baslangic', bolum: 'Muhasebe neden var?', ad: 'Muhasebe Neden Gereklidir?', eslesenAdlar: tek('Muhasebe Neden Gereklidir?') },
   { no: 2, kart: 'muhasebe-baslangic', bolum: 'Muhasebe neden var?', ad: 'Muhasebe Nedir?', eslesenAdlar: tek('Muhasebe Nedir?') },

@@ -76,8 +76,12 @@ const KesfetItemSayfasi = lazy(() => import('./pages/KesfetItemSayfasi').then((m
  * (ana sayfa, public sayfalar, kayıt) görür; giriş yapmış ama admin OLMAYAN
  * kullanıcıya "çok yakında" gösterilir; adminler normal siteyi görür.
  */
+/** Bakım açıkken admin olmayan herkese açık kalan rotalar (tanıtım + giriş + yasal). */
+const BAKIM_ACIK_ROTALAR = ['/giris', '/sifre-sifirla', '/sifre-yenile', '/kvkk'];
+
 const BakimGate = ({ children }: { children: ReactNode }) => {
   const { user, adminRoller } = useAuth();
+  const { pathname } = useLocation();
   const [bakim, setBakim] = useState<boolean | null>(null);
   useEffect(() => {
     bakimModuGetir()
@@ -92,13 +96,14 @@ const BakimGate = ({ children }: { children: ReactNode }) => {
   if (!bakim) return <>{children}</>;
 
   // Bakım AÇIK:
-  // - Anonim → normal site (ana sayfa, public sayfalar, kayıt/giriş) görebilir.
-  //   Landing'deki "kayıt ol" ile kaydolur → kayıt listesi toplanır.
-  // - Giriş yapmış ama admin değil → "çok yakında" (ürün henüz kapalı).
   // - Admin → normal site.
-  if (!user) return <>{children}</>;
-  if (adminRoller === null) return bos; // roller yükleniyor
+  // - Admin olmayan herkes (anonim dahil) yalnız BAKIM_ACIK_ROTALAR'ı görür;
+  //   ana sayfadaki "kayıt ol" ile kayıt listesi toplanmaya devam eder.
+  //   İçerik rotalarının tamamı (Keşfet, sorular, sözlük…) "çok yakında"ya düşer.
+  if (user && adminRoller === null) return bos; // roller yükleniyor
   if (isAdmin) return <>{children}</>;
+  const izinli = pathname === '/' || BAKIM_ACIK_ROTALAR.some((r) => pathname.startsWith(r));
+  if (izinli) return <>{children}</>;
   return <BakimSayfasi />;
 };
 const AdminKesfetSayfasi = lazy(() => import('./pages/admin/AdminKesfetSayfasi').then((m) => ({ default: m.AdminKesfetSayfasi })));

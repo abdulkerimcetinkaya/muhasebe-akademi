@@ -168,6 +168,9 @@ paneli ve sınav modu MVP'de değil — v1.1+. MVP B2C öğrenci lansmanı.
 10. Sözlük / SSS / hesap planı tam sayfa (SEO)
 
 ## Referans Dosyalar
+- [docs/adr/ADR-004](docs/adr/ADR-004-v3-beceri-merkezli-mufredat.md) +
+  [docs/curriculum/CUR-004](docs/curriculum/CUR-004-Mufredat.md) — **kanonik müfredat**
+  (V3: Temeller 26 birim · 9 Yetkinlik · 7+3 Uzmanlık; yapı dondurma kuralı burada)
 - [PAZAR-ANALIZI.md](PAZAR-ANALIZI.md) — 24 Nisan pazar analizi, hedef kitle,
   SAM/SOM, rekabet, fiyat, konumlanma. Ürün kararlarında baz alınır.
 - [DOKUMANTASYON.md](DOKUMANTASYON.md) — kullanıcıya yönelik, güncel (23 Nisan)

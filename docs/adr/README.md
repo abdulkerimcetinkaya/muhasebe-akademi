@@ -6,7 +6,8 @@ Büyük teknik kararlar bu klasörde kayıt altına alınır.
 
 - [ADR-001 — İşletmeler modeli (dönem simülasyonu)](ADR-001-isletmeler-modeli.md) — Accepted
 - [ADR-002 — Keşfet ile V2 öğrenme çekirdeğinin sorumluluk sınırı](ADR-002-kesfet-v2-sorumluluk-siniri.md) — Accepted
-- [ADR-003 — Kanonik Temeller müfredatı ve tek doğruluk kaynağı](ADR-003-kanonik-temeller-mufredati.md) — Proposed
+- [ADR-003 — Kanonik Temeller müfredatı ve tek doğruluk kaynağı](ADR-003-kanonik-temeller-mufredati.md) — Superseded by ADR-004
+- [ADR-004 — V3: Beceri merkezli müfredat (26 birim · 9 Yetkinlik · 7+3 Uzmanlık)](ADR-004-v3-beceri-merkezli-mufredat.md) — Accepted
 
 ## Kullanım
 

@@ -163,6 +163,13 @@ export const AdminKesfetSayfasi = () => {
     bolum.itemlar.map((item) => ({ kart, bolum, item })),
   );
   const icerikVar = (icerik: unknown): boolean => Array.isArray(icerik) && icerik.length > 0;
+  // V4 üretim şablonu imzası: bu ikili yalnız 20260809000005'in ders_icerigi()
+  // çıktısında birlikte geçer. Şablon ≠ yazılmış ders — ayrı sayılır.
+  const sablonMu = (icerik: unknown): boolean => {
+    if (!icerikVar(icerik)) return false;
+    const metin = JSON.stringify(icerik);
+    return metin.includes('Bu derste ne çözeceksin?') && metin.includes('Mavi Kırtasiye');
+  };
   const etkilesimliBlokSayisi = (icerik: unknown): number =>
     Array.isArray(icerik)
       ? icerik.filter((blok) => {
@@ -170,7 +177,10 @@ export const AdminKesfetSayfasi = () => {
           return tip === 'kontrol' || tip === 'kayit';
         }).length
       : 0;
-  const doluItem = tumItemlar.filter(({ item }) => icerikVar(item.icerik)).length;
+  const sablonItem = tumItemlar.filter(({ item }) => sablonMu(item.icerik)).length;
+  const gercekItem = tumItemlar.filter(
+    ({ item }) => icerikVar(item.icerik) && !sablonMu(item.icerik),
+  ).length;
   const etkilesimliItem = tumItemlar.filter(({ item }) => etkilesimliBlokSayisi(item.icerik) > 0).length;
   const kullaniciyaAcik = tumItemlar.filter(({ kart, item }) =>
     kart.durum === 'acik' && icerikVar(item.icerik),
@@ -201,8 +211,9 @@ export const AdminKesfetSayfasi = () => {
                   ['Kart', kesfetKartlari.length],
                   ['Bölüm', tumBolumler.length],
                   ['Item', tumItemlar.length],
-                  ['İçerik hazır', doluItem],
-                  ['İçerik eksik', tumItemlar.length - doluItem],
+                  ['Gerçek içerik', gercekItem],
+                  ['Şablon', sablonItem],
+                  ['Boş', tumItemlar.length - gercekItem - sablonItem],
                   ['Etkileşimli', etkilesimliItem],
                   ['Kullanıcıya açık', kullaniciyaAcik],
                   ['Yakında kart', kesfetKartlari.filter((k) => k.durum === 'yakinda').length],
@@ -417,6 +428,7 @@ export const AdminKesfetSayfasi = () => {
               <div className="border-t border-line-strong">
                 {tumItemlar.map(({ kart, bolum, item }) => {
                   const dolu = icerikVar(item.icerik);
+                  const sablon = sablonMu(item.icerik);
                   const acik = kart.durum === 'acik' && dolu;
                   const zincir = dersZinciri(item.icerik);
                   return (
@@ -429,7 +441,9 @@ export const AdminKesfetSayfasi = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5 flex-wrap lg:justify-end">
-                        <span className={`chip ${dolu ? 'chip-success' : ''}`}>{dolu ? 'İçerik var' : 'İçerik boş'}</span>
+                        <span className={`chip ${dolu && !sablon ? 'chip-success' : ''}`}>
+                          {!dolu ? 'İçerik boş' : sablon ? 'Şablon' : 'İçerik var'}
+                        </span>
                         <span className={`chip ${(item.sorular?.length ?? 0) > 0 ? 'chip-success' : ''}`}>
                           {(item.sorular?.length ?? 0) > 0 ? `${item.sorular?.length} ölçümlü soru` : 'Ölçümlü soru yok'}
                         </span>
