@@ -1,6 +1,6 @@
 # CUR-004 — Müfredat
 
-**Durum:** v3.0 · 11 Ağustos 2026
+**Durum:** v4.0 · 11 Ağustos 2026
 **Karar dayanağı:** [ADR-005 — V6: 31 kartlık mimari](../adr/ADR-005-v6-31-kart-mimarisi.md)
 **Referanslar:** IFAC IES 2 (foundation/intermediate/advanced) · ACCA (Applied
 Knowledge → Applied Skills → Strategic Professional) · OpenStax muhasebe döngüsü
@@ -59,7 +59,81 @@ etkisi* zincirini kurabilsin.
 Temeller'de **öğretim örneği** olarak kullanılır; konu olarak öğretilmez.
 Bunların varyasyonları Yetkinlik kartlarına aittir.
 
-Tahmini hacim: 40–50 bölüm.
+**Gerçekleşen hacim: 21 bölüm · 47 ders · 7 kart finali** (kanonik kaynak
+`20260811000008_temeller_bolum_ders.sql`).
+
+### Eleme notu — 134 → 47
+
+Chief Architect'in kapsamlı iskeleti 134 ders içeriyordu. Ürün sahibi onayıyla
+tek ölçütle elendi:
+
+> **Öğrenci bu birimi bitirince tek başına yapabildiği yeni bir şey var mı?**
+> Yoksa o bir ders değil, ders içi ekran/etkileşimdir.
+
+Hiçbir konu atılmadı; alt adımlar ilgili dersin içine taşındı. En belirgin
+birleşmeler:
+
+| Ders olarak listelenmişti | Şimdi |
+|---|---|
+| Kaydetme · Sınıflandırma · Özetleme · Raporlama (4) | *Muhasebe Ne Yapar?* içinde tek akış |
+| Olayı Anla · Unsuru Bul · Artış mı? · Hesap Türü · Taraf Seç (5) | *Borç mu Alacak mı? — 5 Adımlı Karar* (adımlar ders içi ekran) |
+| Hesapları/Yönü/Tutarları Yerleştir · Açıklama Yaz (4) | *İlk Yevmiye Kaydın* (formun alanları) |
+| Hesap/Yön/Tutar/Denge/Belge doğru mu? (5) | *Kaydı Kontrol Etmek — 5 Soru* (kontrol listesi) |
+| Hesap Sınıfı · Grup · Ana Hesap · Kod Mantığı (4, iki bölümde tekrar) | *Hesap Kodunu Okumak: Sınıf → Grup → Ana Hesap* |
+
+Taşınan/düzeltilen kararlar:
+
+- **Kâr ≠ Nakit** üç yerde tekrarlanıyordu → tek yuva: Kart 7.
+- **İşletme ile Sahibini Ayırmak** alt ders değil, Kart 2'nin ilk dersi
+  (Muhasebe2.docx'in ısrar ettiği kişilik kavramı).
+- **Hesap sınıfı 1–9 → 1–7**: `hesap-plani.ts` yalnız sınıf 1–7 içeriyor
+  (272 hesap); sınıf 8 serbest, 9 nazım — veride yok.
+- **Basit / çok hesaplı kayıt** Kart 4'ten Kart 5'e (yevmiyeyle birlikte).
+- **Hesap bakiyesi** iki yerdeydi → Kart 3 kavramı, Kart 6 hesaplamayı öğretir.
+
+### Kart · bölüm · ders dökümü
+
+**Kart 1 — Muhasebeyi Anlamak** (6 ders)
+- *Muhasebe neden var?* — Muhasebe Neden Gereklidir? · Muhasebe Kimin Sorusunu Cevaplar?
+- *Muhasebenin konusu* — Muhasebe Ne Yapar? · Mali Nitelikteki Olay
+- *Belge* — Belge: Kaydın Dayanağı · Belgeden Olayı Çıkarmak
+- ★ Final — Olay mı, Değil mi?
+
+**Kart 2 — İşletmenin Finansal Yapısı** (7 ders)
+- *İşletme ve Varlıkları* — İşletme ile Sahibini Ayırmak · Varlık Nedir? · Dönen ve Duran Varlık Ayrımı
+- *Kaynaklar ve Denklem* — Varlıklar Nereden Gelir? Borç ve Özkaynak · Temel Muhasebe Denklemi · İşlemler Denklemi Nasıl Değiştirir?
+- *Gelir ve Gider* — Gelir, Gider ve Özkaynak İlişkisi
+- ★ Final — Denklemi Bozmadan Çöz
+
+**Kart 3 — Hesapların Mantığı** (8 ders)
+- *Hesap* — Neden Hesaplara İhtiyaç Var? · Hesap Nasıl Çalışır?
+- *Hesap Türleri* — Bilanço Hesapları: Varlık, Borç, Özkaynak · Gelir Tablosu Hesapları: Gelir ve Gider
+- *Hesap Planı* — Tekdüzen Hesap Planı Neden Var? · Hesap Kodunu Okumak: Sınıf → Grup → Ana Hesap · Alt Hesap (Muavin) Nedir? · Hesabı Ezberlemek Yerine Bulmak
+- ★ Final — Doğru Hesabı Bul
+
+**Kart 4 — Borç, Alacak ve Çift Taraflı Kayıt** (6 ders)
+- *Hesabın İki Tarafı* — Hesabın İki Tarafı: Borç ve Alacak
+- *Artış ve Azalış* — Varlık ve Kaynak Hesaplarında Artış ve Azalış · Gelir ve Gider Hesaplarında Artış · Normal Bakiye
+- *Çift Taraflı Kayıt ve Karar* — Çift Taraflı Kayıt ve Borç = Alacak Dengesi · Borç mu Alacak mı? — 5 Adımlı Karar
+- ★ Final — Borç mu, Alacak mı?
+
+**Kart 5 — Belgeden Muhasebe Kaydına** (7 ders)
+- *İşlemi Çözümlemek* — Belgeden İşlemi Çıkarmak · Ödeme Şekli ve Ek Unsurlar
+- *Hesap Seçimi* — Olaydan Hesaba Gitmek · Alt Hesabı (Muavini) Seçmek
+- *Yevmiye Kaydı ve Kontrol* — İlk Yevmiye Kaydın · Basit ve Çok Hesaplı Kayıtlar · Kaydı Kontrol Etmek — 5 Soru
+- ★ Final — Belgeden Kayda: Uçtan Uca
+
+**Kart 6 — Kayıttan Mizana** (6 ders)
+- *Defterler* — Yevmiye Defteri · Büyük Defter ve Hesap Bakiyesi
+- *Mizan* — Mizan: Hesapları Tek Yerde Görmek · Mizanı Okumak: Ters ve Olağandışı Bakiyeler
+- *Hata ve Kontrol* — Sık Yapılan Kayıt Hataları · Mizan Neyi Bulur, Neyi Bulamaz?
+- ★ Final — Mizanı Denetle
+
+**Kart 7 — Finansal Tablolar ve Muhasebe Döngüsü** (7 ders)
+- *Finansal Tablolar* — Finansal Tablolar Neden Hazırlanır? · Bilanço (Finansal Durum Tablosu) · Gelir Tablosu
+- *İşlemlerin Tablo Etkisi* — Bir İşlemin Tablolara Etkisi · Kâr ile Nakit Aynı Şey Değildir
+- *Muhasebe Döngüsü* — Muhasebe Döngüsü: Belgeden Finansal Tabloya · Dönem Kavramı ve Kapanış
+- ★ Final — İlk 10 İşlem
 
 ---
 
@@ -131,10 +205,17 @@ Mevzuat Bağlantısı · Olay Analizi
 | | Durum |
 |---|---|
 | 31 kart | ✅ canlıda, hepsi `yakinda` |
-| Bölüm / ders | ❌ yok — kart kart eklenecek |
+| Temeller bölüm/ders | ✅ 21 bölüm · 47 ders · 7 final (`taslak`) |
+| Yetkinlik/Uzmanlık bölüm-ders | ❌ yok — ayrı kırılım turu gerekiyor |
 | Ders içeriği | ❌ yok |
 | Ön koşul ağı | ❌ boş (bilinçli — boş kart kapıyı yanlış açar) |
 | Sektör patikaları | ❌ ileride |
 | Beceri listesi genişletmesi | ❌ bekliyor |
 
-**Sıradaki iş:** Temeller kart 1'in bölüm + ders kırılımı.
+**Sıradaki iş:** Kart 1'in ilk dersinin içeriği (*Muhasebe Neden Gereklidir?*).
+
+> Yetkinlik ve Uzmanlık için verilen listeler **bölüm kırılımı değil, konu
+> envanteridir** — "Faiz", "Fire", "İzin", "5746" gibi tek kavramlar bölüm
+> olamaz; "Kiralamalar", "Konsolidasyon" ise tek satırda yarıyıllık kapsam
+> saklar. Bu iki katman veritabanına girmeden önce ayrı bir kırılım turu
+> gerekiyor (bkz. `docs/research/research_mufredat_olcek_analizi_2026-08-11.md`).

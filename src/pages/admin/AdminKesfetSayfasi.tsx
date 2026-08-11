@@ -7,7 +7,9 @@ import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
   KESFET_HEDEF_KARTLAR,
   OGRENME_ZINCIRI,
+  TEMELLER_HEDEF_YAPI,
   dersZinciri,
+  eksikHedefDersler,
   eksikHedefKartlar,
 } from '../../data/kesfet-mufredat-hedefi';
 import {
@@ -186,6 +188,13 @@ export const AdminKesfetSayfasi = () => {
   ).length;
   const mevcutSluglar = new Set(kesfetKartlari.map((k) => k.slug));
   const mufredatEksikleri = eksikHedefKartlar(mevcutSluglar);
+  const dersEksikleri = kesfetKartlari.flatMap((kart) => {
+    const mevcut = new Set(kart.bolumler.flatMap((b) => b.itemlar.map((i) => i.ad)));
+    return eksikHedefDersler(kart.slug, mevcut).map((ad) => ({ kart: kart.ad, ad }));
+  });
+  const hedefDersToplami = Object.values(TEMELLER_HEDEF_YAPI)
+    .flat()
+    .reduce((t, b) => t + b.dersler.length, 0);
 
   return (
     <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8">
@@ -483,6 +492,26 @@ export const AdminKesfetSayfasi = () => {
                 </div>
               ) : (
                 <p className="text-[12px] text-success mt-4">Hedef yapıdaki {KESFET_HEDEF_KARTLAR.length} kartın tamamı canlıda mevcut.</p>
+              )}
+
+              <div className="mt-5 pt-4 border-t border-line-soft flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-[13px] font-semibold text-ink">Temeller ders kırılımı</h3>
+                  <p className="text-[11px] text-ink-mute mt-0.5">Kırılımı tanımlı 7 kartın dersleri karşılaştırılır. Yetkinlik ve Uzmanlık kırılımı henüz yok.</p>
+                </div>
+                <span className={`chip ${dersEksikleri.length === 0 ? 'chip-success' : ''}`}>
+                  {hedefDersToplami - dersEksikleri.length}/{hedefDersToplami} ders
+                </span>
+              </div>
+              {dersEksikleri.length > 0 && (
+                <div className="mt-3 border-t border-line-soft divide-y divide-line-soft">
+                  {dersEksikleri.map((eksik) => (
+                    <div key={`${eksik.kart}-${eksik.ad}`} className="py-2.5 flex items-center gap-3">
+                      <div className="flex-1"><span className="text-[13px] font-semibold text-ink">{eksik.ad}</span><span className="block text-[10.5px] text-ink-mute">{eksik.kart}</span></div>
+                      <span className="chip">Ders eksik</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </section>
           )}
