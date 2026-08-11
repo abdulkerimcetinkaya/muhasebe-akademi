@@ -2,7 +2,11 @@
 
 ## Durum
 
-Accepted — 2026-08-11
+Superseded by [ADR-005](ADR-005-v6-31-kart-mimarisi.md) — 2026-08-11
+
+Aynı gün 31 kartlık V6 mimarisi kabul edildi (7 Temeller + 16 Yetkinlikler +
+8 Uzmanlıklar). Bu ADR'nin "kart ≠ ölçülen beceri" ayrımı ve yapı dondurma
+kuralı ADR-005'te korunuyor; 26 birimlik yapı geçersizdir.
 
 Ürün sahibi, Chief Architect'in araştırma destekli revizyon önerisini plan
 onayıyla kabul etti. ADR-003'ün "kanonik Temeller = 39 ders" hükmünü

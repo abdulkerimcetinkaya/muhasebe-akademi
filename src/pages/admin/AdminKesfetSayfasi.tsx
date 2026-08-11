@@ -5,12 +5,11 @@ import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
-  TEMELLER_HEDEF_DERSLER,
+  KESFET_HEDEF_KARTLAR,
   OGRENME_ZINCIRI,
   dersZinciri,
-  dersAdiNormalize,
-  hedefDersMevcutMu,
-} from '../../data/temeller-mufredat-denetimi';
+  eksikHedefKartlar,
+} from '../../data/kesfet-mufredat-hedefi';
 import {
   kartGuncelle,
   kartOlustur,
@@ -185,14 +184,8 @@ export const AdminKesfetSayfasi = () => {
   const kullaniciyaAcik = tumItemlar.filter(({ kart, item }) =>
     kart.durum === 'acik' && icerikVar(item.icerik),
   ).length;
-  const temelAdlari = new Set(
-    tumItemlar
-      .filter(({ kart }) => kart.kategori.toLocaleLowerCase('tr').includes('temel'))
-      .map(({ item }) => dersAdiNormalize(item.ad)),
-  );
-  const mufredatEksikleri = TEMELLER_HEDEF_DERSLER.filter(
-    (hedef) => !hedefDersMevcutMu(hedef, temelAdlari),
-  );
+  const mevcutSluglar = new Set(kesfetKartlari.map((k) => k.slug));
+  const mufredatEksikleri = eksikHedefKartlar(mevcutSluglar);
 
   return (
     <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8">
@@ -471,25 +464,25 @@ export const AdminKesfetSayfasi = () => {
             <section className="mt-10 bg-surface border border-line rounded-xl p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h2 className="font-display text-lg font-bold text-ink">Temeller müfredat denetimi</h2>
-                  <p className="text-[12px] text-ink-mute mt-1">19 hedef ders, yalnız admin ekranında gerçek item adlarıyla karşılaştırılır.</p>
+                  <h2 className="font-display text-lg font-bold text-ink">Müfredat denetimi</h2>
+                  <p className="text-[12px] text-ink-mute mt-1">ADR-005 hedef yapısı ({KESFET_HEDEF_KARTLAR.length} kart) canlı kayıtlarla karşılaştırılır.</p>
                 </div>
                 <span className={`chip ${mufredatEksikleri.length === 0 ? 'chip-success' : ''}`}>
-                  {19 - mufredatEksikleri.length}/19 mevcut
+                  {KESFET_HEDEF_KARTLAR.length - mufredatEksikleri.length}/{KESFET_HEDEF_KARTLAR.length} mevcut
                 </span>
               </div>
               {mufredatEksikleri.length > 0 ? (
                 <div className="mt-4 border-t border-line-soft divide-y divide-line-soft">
                   {mufredatEksikleri.map((hedef) => (
-                    <div key={hedef.no} className="py-3 flex items-center gap-3">
-                      <span className="font-mono text-[10px] text-danger tnum w-6">{String(hedef.no).padStart(2, '0')}</span>
-                      <div className="flex-1"><span className="text-[13px] font-semibold text-ink">{hedef.ad}</span><span className="block text-[10.5px] text-ink-mute">{hedef.bolum}</span></div>
-                      <span className="chip">Müfredat eksiği</span>
+                    <div key={hedef.slug} className="py-3 flex items-center gap-3">
+                      <span className="font-mono text-[10px] text-danger tnum w-6">{String(hedef.sira).padStart(2, '0')}</span>
+                      <div className="flex-1"><span className="text-[13px] font-semibold text-ink">{hedef.ad}</span><span className="block text-[10.5px] text-ink-mute">{hedef.kategori} · {hedef.slug}</span></div>
+                      <span className="chip">Kart eksik</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-[12px] text-success mt-4">Hedef müfredatın tamamı mevcut item kayıtlarıyla karşılanıyor.</p>
+                <p className="text-[12px] text-success mt-4">Hedef yapıdaki {KESFET_HEDEF_KARTLAR.length} kartın tamamı canlıda mevcut.</p>
               )}
             </section>
           )}
