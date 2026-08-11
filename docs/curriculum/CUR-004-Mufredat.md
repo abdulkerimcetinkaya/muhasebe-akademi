@@ -1,241 +1,189 @@
 # CUR-004 — Müfredat
 
-**Durum:** v1.0 · 11 Ağustos 2026
-**Karar dayanağı:** [ADR-003 — Kanonik Temeller müfredatı](../adr/ADR-003-kanonik-temeller-mufredati.md)
-**Kaynak belgeler:** `docs/sources/Muhasebe2.docx` (Temeller) · `docs/sources/Muhasebe.docx` (Yetkinlikler, Uzmanlıklar)
+**Durum:** v2.0 · 11 Ağustos 2026
+**Karar dayanağı:** [ADR-004 — V3: Beceri merkezli müfredat](../adr/ADR-004-v3-beceri-merkezli-mufredat.md)
+**Kaynak belgeler:** `docs/sources/Muhasebe2.docx` (Temeller tabanı) · `docs/sources/Muhasebe.docx` (Yetkinlikler, Uzmanlıklar tabanı) · Chief Architect V3 revizyonu (11 Ağu 2026)
+
+> v1.0 (39 ders) ADR-003 ile birlikte tarihseldir; 39 → 26 eşleştirmesi
+> `supabase/migrations/20260811000002_temeller_26_birim.sql` içindedir.
 
 ---
 
 # Amaç
 
-Bu doküman, Muhasebe Akademi müfredatının **okunur kanonik dökümüdür**. Ders adı,
-bölümü ve sırası için makine tarafında tek kaynak
-`supabase/migrations/20260809000005_temeller_39_ders.sql` içindeki
-`temeller_ders_hedefleri` tablosudur; bu doküman onunla aynı olmak zorundadır.
+Bu doküman müfredatın **okunur kanonik dökümüdür**. Makine tarafında tek kaynak
+ilgili migration'lardaki hedef tablolarıdır; bu doküman onlarla aynı olmak
+zorundadır.
 
-Müfredatın amacı konu ezberletmek değil, şu zinciri kurdurmaktır:
+Ürünün öğretim omurgası:
 
-> İşletmede ne oldu? → Neden muhasebeleştiriyoruz? → Hangi değer değişti? →
-> Kayıt neden böyle oluştu?
+> Belge / olay → ne oldu? → hangi ekonomik değer değişti? → hesabı bul →
+> yönü belirle → yevmiyeyi yap → sonucu kontrol et.
 
----
+Yevmiye kaydı bu zincirin **çıktısıdır**, başlangıç noktası değil.
 
-# Müfredat Yapısı
-
-## Hiyerarşi
-
-```
-Ana Alan  →  Eğitim Kartı  →  Bölüm  →  Ders
-(3)          (25)             (…)       (…)
-```
-
-Veritabanı karşılığı: `kesfet_kartlar.kategori` → `kesfet_kartlar` →
-`kesfet_bolumler` → `kesfet_itemler`.
-
-Notion karşılığı (`Müfredat` DB, `İçerik Türü`): Program → Ünite → Modül → Konu.
-Terimler eşleşmiyor; eşleme tablosu aşağıdadır.
-
-| Katman | Word terimi | Repo | Notion |
-|---|---|---|---|
-| 0 | Program | — | Program (MA) |
-| 1 | Ana Alan | `kategori` | Ünite (TEM/YET/UZM) |
-| 2 | Eğitim Kartı | `kesfet_kartlar` | Modül (T1–T3, Y1–Y12, U1–U10) |
-| 3 | Bölüm | `kesfet_bolumler` | Konu (T1-B1 …) |
-| 4 | Ders | `kesfet_itemler` | `Ders İçerikleri` DB kaydı |
-
-## Ana alanlar
-
-| Kod | Ana alan | Kart | Ne öğretir |
-|---|---|---|---|
-| TEM | Temeller | 3 | Muhasebenin dilini anlamak |
-| YET | Yetkinlikler | 12 | Muhasebe işini yapmak |
-| UZM | Uzmanlıklar | 10 | Belirli problem/sektör/mevzuat kümesini birlikte yönetmek |
+Katman rolleri: **Temeller** anlamayı öğretir · **Yetkinlikler** iş yapmayı
+öğretir · **Uzmanlıklar** muhasebe muhakemesi öğretir · **İşletmeler** dönem
+simülasyonuyla pratik yaptırır (ayrı track, ADR-001/ADR-004 rol ayrımı:
+kavram dersi yalnız Keşfet'te yazılır).
 
 ---
 
-# Modül Listesi
+# TEMELLER — 3 kart · 26 öğrenme birimi
 
-## Temeller — 3 kart · 10 bölüm · 39 ders
+Kapsam sınırı: KDV ayrıntısı, bordro, beyanname, dönem sonu uygulamaları,
+TMS/TFRS ve ileri mevzuat Temeller'e girmez.
 
-### T1 — Muhasebenin Mantığı (13 ders)
+## Kart 1 — İşletmeyi Muhasebe Gibi Görmek (10 birim)
 
-**Bölüm 1 — Muhasebe neden var?**
+**Bölüm 1 — Muhasebeye neden ihtiyaç var?**
 1. Muhasebe Neden Gereklidir?
-2. Muhasebe Nedir?
-3. Muhasebenin Kaydetme, Sınıflandırma, Özetleme ve Raporlama İşlevi
-4. Muhasebe Bilgisini Kim, Neden Kullanır?
+2. Muhasebe Ne Yapar? *(kaydetme→sınıflandırma→özet→bilgi akışı tek görselde; paydaşlar soru örnekleriyle)*
 
-**Bölüm 2 — İşletmede neyi muhasebeleştiriyoruz?**
-5. İşletme ile Sahibinin İşlemlerini Ayırmak
-6. Mali Nitelikteki Olay
-7. Para Hareketi Her Zaman Gelir veya Gider midir?
-8. Belge: Ekonomik Olayın Kayıt Dayanağı
+**Bölüm 2 — Muhasebenin konusu**
+3. İşletme ile Sahibinin Ayrılması
+4. Mali Nitelikteki Olay *(kayıt doğurmayan olaylar dahil)*
+5. Belge ve Ekonomik Olay *("bu bilgi nereden geliyor?")*
 
 **Bölüm 3 — İşletmenin ekonomik yapısı**
-9. İşletmenin Varlıkları
-10. Varlıklar Nereden Gelir? Borçlar ve Özkaynak
-11. Temel Muhasebe Denklemi: Varlıklar = Borçlar + Özkaynak
-12. İşlemlerin Muhasebe Denklemine Etkisi
-13. Gelir, Gider ve Özkaynak İlişkisi
+6. Varlıklar
+7. Borçlar ve Özkaynak
+8. Temel Muhasebe Denklemi
+9. İşlemler Denklemi Nasıl Değiştirir?
+10. Gelir, Gider ve Özkaynak
 
-### T2 — Hesap ve Kayıt Mantığı (14 ders)
+*Kart sonunda kullanıcı hiç hesap kodu kullanmadan 15–20 işletme olayı analiz etmiş olmalı.*
+★ Kart finali: 10 Olayda Muhasebe Mantığı (mevcut, korunur)
 
-**Bölüm 1 — Hesap**
-14. Hesap Nedir ve Neden Hesaplara İhtiyaç Duyarız?
-15. Hesabın İki Tarafı: Borç ve Alacak
-16. Hesaplarda Artış ve Azalış Nasıl İzlenir?
+## Kart 2 — Olaydan Muhasebe Kaydına (10 birim)
+
+**Bölüm 1 — Hesap mantığı**
+11. Neden Hesaplara İhtiyaç Var?
+12. Hesabın İki Tarafı: Borç ve Alacak *(borç=eksi/alacak=artı algısı burada kırılır)*
 
 **Bölüm 2 — Hesapların çalışma mantığı**
-17. Varlık Hesapları
-18. Kaynak Hesapları
-19. Gelir ve Gider Hesapları
-20. Hesabın Doğal Yönü: Normal Bakiye
+13. Varlık, Borç ve Özkaynak Hesaplarının Çalışması *(tek karşılaştırma tablosu)*
+14. Gelir ve Gider Hesaplarının Çalışması
+15. Hesabın Bakiyesi *("normal bakiye" terimi Mali Sözlük katmanında)*
 
-**Bölüm 3 — Çift taraflı kayıt**
-21. Bir İşlem Neden En Az İki Hesabı Etkiler?
-22. Çift Taraflı Kayıt
-23. Borç = Alacak Kontrolü
+**Bölüm 3 — Olayı kayda dönüştürmek**
+16. İşlem Analizi — platformun ana algoritması:
+    *ne oldu? → hangi değerler değişti? → hangi hesaplar? → arttı mı azaldı mı? → borç mu alacak mı? → dengeli mi?*
+17. İlk Yevmiye Kaydın *(sermaye örneği: KDV yok, cari yok, belge karmaşası yok)*
+18. Basit Yevmiye Kayıtları *(sermaye, virman, gider, hizmet geliri, kredi, borç ödeme, tahsilat — KDV'siz)*
+19. Birden Fazla Hesaplı Kayıt
+20. Hesap Planında Hesabı Bulmak *(TDHP'yi harita gibi okumak; ezber yok)*
 
-**Bölüm 4 — Hesap Planı**
-24. Tekdüzen Hesap Planı Neden Var?
-25. Hesap Kodunu Okumak: Sınıf → Grup → Ana Hesap
-26. Alt Hesap ve Muhasebe Detayı
-27. Hesabı Ezberlemek Yerine Bulmak
+⚠ Kart finali yok — içerik fazında eklenecek (ADR-004).
 
-### T3 — Kayıttan Finansal Tabloya (12 ders)
+## Kart 3 — Kayıttan Finansal Tabloya (6 birim)
 
-**Bölüm 1 — Muhasebe Kaydı**
-28. Yevmiye Kaydı Nedir?
-29. Bir Yevmiye Kaydının Anatomisi
-30. Basit Muhasebe Kaydı
-31. Birden Fazla Hesaplı Kayıt
+**Bölüm 1 — Kaydın yolculuğu**
+21. Yevmiye Kaydının Yapısı
+22. Büyük Defter ve Hesap Bakiyesi
 
-**Bölüm 2 — Sınıflandırma ve Kontrol**
-32. Büyük Defter: Kayıtları Hesaplara Göre Toplamak
-33. Hesap Bakiyesi
-34. Mizan: Hesapları Tek Yerde Görmek
-35. Mizan Neyi Kontrol Eder, Neyi Edemez?
+**Bölüm 2 — Kontrol**
+23. Mizan *(nedir + neyi kontrol eder + neyi edemez — tek güçlü ders)*
 
-**Bölüm 3 — Raporlama**
-36. Bilanço / Finansal Durum Tablosu
-37. Gelir Tablosu
-38. Kâr ile Nakit Neden Aynı Şey Değildir?
-39. Kayıttan Finansal Tabloya: Muhasebe Döngüsü
+**Bölüm 3 — Sonuç**
+24. Bilanço ve Gelir Tablosu *(biri durum, biri dönem sonucu)*
+25. Kâr ile Nakit Aynı Şey Değildir
+26. Muhasebe Döngüsü — Baştan Sona
 
-## Yetkinlikler — 12 kart
-
-| Kod | Kart | Repo karşılığı | Durum |
-|---|---|---|---|
-| Y1 | Belge Okuma ve İşlem Analizi | — | Repoda yok |
-| Y2 | Kasa, Banka ve Ödeme Sistemleri | — | Repoda yok |
-| Y3 | Alış, Satış ve Cari Hesaplar | `gunluk-muhasebe-islemleri` | Y2+Y3+Y4+Y6 birleşik |
-| Y4 | Stok ve Ticari Mal | `gunluk-muhasebe-islemleri` | Birleşik |
-| Y5 | KDV ve e-Belge | `vergi-belge-uygulamalari` | Yeniden adlandırılmış |
-| Y6 | Duran Varlıklar ve Amortisman | `gunluk-muhasebe-islemleri` | Birleşik |
-| Y7 | Bordro ve SGK Operasyonları | `bordro-sgk` | Eşleşiyor |
-| Y8 | Dönem Sonu ve Muhasebe Kontrolleri | `donem-sonu-islemleri` | Eşleşiyor |
-| Y9 | Beyanname Süreçleri | `beyanname-surecleri` | Eşleşiyor |
-| Y10 | Finansal Tablolar ve Yönetim Raporlama | `yonetim-muhasebesi` | **Kategori çelişkisi** — repoda Uzmanlık |
-| Y11 | Şirket ve Sermaye İşlemleri | `sirket-islemleri` / `sirket-ticaret-islemleri` | **Mükerrer slug** |
-| Y12 | Muhasebe Sistemleri ve ERP Mantığı | — | Repoda yok |
-
-## Uzmanlıklar — 10 kart
-
-U1 Maliyet ve Üretim Muhasebesi · U2 Proje ve Sözleşme Muhasebesi ·
-U3 Vergi Uygulamaları · U4 Finansal Raporlama ve TMS/TFRS ·
-U5 İleri Bordro, SGK ve Teşvikler · U6 Ar-Ge, Tasarım ve Teknokent ·
-U7 Savunma Sanayii Muhasebesi · U8 Dış Ticaret Muhasebesi ·
-U9 İnşaat ve Taahhüt Muhasebesi · U10 e-Ticaret Muhasebesi
-
-> **Açık soru:** Muhasebe.docx bu 22 Y/U kartının altındaki maddeleri bölüm ve
-> ders olarak ayırmıyor. Bu ayrım yapılmadan Y/U içerik hacmi tahmin edilemez.
+★ Kart finali: Bir İşletmenin İlk 10 İşlemi (mevcut, korunur)
 
 ---
 
-# Öğrenme Hedefleri
+# YETKİNLİKLER — 9 iş akışı kartı
 
-Ders bazlı öğrenme hedefleri Notion `Müfredat` DB'sindeki `Öğrenme Hedefi`
-alanında tutulur; bu doküman onları tekrarlamaz (kopya yerine ilişki ilkesi).
+Yetkinlik = konu bilmek değil, iş akışı yönetmek. Her kart belgeyle başlar,
+kayıtla bitmez — kontrol/mutabakatla biter.
 
-Ana alan düzeyindeki hedefler:
+| # | Kart | Slug | İş akışı |
+|---|---|---|---|
+| Y1 | Belgeden Muhasebe İşlemine | `belgeden-muhasebe-islemine` | belge kontrolü → işlem türü → taraflar → tutarlar → hesap → kayıt |
+| Y2 | Satın Alma, Satıcı ve Ödeme | `gunluk-muhasebe-islemleri` | belge → mal/hizmet → satıcı → KDV → kayıt → borç → ödeme → cari kapanışı → mutabakat |
+| Y3 | Satış, Müşteri ve Tahsilat | `satis-musteri-tahsilat` | satış → belge → gelir → KDV → alacak → tahsilat → iade/iskonto → mutabakat |
+| Y4 | Kasa, Banka, Kart ve Finansman | `kasa-banka-kart-finansman` | kasa · banka · EFT · POS · komisyon · kredi · faiz · virman · banka mutabakatı |
+| Y5 | Stok ve Duran Varlık İşlemleri | `stok-duran-varlik` | stok giriş/çıkış/sayım · duran varlık edinim/amortisman/satış |
+| Y6 | KDV ve e-Belge Operasyonları | `vergi-belge-uygulamalari` | hesaplanan/indirilecek · e-Fatura/e-Arşiv/e-İrsaliye · muhasebe-beyan bağlantısı |
+| Y7 | Bordro ve SGK | `bordro-sgk` | brüt/net → kesintiler → tahakkuk → ödeme → SGK/vergi borçları → MPHB |
+| Y8 | Mutabakat ve Dönem Sonu Kontrolleri | `donem-sonu-islemleri` | cari/banka/kasa/stok kontrolleri · tahakkuklar · mizan analizi · hata düzeltme |
+| Y9 | Beyanname, Kapanış ve Raporlama | `beyanname-surecleri` | KDV → MPHB → geçici/kurumlar girişi → tahakkuk → ödeme → kapanış |
 
-- **Temeller:** Muhasebenin dilini, hesap ve kayıt mantığını ve muhasebe
-  döngüsünü anlamak.
-- **Yetkinlikler:** Gerçek belge ve işletme olaylarından hareketle muhasebe
-  işlerini yapabilmek.
-- **Uzmanlıklar:** Belirli sektör, problem ve mevzuat kümelerinde muhasebe
-  çözümleri geliştirebilmek.
+Şirket/sermaye işlemleri ayrı Yetkinlik kartı değildir (İşletmeler M1/M13 +
+Uzmanlık katmanı). `sirket-ticaret-islemleri` kartı gizlendi.
+
+---
+
+# UZMANLIKLAR — 7 çekirdek + sektör rotaları
+
+Uzmanlık sorusu: *"Bu dosyada işlemi yapabilmek için yeterli bilgi var mı?"*
+(belge iste → mevzuat kontrol et → yaklaşım seç → kaydet → vergi/tablo etkisini değerlendir)
+
+**Çekirdek (fonksiyonel):**
+U1 Vergi Uygulamaları (`ileri-vergi`) · U2 Finansal Raporlama ve TMS/TFRS
+(`finansal-raporlama`) · U3 Maliyet ve Üretim (`maliyet-muhasebesi`) ·
+U4 Proje ve Sözleşme (`proje-muhasebesi`) · U5 İleri Bordro, SGK ve Teşvikler
+(`bordro-is-hukuku`) · U6 Dış Ticaret (`dis-ticaret-doviz`) ·
+U7 Ar-Ge, Teknokent ve Teşvikler (`arge-teknokent`)
+
+**Sektör rotaları (capstone — yeni ders seti değil, ön koşul ağıyla birleşim):**
+Savunma Sanayii (`savunma-sanayii`) · İnşaat & Taahhüt (`insaat-muhasebesi`) ·
+e-Ticaret (`e-ticaret`)
 
 ---
 
 # Ön Koşullar ve Sıralama
 
-Ana omurga (Muhasebe.docx §11):
-
 ```
-Muhasebenin Mantığı → Hesap ve Kayıt Mantığı → Kayıttan Finansal Tabloya
-        ↓
-Belge Okuma → Kasa/Banka
-        ↓ (paralel)
-Alış/Satış/Cari → KDV → Stok
-        ↓
-Duran Varlık · Bordro
-        ↓
-Dönem Sonu ve Kontrol
-        ↓
-Beyanname Süreçleri · Finansal Raporlama
-        ↓
-Uzmanlıklar
+Temeller (K1 → K2 → K3, zorunlu başlangıç)
+   ↓
+Y1 Belgeden İşleme
+   ↓                ↓
+Y2 Satın Alma    Y3 Satış        Y4 Kasa-Banka (←Temeller)
+   ↓                ↓                ↓
+Y5 Stok-DV       Y6 KDV/e-Belge   Y7 Bordro (←Temeller)
+        ↓             ↓              ↓
+        Y8 Mutabakat ve Dönem Sonu
+                 ↓
+        Y9 Beyanname-Kapanış-Raporlama
+                 ↓
+        Uzmanlıklar (U1–U7) → Sektör rotaları
 ```
 
-Makine karşılığı `kesfet_kart_on_kosullari` tablosudur (`zorunlu` / `onerilen`
-türleri, döngü engelleyici trigger ile). Temeller zorunlu başlangıçtır;
-Yetkinlikler ve Uzmanlıklar açık ön koşullu ilerlemedir.
+Makine karşılığı: `kesfet_kart_on_kosullari` (zorunlu/önerilen, döngü engelleyici trigger).
 
 ---
 
-# Soru ve Zorluk Modeli
+# Öğretim modeli (içerik fazının sözleşmesi)
 
-## S0–S5 bilişsel taksonomi
-
-| Kod | Ad | Ne sorar |
-|---|---|---|
-| S0 | Fark Et | Bu mali nitelikte bir olay mı? |
-| S1 | Oku | Faturadaki satıcı kim? KDV ne kadar? |
-| S2 | Sınıflandır | Ticari mal mı, gider mi, duran varlık mı? |
-| S3 | Muhasebeleştir | Hesabı seç, borç/alacak seç, kaydı oluştur |
-| S4 | Kontrol Et | Bu kayıtta ne yanlış? Mizan neden tutmuyor? |
-| S5 | Karar Ver | Hangi belgeyi kaydet, hangisini beklet, hangisi için ek belge iste? |
-
-## Beş seviyeli uygulama zorluğu
-
-1. **Yönlendirmeli** — tek olay, tek belge, hesaplar gösteriliyor
-2. **Destekli** — tek olay, hesapları kullanıcı seçiyor
-3. **Bağımsız** — belge veriliyor, kaydı kullanıcı oluşturuyor
-4. **Karma** — birden fazla belge, bağlantılı işlemler
-5. **Mesleki** — eksik bilgi olabilir; kullanıcı önce neyi bilmesi gerektiğine karar verir
-
-> **Bilinen uyumsuzluk:** Notion `Soru Havuzu` şemasında S0–S5 alanı yok ve
-> `Zorluk` üç seviyeli (Kolay/Orta/Zor). Şema bu modele hizalanmalıdır.
+- **Yeni kayıt türü öğretimi:** çözümlü örnek → tamamlama → hesap seçimi →
+  yön belirleme → sıfırdan kayıt → yakın transfer → uzak transfer → interleaved.
+- **Pratik düzeni:** blocked başlar (5–8 varyasyon) → karıştırılır → aralıklı geri getirilir.
+- **Anlatım/pratik hedefi:** Temeller ~%35/65 · Yetkinlik ~%20/80 · Uzmanlık ~%10/90.
+- **Temas hedefi:** Temeller boyunca ~75–100 kayıt teması.
+- **Mevzuat yoğunluğu:** Temeller %0–5 → Yetkinlik işlem içi "Neden böyle?" paneli →
+  Uzmanlık problemin parçası (sürümleme zorunlu).
+- **Mali Sözlük:** dersi bölmez — popover/bottom-sheet, "detaya git" bağlantısı.
+- Mastery (M0–M9) ve belge zorluğu (B0–B5): ADR-004 "Gelecek fazlar".
 
 ---
 
-# Senaryo ve Muhasebe Olayı (KUR)
+# Finaller
 
-Ders anlatımı BlockNote JSON olarak `kesfet_itemler.icerik` alanında; ölçülen
-olay, belge, soru ve çözüm ise V2 çekirdek tablolarında tutulur (ADR-002).
-Bu doküman ders metni içermez.
-
-Karakter evreni ve yazım kuralları için: Notion "Muhasebe Akademi İçerik
-Şablonu" ve "Muhasebe Atölyesi — Çalışma Kuralları" sayfaları, ayrıca
-[COPY-STYLE-GUIDE.md](../../COPY-STYLE-GUIDE.md).
+- **Temeller Finali — İlk Ay:** sade işletmenin 15–20 olayı; olay → hesap →
+  yön → kayıt → mizan → basit tablo etkisi.
+- **Yetkinlik Finali — Muhasebe Masası:** ~1 haftalık gerçekçi işlem paketi.
+- **Uzmanlık Finali — Dosya:** tek doğru cevabı olmayan vaka; incele → bilgi
+  iste → karar ver → muhasebeleştir → gerekçelendir.
 
 ---
 
 # Bilinen Boşluklar
 
-1. Birleşen 7 dersin gövdesi yarım (ADR-003, Sonuçlar bölümü).
-2. Notion'daki 39 ders kaydının tamamı aynı şablon metnini taşıyor.
-3. Yetkinlik/Uzmanlık kartlarında bölüm–ders ayrımı yapılmamış.
-4. Zamana bağlı mevzuat değerleri (oran, tutar, eşik) henüz kaynak ve tarih
-   metadata'sına bağlanmamış.
+1. 26 birimin 24'ünün gövdesi şablon (yalnız birim 1–2 yazılı).
+2. Kart 2 finali yok.
+3. Arşivdeki 20 eski ders (7 + 13) içerik yazarken kaynak metindir.
+4. Soru havuzu boş; hiçbir birime onaylı soru bağlı değil.
+5. Zamana bağlı mevzuat değerleri kaynak+tarih metadata'sına bağlanmadı.

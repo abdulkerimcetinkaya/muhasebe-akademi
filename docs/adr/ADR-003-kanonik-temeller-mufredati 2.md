@@ -2,13 +2,9 @@
 
 ## Durum
 
-Superseded by [ADR-004](ADR-004-v3-beceri-merkezli-mufredat.md) — 2026-08-11
+Proposed — 2026-08-11
 
-Aynı gün içinde Chief Architect'in beceri merkezli revizyonu kabul edildi:
-kanonik Temeller yapısı artık 39 ders değil, 26 öğrenme birimidir. Bu ADR'nin
-katman sınırları (madde 3) ve mevzuat kuralı (madde 4) ADR-004'te aynen
-yürürlüktedir. Ayrıca buradaki "13 modül tarihsel yapıdır" tespiti yanlıştı —
-o liste canlı İşletmeler track'idir; düzeltme ADR-004'tedir.
+Bağımsız denetim (2026-08-11) sonucunda önerildi. Ürün sahibi onayı bekleniyor.
 
 ## Bağlam
 
