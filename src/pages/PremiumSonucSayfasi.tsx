@@ -73,12 +73,12 @@ Teşekkürler.`;
           Ödeme Başarılı
         </div>
         <h1 className="font-display text-4xl md:text-5xl tracking-tight font-bold mb-4">
-          {isBulk ? `${adet} kullanıcı için Premium alındı!` : 'Premium üyeliğin aktif!'}
+          {isBulk ? `${adet} kullanıcı için Premium alındı` : 'Premium üyeliğin aktif'}
         </h1>
         <p className="text-lg text-ink-soft leading-relaxed font-medium mb-6">
           {isBulk
-            ? 'Ödemen başarıyla tahsil edildi. Öğrenci dağıtımı için bir adım daha kaldı 👇'
-            : 'Tüm Premium özellikler artık açık. AI yanlış analizi, sınırsız asistan, hesap kodu otomatik tamamlama hemen kullanıma hazır.'}
+            ? 'Ödeme tamamlandı. Premium erişimi tanımlamak için öğrenci listesini gönder.'
+            : 'AI yanlış analizi, sınırsız asistan ve hesap kodu otomatik tamamlama kullanıma hazır.'}
         </p>
 
         {syncDurum === 'yukleniyor' && (

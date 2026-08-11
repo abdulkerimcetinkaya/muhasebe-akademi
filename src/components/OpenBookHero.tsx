@@ -43,7 +43,7 @@ export const OpenBookHero = ({ onProblemler, onGiris }: Props) => {
                   { index: 1, color: 'var(--copper-deep)' },
                 ]}
               >
-                bir uzman gibi öğren.
+                yevmiye kaydı yaparak öğren.
               </SlideInWords>
             </span>
           </h1>
@@ -78,7 +78,7 @@ export const OpenBookHero = ({ onProblemler, onGiris }: Props) => {
               style={{ background: 'var(--success, #5d8a6f)' }}
             />
             <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-ink-mute">
-              Gerçek senaryolar · AI hata analizi · İş hayatına hazırlık
+              Fatura ve dekont senaryoları · Anında kontrol · AI hata analizi
             </span>
           </motion.div>
         </div>

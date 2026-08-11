@@ -18,6 +18,9 @@ import { THesabiBlock } from './t-hesabi-block';
 import { BilancoBlock } from './bilanco-block';
 import { KontrolBlock } from './kontrol-block';
 import { KayitBlock } from './kayit-block';
+import { VeriKartlariBlock } from './veri-kartlari-block';
+import { IslemLaboratuvariBlock } from './islem-laboratuvari-block';
+import { BilgiDonusumuBlock } from './bilgi-donusumu-block';
 
 export const TermStyleSpec = createReactStyleSpec(
   {
@@ -44,6 +47,9 @@ export const ozelSema = BlockNoteSchema.create({
     bilanco: BilancoBlock(),
     kontrol: KontrolBlock(),
     kayit: KayitBlock(),
+    verikartlari: VeriKartlariBlock(),
+    islemlaboratuvari: IslemLaboratuvariBlock(),
+    bilgidonusumu: BilgiDonusumuBlock(),
   },
   styleSpecs: {
     ...defaultStyleSpecs,

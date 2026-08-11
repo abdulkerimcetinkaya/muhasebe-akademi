@@ -30,6 +30,7 @@ const kart: KesfetKart = {
       id: 'b1',
       ad: 'Açılış',
       sira: 0,
+      tur: 'normal',
       itemlar: [
         {
           id: 'a1',
@@ -48,6 +49,7 @@ const kart: KesfetKart = {
       id: 'b2',
       ad: 'Dönem İçi',
       sira: 1,
+      tur: 'normal',
       itemlar: [
         {
           id: 'a2',

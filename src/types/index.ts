@@ -168,6 +168,23 @@ export interface Soru {
   etiketler?: string[];
   /** Katkıcı ekledi ise yazar user_id'si. Adı/unvanı ek sorguyla çekilir. */
   ekleyenId?: string | null;
+  /** Question Engine renderer anahtarı. */
+  tip?: string;
+  /** Soru tipine özel, sürümlenebilir renderer ayarları. */
+  config?: unknown;
+}
+
+export interface CoktanSecmeliMadde {
+  id: string;
+  soru: string;
+  secenekler: { id: string; metin: string }[];
+  dogruSecenekId: string;
+  aciklama: string;
+}
+
+export interface CoktanSecmeliConfig {
+  surum: 1;
+  maddeler: CoktanSecmeliMadde[];
 }
 
 export interface SoruWithUnite extends Soru {

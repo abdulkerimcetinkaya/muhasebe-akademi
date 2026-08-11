@@ -50,7 +50,7 @@ export const PremiumGate = ({ children, ozellikAdi, aciklama, kompakt }: Props) 
         className="inline-flex items-center gap-2 bg-ink text-bg px-6 py-2.5 text-xs tracking-wide uppercase font-bold rounded-xl hover:opacity-90 active:scale-[0.98] transition shadow-md"
       >
         <Icon name="Sparkles" size={13} />
-        Premium&apos;u Keşfet
+        Premium’u incele
       </button>
     </div>
   );

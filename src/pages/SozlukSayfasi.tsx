@@ -78,9 +78,8 @@ export const SozlukSayfasi = () => {
             Mali Sözlük
           </h1>
           <p className="text-[14.5px] text-ink-soft leading-relaxed max-w-2xl">
-            Muhasebe ve vergi terimlerinin Türkçe açıklamalı sözlüğü.
-            Yevmiye kaydı, KDV, amortisman ve daha fazlası — örneklerle, TDHP
-            hesap kodlarıyla.
+            Muhasebe ve vergi terimlerini örnekler ve ilgili TDHP hesap kodlarıyla açıklar.
+            Yevmiye kaydı, KDV ve amortisman gibi konuları buradan arayabilirsin.
           </p>
         </header>
 
@@ -95,7 +94,7 @@ export const SozlukSayfasi = () => {
               type="text"
               value={arama}
               onChange={(e) => setArama(e.target.value)}
-              placeholder="Terim ara — örn. amortisman, KDV, yevmiye"
+              placeholder="Terim ara: amortisman, KDV, yevmiye"
               className="w-full pl-9 pr-3 py-2.5 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink focus:ring-2 focus:ring-blue-500/15"
             />
           </div>

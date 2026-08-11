@@ -6,6 +6,8 @@ import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
   TEMELLER_HEDEF_DERSLER,
+  OGRENME_ZINCIRI,
+  dersZinciri,
   dersAdiNormalize,
   hedefDersMevcutMu,
 } from '../../data/temeller-mufredat-denetimi';
@@ -13,6 +15,7 @@ import {
   kartGuncelle,
   kartOlustur,
   kartSil,
+  kartYayinSorunlariniBul,
   tumKartlariYukle,
   type YeniKart,
 } from '../../lib/kesfet';
@@ -24,6 +27,9 @@ const bosForm = (): YeniKart => ({
   ikon: 'Rocket',
   kategori: 'Temeller',
   durum: 'yakinda',
+  uzmanlik_turu: null,
+  on_kosul_sluglari: [],
+  onerilen_on_kosul_sluglari: [],
   sira: 0,
 });
 
@@ -38,7 +44,7 @@ export const AdminKesfetSayfasi = () => {
 
   const yukle = async () => {
     try {
-      setKartlar(await tumKartlariYukle());
+      setKartlar(await tumKartlariYukle(undefined, true));
       setHata(null);
     } catch (e) {
       setHata(e instanceof Error ? e.message : 'Yüklenemedi');
@@ -65,6 +71,9 @@ export const AdminKesfetSayfasi = () => {
       ikon: k.ikon,
       kategori: k.kategori,
       durum: k.durum,
+      uzmanlik_turu: k.uzmanlik_turu,
+      on_kosul_sluglari: k.on_kosul_sluglari ?? [],
+      onerilen_on_kosul_sluglari: k.onerilen_on_kosul_sluglari ?? [],
       sira: k.sira,
     });
     window.scrollTo(0, 0);
@@ -79,6 +88,23 @@ export const AdminKesfetSayfasi = () => {
     if (!/^[a-z0-9-]+$/.test(form.slug)) {
       setHata('Slug yalnızca küçük harf, rakam ve tire içerebilir (örn: ticari-isletme).');
       return;
+    }
+    const mevcutKart = duzenlenen ? kartlar.find((kart) => kart.id === duzenlenen) : null;
+    if (form.durum === 'acik') {
+      if (!mevcutKart) {
+        setHata('Yeni kartı önce Yakında veya Gizli olarak oluştur; içerik ve bağlantılar tamamlandıktan sonra aç.');
+        return;
+      }
+      try {
+        const sorunlar = await kartYayinSorunlariniBul(mevcutKart);
+        if (sorunlar.length) {
+          setHata(`Kart yayınlanamaz: ${sorunlar.join(' · ')}`);
+          return;
+        }
+      } catch (e) {
+        setHata(`Yayın kontrolü çalışmadı: ${e instanceof Error ? e.message : 'Bilinmeyen hata'}`);
+        return;
+      }
     }
     setKaydediliyor(true);
     try {
@@ -115,6 +141,15 @@ export const AdminKesfetSayfasi = () => {
       await yukle();
     } catch (e) {
       alert(`Sıra değiştirilemedi: ${(e as Error).message}`);
+    }
+  };
+
+  const yayinKontrolu = async (kart: KesfetKart) => {
+    try {
+      const sorunlar = await kartYayinSorunlariniBul(kart);
+      alert(sorunlar.length ? `Yayın sorunları:\n\n${sorunlar.join('\n')}` : 'Yayın kontrolü tamam: kartın yayınlanmış içerikleri hazır.');
+    } catch (e) {
+      alert(`Yayın kontrolü çalışmadı: ${e instanceof Error ? e.message : 'Bilinmeyen hata'}`);
     }
   };
 
@@ -239,12 +274,29 @@ export const AdminKesfetSayfasi = () => {
                   className={inputCls}
                   value={form.durum}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, durum: e.target.value as 'acik' | 'yakinda' }))
+                    setForm((f) => ({ ...f, durum: e.target.value as 'acik' | 'yakinda' | 'gizli' }))
                   }
                 >
                   <option value="acik">Açık</option>
                   <option value="yakinda">Yakında</option>
+                  <option value="gizli">Gizli</option>
                 </select>
+              </div>
+              <div>
+                <label className={labelCls}>Uzmanlık alt türü</label>
+                <select className={inputCls} value={form.uzmanlik_turu ?? ''} onChange={(e) => setForm((f) => ({ ...f, uzmanlik_turu: (e.target.value || null) as 'fonksiyonel' | 'sektorel' | null }))}>
+                  <option value="">Uygulanmaz</option>
+                  <option value="fonksiyonel">Fonksiyonel</option>
+                  <option value="sektorel">Sektörel</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelCls}>Zorunlu ön koşul slugları</label>
+                <input className={inputCls} value={(form.on_kosul_sluglari ?? []).join(', ')} onChange={(e) => setForm((f) => ({ ...f, on_kosul_sluglari: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) }))} placeholder="muhasebe-temelleri, gunluk-muhasebe-operasyonlari" />
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelCls}>Önerilen ön koşul slugları</label>
+                <input className={inputCls} value={(form.onerilen_on_kosul_sluglari ?? []).join(', ')} onChange={(e) => setForm((f) => ({ ...f, onerilen_on_kosul_sluglari: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) }))} placeholder="finansal-raporlama" />
               </div>
               <div>
                 <label className={labelCls}>Sıra</label>
@@ -292,12 +344,19 @@ export const AdminKesfetSayfasi = () => {
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-ink text-sm truncate">{k.ad}</span>
                       <span className={`chip ${k.durum === 'acik' ? 'chip-success' : ''}`}>
-                        {k.durum === 'acik' ? 'Açık' : 'Yakında'}
+                        {k.durum === 'acik' ? 'Açık' : k.durum === 'yakinda' ? 'Yakında' : 'Gizli'}
                       </span>
+                      {k.uzmanlik_turu && <span className="chip">{k.uzmanlik_turu === 'fonksiyonel' ? 'Fonksiyonel' : 'Sektörel'}</span>}
                     </div>
                     <div className="text-[11.5px] text-ink-mute mt-0.5 tnum">
                       /{k.slug} · {k.kategori} · {k.bolumler.length} bölüm · {kartDersSayisi(k)} ders
                     </div>
+                    {((k.on_kosul_sluglari?.length ?? 0) > 0 || (k.onerilen_on_kosul_sluglari?.length ?? 0) > 0) && (
+                      <div className="text-[10.5px] text-ink-mute mt-1">
+                        {(k.on_kosul_sluglari?.length ?? 0) > 0 && <>Zorunlu: {k.on_kosul_sluglari?.join(', ')}</>}
+                        {(k.onerilen_on_kosul_sluglari?.length ?? 0) > 0 && <> · Önerilen: {k.onerilen_on_kosul_sluglari?.join(', ')}</>}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-1 flex-none">
@@ -322,6 +381,9 @@ export const AdminKesfetSayfasi = () => {
                       className="btn btn-soft btn-sm ml-1"
                     >
                       Bölümler
+                    </button>
+                    <button onClick={() => void yayinKontrolu(k)} className="btn btn-soft btn-sm" title="Olay, belge, çözüm, yetkinlik ve mevzuat bağlarını denetle">
+                      Yayın kontrolü
                     </button>
                     <button
                       onClick={() => duzenleBaslat(k)}
@@ -356,6 +418,7 @@ export const AdminKesfetSayfasi = () => {
                 {tumItemlar.map(({ kart, bolum, item }) => {
                   const dolu = icerikVar(item.icerik);
                   const acik = kart.durum === 'acik' && dolu;
+                  const zincir = dersZinciri(item.icerik);
                   return (
                     <div key={item.id} className="grid lg:grid-cols-[1fr_auto] gap-3 py-3 border-b border-line-soft items-center">
                       <div className="min-w-0 flex items-start gap-3">
@@ -367,12 +430,20 @@ export const AdminKesfetSayfasi = () => {
                       </div>
                       <div className="flex items-center gap-1.5 flex-wrap lg:justify-end">
                         <span className={`chip ${dolu ? 'chip-success' : ''}`}>{dolu ? 'İçerik var' : 'İçerik boş'}</span>
-                        <span className="chip">{item.soru_id ? 'Soru bağlı' : 'Soru bağlı değil'}</span>
+                        <span className={`chip ${(item.sorular?.length ?? 0) > 0 ? 'chip-success' : ''}`}>
+                          {(item.sorular?.length ?? 0) > 0 ? `${item.sorular?.length} ölçümlü soru` : 'Ölçümlü soru yok'}
+                        </span>
                         <span className={`chip ${etkilesimliBlokSayisi(item.icerik) > 0 ? 'chip-success' : ''}`}>
                           {etkilesimliBlokSayisi(item.icerik)} etkileşim
                         </span>
+                        <span className={`chip ${zincir.length >= 6 ? 'chip-success' : ''}`} title={`Karşılanan: ${zincir.join(', ') || 'yok'}\nEksik: ${OGRENME_ZINCIRI.map(([ad]) => ad).filter((ad) => !zincir.includes(ad)).join(', ')}`}>
+                          Zincir {zincir.length}/{OGRENME_ZINCIRI.length}
+                        </span>
                         <span className="chip">{item.tip === 'ders' ? 'Ders' : 'Alıştırma'}</span>
-                        <span className={`chip ${acik ? 'chip-success' : ''}`}>{acik ? 'Kullanıcıya açık' : kart.durum === 'yakinda' ? 'Kart yakında' : 'İçerik eksik'}</span>
+                        <span className={`chip ${!item.yayin_durumu || item.yayin_durumu === 'yayinlandi' ? 'chip-success' : ''}`}>
+                          {!item.yayin_durumu || item.yayin_durumu === 'yayinlandi' ? 'Yayınlandı' : item.yayin_durumu === 'incelemede' ? 'İncelemede' : item.yayin_durumu === 'arsiv' ? 'Arşiv' : 'Taslak'}
+                        </span>
+                        <span className={`chip ${acik ? 'chip-success' : ''}`}>{acik ? 'Kullanıcıya açık' : kart.durum === 'yakinda' ? 'Kart yakında' : kart.durum === 'gizli' ? 'Yalnız admin' : 'İçerik eksik'}</span>
                         <button onClick={() => nav(`/admin/kesfet/${kart.id}/item/${item.id}`)} className="btn btn-soft btn-sm">Düzenle</button>
                       </div>
                     </div>

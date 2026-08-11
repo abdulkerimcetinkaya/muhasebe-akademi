@@ -44,7 +44,7 @@ export const HataBildirModal = ({ soruId, soruBaslik, onKapat }: Props) => {
       });
       const timeoutPromise = new Promise<{ error: { message: string } }>((resolve) =>
         setTimeout(
-          () => resolve({ error: { message: 'Sunucu yanıt vermedi (15s). İnternetini kontrol et.' } }),
+          () => resolve({ error: { message: 'Bildirim gönderilemedi. İnternet bağlantını kontrol edip tekrar dene.' } }),
           15000,
         ),
       );
@@ -57,7 +57,7 @@ export const HataBildirModal = ({ soruId, soruBaslik, onKapat }: Props) => {
       setDurum('gonderildi');
     } catch (e) {
       setDurum('hata');
-      setHataMesaj(e instanceof Error ? e.message : 'Bilinmeyen hata.');
+      setHataMesaj(e instanceof Error ? e.message : 'Bildirim gönderilemedi. Lütfen tekrar dene.');
     }
   };
 
@@ -75,7 +75,7 @@ export const HataBildirModal = ({ soruId, soruBaslik, onKapat }: Props) => {
             <Icon name="AlertCircle" size={18} className="text-danger" />
             <div>
               <div className="text-[10px] tracking-[0.3em] uppercase text-ink-mute font-bold">
-                Hata Bildir
+                Hata bildir
               </div>
               <div className="font-display text-lg font-bold tracking-tight truncate max-w-[24rem]">
                 {soruBaslik}
@@ -102,7 +102,7 @@ export const HataBildirModal = ({ soruId, soruBaslik, onKapat }: Props) => {
                 className="inline-flex items-center gap-2 bg-ink text-bg px-4 py-2 rounded-lg text-sm font-bold hover:opacity-90 active:scale-[0.98] transition"
               >
                 <Icon name="LogIn" size={14} />
-                Giriş Yap
+                Giriş yap
               </Link>
             </div>
           ) : durum === 'gonderildi' ? (
@@ -115,16 +115,16 @@ export const HataBildirModal = ({ soruId, soruBaslik, onKapat }: Props) => {
                 />
               </div>
               <div className="font-display text-lg font-bold tracking-tight mb-1">
-                Bildirim alındı.
+                Bildirim alındı
               </div>
               <p className="text-sm text-ink-soft font-medium">
-                Teşekkürler. En kısa sürede inceleyeceğiz.
+                Bildirimi inceleme listesine ekledik.
               </p>
             </div>
           ) : (
             <>
               <p className="text-sm text-ink-soft font-medium mb-3 leading-relaxed">
-                Hangi hatayı fark ettin? Yanlış hesap kodu, hatalı KDV, eksik açıklama vs.
+                Fark ettiğin hatayı yaz. Örneğin yanlış hesap kodunu, KDV tutarını veya eksik açıklamayı belirt.
               </p>
               <textarea
                 value={aciklama}

@@ -9,6 +9,7 @@ import {
   bolumSil,
   itemGuncelle,
   itemOlustur,
+  itemSorulariniKaydet,
   itemSil,
   tumKartlariYukle,
 } from '../../lib/kesfet';
@@ -21,10 +22,12 @@ export const AdminKesfetKartSayfasi = () => {
   const [yeniItem, setYeniItem] = useState<Record<string, string>>({});
   const [duzenId, setDuzenId] = useState<string | null>(null);
   const [duzenAd, setDuzenAd] = useState('');
+  const [soruDuzenId, setSoruDuzenId] = useState<string | null>(null);
+  const [soruIdleri, setSoruIdleri] = useState('');
 
   const yukle = async () => {
     try {
-      const kartlar = await tumKartlariYukle();
+      const kartlar = await tumKartlariYukle(undefined, true);
       setKart(kartlar.find((k) => k.id === kartId) ?? null);
     } catch {
       setKart(null);
@@ -79,6 +82,13 @@ export const AdminKesfetKartSayfasi = () => {
     hataYut(async () => {
       await itemGuncelle(it.id, { tip });
     })();
+  const itemYayinDurumuDegistir = (it: KesfetItem, yayin_durumu: KesfetItem['yayin_durumu']) =>
+    hataYut(async () => {
+      if (yayin_durumu === 'yayinlandi' && (!Array.isArray(it.icerik) || it.icerik.length === 0)) {
+        throw new Error('İçeriği boş bir ders yayınlanamaz.');
+      }
+      await itemGuncelle(it.id, { yayin_durumu });
+    })();
   const itemSiraDegistir = (b: KesfetBolum, it: KesfetItem, yon: -1 | 1) =>
     hataYut(async () => {
       const komsu = b.itemlar[b.itemlar.indexOf(it) + yon];
@@ -94,6 +104,12 @@ export const AdminKesfetKartSayfasi = () => {
     hataYut(async () => {
       if (!confirm(`"${it.ad}" dersini sil?`)) return;
       await itemSil(it.id);
+    })();
+  const soruBaglariniKaydet = (it: KesfetItem) =>
+    hataYut(async () => {
+      await itemSorulariniKaydet(it.id, soruIdleri.split(',').map((id) => id.trim()));
+      setSoruDuzenId(null);
+      setSoruIdleri('');
     })();
 
   // ── Inline ad düzenleme (bölüm veya item) ──
@@ -154,6 +170,9 @@ export const AdminKesfetKartSayfasi = () => {
                       <span className="font-mono text-[11px] text-ink-quiet tnum">
                         {String(bi + 1).padStart(2, '0')}
                       </span>
+                      <span className={`chip ${b.tur === 'kart_finali' ? 'chip-success' : ''}`}>
+                        {b.tur === 'kart_finali' ? 'Kart finali' : 'Bölüm'}
+                      </span>
                       {duzenId === b.id ? (
                         <input
                           autoFocus
@@ -171,6 +190,15 @@ export const AdminKesfetKartSayfasi = () => {
                           {b.ad}
                         </button>
                       )}
+                      <select
+                        value={b.tur}
+                        onChange={(e) => void bolumGuncelle(b.id, { tur: e.target.value as 'normal' | 'kart_finali' }).then(yukle)}
+                        className="text-[11px] px-2 py-1 bg-bg-tint border border-line-strong rounded-md outline-none"
+                        aria-label={`${b.ad} türü`}
+                      >
+                        <option value="normal">Normal</option>
+                        <option value="kart_finali">Kart finali</option>
+                      </select>
                       <button onClick={() => bolumSiraDegistir(b, -1)} disabled={bi === 0} className="p-1 text-ink-mute hover:text-ink disabled:opacity-25" title="Yukarı">
                         <Icon name="ChevronUp" size={15} />
                       </button>
@@ -226,7 +254,51 @@ export const AdminKesfetKartSayfasi = () => {
                           <span className={`chip ${Array.isArray(it.icerik) && it.icerik.length > 0 ? 'chip-success' : ''}`}>
                             {Array.isArray(it.icerik) && it.icerik.length > 0 ? 'İçerik var' : 'İçerik boş'}
                           </span>
-                          <span className="chip">{it.soru_id ? 'Soru bağlı' : 'Soru bağlı değil'}</span>
+                          <select
+                            value={it.yayin_durumu ?? 'yayinlandi'}
+                            onChange={(e) => itemYayinDurumuDegistir(it, e.target.value as KesfetItem['yayin_durumu'])}
+                            className="text-[12px] px-2 py-1 bg-bg-tint border border-line-strong rounded-md outline-none"
+                          >
+                            <option value="taslak">Taslak</option>
+                            <option value="incelemede">İncelemede</option>
+                            <option value="yayinlandi">Yayınlandı</option>
+                            <option value="arsiv">Arşiv</option>
+                          </select>
+                          {soruDuzenId === it.id ? (
+                            <div className="flex items-center gap-1 min-w-[280px]">
+                              <input
+                                autoFocus
+                                className={`${inputCls} min-w-0 flex-1`}
+                                value={soruIdleri}
+                                onChange={(e) => setSoruIdleri(e.target.value)}
+                                placeholder="soru-id-1, soru-id-2"
+                                onKeyDown={(e) => e.key === 'Enter' && soruBaglariniKaydet(it)}
+                              />
+                              <button className="btn btn-soft btn-sm" onClick={() => soruBaglariniKaydet(it)}>Kaydet</button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1">
+                              {(it.sorular ?? []).map((soru) => (
+                                <button
+                                  key={soru.soru_id}
+                                  className="chip chip-success max-w-[180px] truncate"
+                                  title={`${soru.soru_id} · ${soru.zorunlu ? 'zorunlu' : 'isteğe bağlı'} · ${soru.destek_seviyesi}`}
+                                  onClick={() => nav(`/admin/sorular/${soru.soru_id}`)}
+                                >
+                                  {soru.soru_id}
+                                </button>
+                              ))}
+                              <button
+                                className="chip"
+                                onClick={() => {
+                                  setSoruDuzenId(it.id);
+                                  setSoruIdleri((it.sorular ?? []).map((soru) => soru.soru_id).join(', '));
+                                }}
+                              >
+                                {(it.sorular?.length ?? 0) > 0 ? 'Bağları düzenle' : 'Ölçümlü soru bağla'}
+                              </button>
+                            </div>
+                          )}
                           <span className="chip">
                             {Array.isArray(it.icerik)
                               ? it.icerik.filter((blok) => {

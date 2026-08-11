@@ -85,7 +85,10 @@ export type KesfetKartRow = {
   ikon: string;
   kategori: string;
   tip: 'kesfet' | 'isletme';
-  durum: 'acik' | 'yakinda';
+  durum: 'acik' | 'yakinda' | 'gizli';
+  uzmanlik_turu: 'fonksiyonel' | 'sektorel' | null;
+  on_kosul_sluglari: string[];
+  onerilen_on_kosul_sluglari: string[];
   sira: number;
   created_at: string;
   updated_at: string;
@@ -96,6 +99,7 @@ export type KesfetBolumRow = {
   kart_id: string;
   ad: string;
   sira: number;
+  tur: 'normal' | 'kart_finali';
   created_at: string;
   updated_at: string;
 };
@@ -105,6 +109,7 @@ export type KesfetItemRow = {
   bolum_id: string;
   ad: string;
   tip: 'ders' | 'alistirma';
+  yayin_durumu: 'taslak' | 'incelemede' | 'yayinlandi' | 'arsiv';
   sira: number;
   soru_id: string | null;
   icerik: unknown | null;
@@ -118,6 +123,23 @@ export type KesfetIlerlemeRow = {
   kullanici_id: string;
   item_id: string;
   tamamlandi_at: string;
+};
+
+export type KesfetKartOnKosulRow = {
+  kart_id: string;
+  on_kosul_kart_id: string;
+  tur: 'zorunlu' | 'onerilen';
+  created_at: string;
+};
+
+export type KesfetItemSoruRow = {
+  item_id: string;
+  soru_id: string;
+  sira: number;
+  zorunlu: boolean;
+  minimum_basari: number;
+  destek_seviyesi: 'rehberli' | 'standart' | 'serbest';
+  created_at: string;
 };
 
 // 20260519000001 — atölye sorularını yönetmek için many-to-many junction.
@@ -263,6 +285,21 @@ export type MuhasebeOlayRow = {
   updated_at: string;
 };
 
+export type OlayYetkinlikRow = {
+  olay_id: string;
+  yetkinlik_id: string;
+  agirlik: number;
+  created_at: string;
+};
+
+export type OlayBelgeRow = {
+  olay_id: string;
+  belge_id: string;
+  sira: number;
+  rol: 'ana' | 'ek' | 'tahakkuk' | null;
+  created_at: string;
+};
+
 // cozum_basliklari (M7a) — cevap anahtarı başlığı (varyant)
 export type CozumBasligiRow = {
   id: string;
@@ -286,6 +323,47 @@ export type CozumSatiriRow = {
   alacak: number;
   aciklama: string | null;
   created_at: string;
+};
+
+export type CozumMevzuatRow = {
+  baslik_id: string;
+  madde_id: string;
+  aciklama: string | null;
+  created_at: string;
+};
+
+export type MevzuatKaynakRow = {
+  id: string;
+  tip: 'kanun' | 'yonetmelik' | 'teblig' | 'sirkuler' | 'genelge' | 'ozelge';
+  ad: string;
+  numara: string | null;
+  ust_kaynak_id: string | null;
+  source_url: string | null;
+  aktif: boolean;
+  sira: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MevzuatMaddeRow = {
+  id: string;
+  kaynak_id: string;
+  madde_no: string;
+  created_at: string;
+};
+
+export type MevzuatMaddeVersiyonRow = {
+  id: string;
+  madde_id: string;
+  versiyon: number;
+  baslik: string;
+  metin: string;
+  effective_date: string;
+  expire_date: string | null;
+  source_url: string | null;
+  aktif: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export type RozetlerKatalogRow = {
@@ -576,7 +654,7 @@ export type Database = {
       };
       kesfet_kartlar: {
         Row: KesfetKartRow;
-        Insert: Omit<KesfetKartRow, 'id' | 'created_at' | 'updated_at' | 'aciklama' | 'ikon' | 'kategori' | 'tip' | 'durum' | 'sira'> & {
+        Insert: Omit<KesfetKartRow, 'id' | 'created_at' | 'updated_at' | 'aciklama' | 'ikon' | 'kategori' | 'tip' | 'durum' | 'sira' | 'uzmanlik_turu' | 'on_kosul_sluglari' | 'onerilen_on_kosul_sluglari'> & {
           id?: string;
           created_at?: string;
           updated_at?: string;
@@ -584,7 +662,10 @@ export type Database = {
           ikon?: string;
           kategori?: string;
           tip?: 'kesfet' | 'isletme';
-          durum?: 'acik' | 'yakinda';
+          durum?: 'acik' | 'yakinda' | 'gizli';
+          uzmanlik_turu?: 'fonksiyonel' | 'sektorel' | null;
+          on_kosul_sluglari?: string[];
+          onerilen_on_kosul_sluglari?: string[];
           sira?: number;
         };
         Update: Partial<KesfetKartRow>;
@@ -592,22 +673,24 @@ export type Database = {
       };
       kesfet_bolumler: {
         Row: KesfetBolumRow;
-        Insert: Omit<KesfetBolumRow, 'id' | 'created_at' | 'updated_at' | 'sira'> & {
+        Insert: Omit<KesfetBolumRow, 'id' | 'created_at' | 'updated_at' | 'sira' | 'tur'> & {
           id?: string;
           created_at?: string;
           updated_at?: string;
           sira?: number;
+          tur?: 'normal' | 'kart_finali';
         };
         Update: Partial<KesfetBolumRow>;
         Relationships: [];
       };
       kesfet_itemler: {
         Row: KesfetItemRow;
-        Insert: Omit<KesfetItemRow, 'id' | 'created_at' | 'updated_at' | 'tip' | 'sira' | 'soru_id' | 'icerik' | 'icerik_guncellendi'> & {
+        Insert: Omit<KesfetItemRow, 'id' | 'created_at' | 'updated_at' | 'tip' | 'sira' | 'soru_id' | 'icerik' | 'icerik_guncellendi' | 'yayin_durumu'> & {
           id?: string;
           created_at?: string;
           updated_at?: string;
           tip?: 'ders' | 'alistirma';
+          yayin_durumu?: 'taslak' | 'incelemede' | 'yayinlandi' | 'arsiv';
           sira?: number;
           soru_id?: string | null;
           icerik?: unknown | null;
@@ -622,6 +705,27 @@ export type Database = {
           tamamlandi_at?: string;
         };
         Update: Partial<KesfetIlerlemeRow>;
+        Relationships: [];
+      };
+      kesfet_kart_on_kosullari: {
+        Row: KesfetKartOnKosulRow;
+        Insert: Omit<KesfetKartOnKosulRow, 'created_at' | 'tur'> & {
+          created_at?: string;
+          tur?: 'zorunlu' | 'onerilen';
+        };
+        Update: Partial<KesfetKartOnKosulRow>;
+        Relationships: [];
+      };
+      kesfet_item_sorulari: {
+        Row: KesfetItemSoruRow;
+        Insert: Omit<KesfetItemSoruRow, 'created_at' | 'sira' | 'zorunlu' | 'minimum_basari' | 'destek_seviyesi'> & {
+          created_at?: string;
+          sira?: number;
+          zorunlu?: boolean;
+          minimum_basari?: number;
+          destek_seviyesi?: 'rehberli' | 'standart' | 'serbest';
+        };
+        Update: Partial<KesfetItemSoruRow>;
         Relationships: [];
       };
       muavin_hesaplar: {
@@ -726,6 +830,18 @@ export type Database = {
         Update: Partial<MuhasebeOlayRow>;
         Relationships: [];
       };
+      olay_yetkinlikleri: {
+        Row: OlayYetkinlikRow;
+        Insert: Omit<OlayYetkinlikRow, 'created_at' | 'agirlik'> & { created_at?: string; agirlik?: number };
+        Update: Partial<OlayYetkinlikRow>;
+        Relationships: [];
+      };
+      olay_belgeleri: {
+        Row: OlayBelgeRow;
+        Insert: Omit<OlayBelgeRow, 'created_at' | 'sira' | 'rol'> & { created_at?: string; sira?: number; rol?: 'ana' | 'ek' | 'tahakkuk' | null };
+        Update: Partial<OlayBelgeRow>;
+        Relationships: [];
+      };
       cozum_basliklari: {
         Row: CozumBasligiRow;
         Insert: Omit<
@@ -743,6 +859,34 @@ export type Database = {
           updated_at?: string;
         };
         Update: Partial<CozumBasligiRow>;
+        Relationships: [];
+      };
+      cozum_mevzuat: {
+        Row: CozumMevzuatRow;
+        Insert: Omit<CozumMevzuatRow, 'created_at' | 'aciklama'> & { created_at?: string; aciklama?: string | null };
+        Update: Partial<CozumMevzuatRow>;
+        Relationships: [];
+      };
+      mevzuat_kaynaklar: {
+        Row: MevzuatKaynakRow;
+        Insert: Omit<MevzuatKaynakRow, 'created_at' | 'updated_at' | 'numara' | 'ust_kaynak_id' | 'source_url' | 'aktif' | 'sira'> & {
+          created_at?: string; updated_at?: string; numara?: string | null; ust_kaynak_id?: string | null; source_url?: string | null; aktif?: boolean; sira?: number;
+        };
+        Update: Partial<MevzuatKaynakRow>;
+        Relationships: [];
+      };
+      mevzuat_maddeleri: {
+        Row: MevzuatMaddeRow;
+        Insert: Omit<MevzuatMaddeRow, 'id' | 'created_at'> & { id?: string; created_at?: string };
+        Update: Partial<MevzuatMaddeRow>;
+        Relationships: [];
+      };
+      mevzuat_madde_versiyonlari: {
+        Row: MevzuatMaddeVersiyonRow;
+        Insert: Omit<MevzuatMaddeVersiyonRow, 'id' | 'created_at' | 'updated_at' | 'versiyon' | 'expire_date' | 'source_url' | 'aktif'> & {
+          id?: string; created_at?: string; updated_at?: string; versiyon?: number; expire_date?: string | null; source_url?: string | null; aktif?: boolean;
+        };
+        Update: Partial<MevzuatMaddeVersiyonRow>;
         Relationships: [];
       };
       cozum_satirlari: {
