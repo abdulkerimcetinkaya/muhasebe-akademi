@@ -59,6 +59,78 @@ export const KESFET_HEDEF_KARTLAR: HedefKart[] = [
 export const eksikHedefKartlar = (mevcutSluglar: Set<string>): HedefKart[] =>
   KESFET_HEDEF_KARTLAR.filter((k) => !mevcutSluglar.has(k.slug));
 
+/**
+ * Temeller'in bölüm + ders kırılımı (ADR-005 · 20260811000008 ile birebir).
+ * 7 kart · 21 bölüm · 47 ders · 7 kart finali.
+ *
+ * Chief Architect'in 134 derslik iskeleti "öğrenci bunu bitirince tek başına
+ * yapabildiği yeni bir şey var mı?" ölçütüyle elendi. Elenen başlıklar ders içi
+ * ekran/etkileşim olarak yaşayacak; eleme tablosu CUR-004 v4.0'da.
+ *
+ * Yetkinlik ve Uzmanlık kartlarının kırılımı henüz yok (ayrı tur).
+ */
+export interface HedefBolum {
+  ad: string;
+  dersler: string[];
+  /** Kart finali bölümü — normal bölüm sayımına girmez. */
+  final?: true;
+}
+
+export const TEMELLER_HEDEF_YAPI: Record<string, HedefBolum[]> = {
+  'muhasebeyi-anlamak': [
+    { ad: 'Muhasebe neden var?', dersler: ['Muhasebe Neden Gereklidir?', 'Muhasebe Kimin Sorusunu Cevaplar?'] },
+    { ad: 'Muhasebenin konusu', dersler: ['Muhasebe Ne Yapar?', 'Mali Nitelikteki Olay'] },
+    { ad: 'Belge', dersler: ['Belge: Kaydın Dayanağı', 'Belgeden Olayı Çıkarmak'] },
+    { ad: 'Muhasebeyi Anlamak Finali', dersler: ['Olay mı, Değil mi?'], final: true },
+  ],
+  'isletmenin-finansal-yapisi': [
+    { ad: 'İşletme ve Varlıkları', dersler: ['İşletme ile Sahibini Ayırmak', 'Varlık Nedir?', 'Dönen ve Duran Varlık Ayrımı'] },
+    { ad: 'Kaynaklar ve Denklem', dersler: ['Varlıklar Nereden Gelir? Borç ve Özkaynak', 'Temel Muhasebe Denklemi', 'İşlemler Denklemi Nasıl Değiştirir?'] },
+    { ad: 'Gelir ve Gider', dersler: ['Gelir, Gider ve Özkaynak İlişkisi'] },
+    { ad: 'İşletmenin Finansal Yapısı Finali', dersler: ['Denklemi Bozmadan Çöz'], final: true },
+  ],
+  'hesaplarin-mantigi': [
+    { ad: 'Hesap', dersler: ['Neden Hesaplara İhtiyaç Var?', 'Hesap Nasıl Çalışır?'] },
+    { ad: 'Hesap Türleri', dersler: ['Bilanço Hesapları: Varlık, Borç, Özkaynak', 'Gelir Tablosu Hesapları: Gelir ve Gider'] },
+    { ad: 'Hesap Planı', dersler: ['Tekdüzen Hesap Planı Neden Var?', 'Hesap Kodunu Okumak: Sınıf → Grup → Ana Hesap', 'Alt Hesap (Muavin) Nedir?', 'Hesabı Ezberlemek Yerine Bulmak'] },
+    { ad: 'Hesapların Mantığı Finali', dersler: ['Doğru Hesabı Bul'], final: true },
+  ],
+  'borc-alacak-cift-tarafli-kayit': [
+    { ad: 'Hesabın İki Tarafı', dersler: ['Hesabın İki Tarafı: Borç ve Alacak'] },
+    { ad: 'Artış ve Azalış', dersler: ['Varlık ve Kaynak Hesaplarında Artış ve Azalış', 'Gelir ve Gider Hesaplarında Artış', 'Normal Bakiye'] },
+    { ad: 'Çift Taraflı Kayıt ve Karar', dersler: ['Çift Taraflı Kayıt ve Borç = Alacak Dengesi', 'Borç mu Alacak mı? — 5 Adımlı Karar'] },
+    { ad: 'Borç, Alacak ve Çift Taraflı Kayıt Finali', dersler: ['Borç mu, Alacak mı?'], final: true },
+  ],
+  'belgeden-muhasebe-kaydina': [
+    { ad: 'İşlemi Çözümlemek', dersler: ['Belgeden İşlemi Çıkarmak', 'Ödeme Şekli ve Ek Unsurlar'] },
+    { ad: 'Hesap Seçimi', dersler: ['Olaydan Hesaba Gitmek', 'Alt Hesabı (Muavini) Seçmek'] },
+    { ad: 'Yevmiye Kaydı ve Kontrol', dersler: ['İlk Yevmiye Kaydın', 'Basit ve Çok Hesaplı Kayıtlar', 'Kaydı Kontrol Etmek — 5 Soru'] },
+    { ad: 'Belgeden Muhasebe Kaydına Finali', dersler: ['Belgeden Kayda: Uçtan Uca'], final: true },
+  ],
+  'kayittan-mizana': [
+    { ad: 'Defterler', dersler: ['Yevmiye Defteri', 'Büyük Defter ve Hesap Bakiyesi'] },
+    { ad: 'Mizan', dersler: ['Mizan: Hesapları Tek Yerde Görmek', 'Mizanı Okumak: Ters ve Olağandışı Bakiyeler'] },
+    { ad: 'Hata ve Kontrol', dersler: ['Sık Yapılan Kayıt Hataları', 'Mizan Neyi Bulur, Neyi Bulamaz?'] },
+    { ad: 'Kayıttan Mizana Finali', dersler: ['Mizanı Denetle'], final: true },
+  ],
+  'finansal-tablolar-ve-dongu': [
+    { ad: 'Finansal Tablolar', dersler: ['Finansal Tablolar Neden Hazırlanır?', 'Bilanço (Finansal Durum Tablosu)', 'Gelir Tablosu'] },
+    { ad: 'İşlemlerin Tablo Etkisi', dersler: ['Bir İşlemin Tablolara Etkisi', 'Kâr ile Nakit Aynı Şey Değildir'] },
+    { ad: 'Muhasebe Döngüsü', dersler: ['Muhasebe Döngüsü: Belgeden Finansal Tabloya', 'Dönem Kavramı ve Kapanış'] },
+    { ad: 'Finansal Tablolar ve Döngü Finali', dersler: ['İlk 10 İşlem'], final: true },
+  ],
+};
+
+/** Kırılımı tanımlı kartlarda, canlıda eksik olan ders adları. */
+export const eksikHedefDersler = (
+  kartSlug: string,
+  mevcutDersAdlari: Set<string>,
+): string[] => {
+  const yapi = TEMELLER_HEDEF_YAPI[kartSlug];
+  if (!yapi) return [];
+  return yapi.flatMap((b) => b.dersler).filter((ad) => !mevcutDersAdlari.has(ad));
+};
+
 export const dersAdiNormalize = (deger: string): string =>
   deger
     .toLocaleLowerCase('tr')

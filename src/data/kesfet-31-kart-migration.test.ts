@@ -1,7 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { KESFET_HEDEF_KARTLAR } from './kesfet-mufredat-hedefi';
+import { KESFET_HEDEF_KARTLAR, TEMELLER_HEDEF_YAPI } from './kesfet-mufredat-hedefi';
+
+const kirilim = readFileSync(
+  resolve(process.cwd(), 'supabase/migrations/20260811000008_temeller_bolum_ders.sql'),
+  'utf8',
+);
 
 const kur = readFileSync(
   resolve(process.cwd(), 'supabase/migrations/20260811000007_kesfet_31_kart.sql'),
@@ -44,6 +49,45 @@ describe('Keşfet V6 — 31 kart migration sözleşmesi (ADR-005)', () => {
   it('içerik üretilmeden hiçbir kart kullanıcıya açılmaz', () => {
     expect(kur).toContain("'yakinda'");
     expect(kur).not.toContain("'acik'");
+  });
+
+  it('Temeller kırılımı 21 bölüm · 47 ders · 7 final taşır', () => {
+    const kartlar = Object.keys(TEMELLER_HEDEF_YAPI);
+    expect(kartlar).toHaveLength(7);
+
+    const normal = Object.values(TEMELLER_HEDEF_YAPI).flat().filter((b) => !b.final);
+    const final = Object.values(TEMELLER_HEDEF_YAPI).flat().filter((b) => b.final);
+    expect(normal).toHaveLength(21);
+    expect(final).toHaveLength(7);
+    expect(normal.flatMap((b) => b.dersler)).toHaveLength(47);
+    expect(final.flatMap((b) => b.dersler)).toHaveLength(7);
+
+    // Her Temeller kartının kırılımı tanımlı olmalı
+    const temelSluglar = KESFET_HEDEF_KARTLAR.filter((k) => k.kategori === 'Temeller').map((k) => k.slug);
+    expect(kartlar.sort()).toEqual(temelSluglar.sort());
+  });
+
+  it('kırılımdaki her bölüm ve ders migration içinde geçer', () => {
+    for (const [slug, bolumler] of Object.entries(TEMELLER_HEDEF_YAPI)) {
+      expect(kirilim, `kart migration'da yok: ${slug}`).toContain(`'${slug}'`);
+      for (const bolum of bolumler) {
+        expect(kirilim, `bölüm migration'da yok: ${bolum.ad}`).toContain(`'${bolum.ad}'`);
+        for (const ders of bolum.dersler) {
+          expect(kirilim, `ders migration'da yok: ${ders}`).toContain(`'${ders}'`);
+        }
+      }
+    }
+  });
+
+  it('ders adları platform genelinde benzersiz', () => {
+    const hepsi = Object.values(TEMELLER_HEDEF_YAPI).flat().flatMap((b) => b.dersler);
+    expect(new Set(hepsi).size).toBe(hepsi.length);
+  });
+
+  it('kırılım içerik üretmez — dersler boş ve taslak kurulur', () => {
+    expect(kirilim).toContain("'[]'::jsonb");
+    expect(kirilim).toContain("'taslak'");
+    expect(kirilim).not.toContain("'yayinlandi'");
   });
 
   it('sıfırlama yalnız Keşfet kapsamında kalır', () => {
