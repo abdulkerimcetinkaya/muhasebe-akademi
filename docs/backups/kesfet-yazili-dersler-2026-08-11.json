@@ -1,0 +1,1992 @@
+[
+  {
+    "ad": "Muhasebe Neden Gereklidir?",
+    "id": "226ea15c-1517-4792-922c-6209d9099ab5",
+    "icerik": [
+      {
+        "id": "d1-01",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "1. Ay sonu geldi",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-01-p1",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Kuzey Ofis, işletmelere kırtasiye ve ofis malzemeleri satan küçük bir ticaret işletmesi. Ay boyunca satış yaptı, yeni mallar aldı; bazı müşteriler ödedi, bazıları henüz ödemedi.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-vk-1",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Kuzey Ofis · Ay sonu",
+          "asamali": false,
+          "kartlar": "[{\"baslik\":\"Banka hesabı\",\"satirlar\":[{\"etiket\":\"Banka bakiyesi\",\"deger\":\"245.000 TL\",\"vurgu\":true}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-01-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "“Bankada 245.000 TL varsa işler iyi gidiyor olmalı.” Ama gerçekten bunu söyleyebilir miyiz?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-k-1",
+        "type": "kontrol",
+        "props": {
+          "soru": "245.000 TL banka bakiyesi, işletmenin durumunu değerlendirmek için tek başına yeterli midir?",
+          "ipucu": "Bu rakam işletmenin tahsilatlarını ve borçlarını da gösteriyor mu?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet, bankadaki para yeterlidir.\"}, {\"dogru\": true, \"metin\": \"Hayır, başka bilgilere de ihtiyacımız vardır.\"}, {\"dogru\": false, \"metin\": \"Banka bakiyesinin işletmeyle ilgisi yoktur.\"}]",
+          "aciklama": "245.000 TL önemli bir bilgidir; fakat yalnızca şu anda bankada ne kadar para olduğunu gösterir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Bankadaki para önemli bir bilgi. Ancak müşterilerden tahsil edilecek veya yapılacak ödemeleri henüz bilmiyoruz."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-01-p2",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Henüz müşterilerin işletmeye borcu olup olmadığını, tedarikçi ödemelerini, eldeki malları ve bankadaki paranın ne kadarının yakında kullanılacağını bilmiyoruz. Elimizde bir rakam var; işletmenin tamamını gösteren bilgi yok.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-02",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "2. Biraz daha bilgi ekleyelim",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-vk-2",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Bilgi adım adım açılıyor",
+          "asamali": true,
+          "kartlar": "[{\"baslik\":\"Kuzey Ofis\",\"satirlar\":[{\"etiket\":\"Bankadaki para\",\"deger\":\"245.000 TL\",\"vurgu\":true}]},{\"baslik\":\"Yeni bilgi\",\"satirlar\":[{\"etiket\":\"Müşterilerden tahsil edilecek\",\"deger\":\"130.000 TL\",\"vurgu\":true}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-k-2",
+        "type": "kontrol",
+        "props": {
+          "soru": "Banka hesabı değişmedi. İşletme hakkında bildiğimiz şey arttı mı?",
+          "ipucu": "Para hareket etmese de yeni bir mali bilgi oluşmuş olabilir mi?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": true, \"metin\": \"Evet\"}, {\"dogru\": false, \"metin\": \"Hayır\"}]",
+          "aciklama": "Evet. Artık müşterilerden ileride tahsil edilmesi beklenen 130.000 TL’yi de biliyoruz.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Banka değişmedi ama işletmenin bir tahsil hakkını öğrendik."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-02-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmeyle ilgili önemli bir mali olay gerçekleştiğinde para her zaman aynı anda hareket etmek zorunda değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-02-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Müşteriye ürün satılmış, ödeme daha sonra yapılacak olabilir. Yalnız banka hesabını izleseydik bu bilginin tamamını göremezdik.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-03",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "3. Bir bilgi daha var",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-vk-3",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Kuzey Ofis · Genişleyen görünüm",
+          "asamali": true,
+          "kartlar": "[{\"baslik\":\"Mevcut para\",\"satirlar\":[{\"etiket\":\"Banka\",\"deger\":\"245.000 TL\",\"vurgu\":true}]},{\"baslik\":\"Tahsilatlar\",\"satirlar\":[{\"etiket\":\"Müşterilerden alınacak\",\"deger\":\"130.000 TL\"}]},{\"baslik\":\"Ödemeler\",\"satirlar\":[{\"etiket\":\"Tedarikçilere ödenecek\",\"deger\":\"190.000 TL\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-03-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Bankadaki paranın tamamı rahatça kullanılabilir değildir. İşletmenin ilerleyen günlerde yerine getirmesi gereken ödemeleri de vardır. Mali durumu anlamak için mevcut paraya, tahsilatlara, ödemelere ve diğer mali olaylara birlikte bakmalıyız.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-04",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "4. Aynı banka bakiyesi, aynı işletme durumu mu?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-vk-4",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "İki işletmeyi karşılaştır",
+          "asamali": false,
+          "kartlar": "[{\"baslik\":\"Kuzey Ofis\",\"satirlar\":[{\"etiket\":\"Banka\",\"deger\":\"245.000 TL\",\"vurgu\":true},{\"etiket\":\"Tahsil edilecek\",\"deger\":\"130.000 TL\"},{\"etiket\":\"Ödenecek\",\"deger\":\"190.000 TL\"}]},{\"baslik\":\"Atlas Ofis\",\"satirlar\":[{\"etiket\":\"Banka\",\"deger\":\"245.000 TL\",\"vurgu\":true},{\"etiket\":\"Tahsil edilecek\",\"deger\":\"310.000 TL\"},{\"etiket\":\"Ödenecek\",\"deger\":\"70.000 TL\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-k-3",
+        "type": "kontrol",
+        "props": {
+          "soru": "İki işletmenin mali durumu aynıdır diyebilir miyiz?",
+          "ipucu": "İki kartta banka dışındaki satırları karşılaştır.",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Hayır. Banka bakiyeleri aynı olsa da tahsil edilecek ve ödenecek tutarlar farklıdır.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Aynı banka tutarı, diğer mali ilişkilerin de aynı olduğu anlamına gelmez."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-04-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Aynı banka bakiyesi, aynı mali durum anlamına gelmez.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-05",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "5. Sorun aslında para değil, bilgi",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-05-p1",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletme küçücükken sahibi birçok şeyi aklında tutabilir. İşletme büyüdükçe satış, alış, tahsilat, ödeme, kredi, kira ve ekipman işlemlerinin sayısı artar. Bazılarında para hemen hareket eder, bazılarında daha sonra.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-05-p2",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmenin gerçek durumunu hafızadan, tek bir banka hesabından veya dağınık notlardan sağlıklı biçimde takip etmek giderek zorlaşır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-05-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Asıl ihtiyaç, işletmede mali açıdan önemli olayları düzenli biçimde izleyebilmek ve gerektiğinde anlamlı bilgiye dönüştürebilmektir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-06",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "6. Banka hareketi bize her şeyi anlatır mı?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-vk-5",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Üç para girişi",
+          "asamali": false,
+          "kartlar": "[{\"baslik\":\"İşlem 1\",\"satirlar\":[{\"etiket\":\"Banka hareketi\",\"deger\":\"+60.000 TL\",\"vurgu\":true},{\"etiket\":\"Neden\",\"deger\":\"Bugünkü satış\"}]},{\"baslik\":\"İşlem 2\",\"satirlar\":[{\"etiket\":\"Banka hareketi\",\"deger\":\"+100.000 TL\",\"vurgu\":true},{\"etiket\":\"Neden\",\"deger\":\"Geçmiş alacak\"}]},{\"baslik\":\"İşlem 3\",\"satirlar\":[{\"etiket\":\"Banka hareketi\",\"deger\":\"+250.000 TL\",\"vurgu\":true},{\"etiket\":\"Neden\",\"deger\":\"Banka kredisi\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-06-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Üçünde de para arttı; fakat yeni satış, eski alacağın tahsili ve geri ödenecek kredi aynı işletme olayı değildir. Muhasebe yalnız “para arttı mı?” değil, “bu değişiklik neden gerçekleşti?” sorusuyla da ilgilenir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-07",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "7. Karşı örnek: Para hiç hareket etmedi",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-07-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Kuzey Ofis müşterisine 80.000 TL’lik ürün sattı. Müşteri ödemeyi 30 gün sonra yapacak; bugün banka hesabına para gelmedi.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-k-4",
+        "type": "kontrol",
+        "props": {
+          "soru": "İşletme açısından önemli bir olay gerçekleşti mi?",
+          "ipucu": "Ürün müşteriye teslim edildi mi?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Hayır. Para hareket etmediği için hiçbir şey olmadı.\"}, {\"dogru\": true, \"metin\": \"Evet. Satış gerçekleşti ve tahsil edilecek bir tutar oluştu.\"}]",
+          "aciklama": "Evet. Para henüz gelmese de satış ve müşteriden tahsil edilecek bir tutar oluştu.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Para hareketi ile işletme olayı aynı anda gerçekleşmek zorunda değildir."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-07-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Para hareket etti diye her şeyi anlamış olmayız; para hareket etmedi diye hiçbir şey olmadığını da söyleyemeyiz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-08",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "8. Peki muhasebe bize neden gerekli?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-08-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Bir işletmenin durumunu anlamak için yalnız parayı değil, paranın neden hareket ettiğini ve para hareketi olmadan gerçekleşebilen diğer mali olayları da düzenli izlememiz gerekir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-08-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebeye, mali açıdan önemli olayları düzenli izlemek ve işletmenin durumunu anlamaya yardımcı olacak bilgiler üretmek için ihtiyaç duyarız.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-09",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "9. Neden yalnız hafızamız yetmez?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-09-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "“Bu müşteriden para alacağım” veya “bir tedarikçiye ödeme yapacaktık” demek yetmez. Ne kadar, ne zaman, hangi işlem nedeniyle, ödendi mi, tahsil edildi mi ve hangi döneme ait sorularının cevapları izlenebilmelidir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-09-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletme kararları “sanırım” veya “hatırladığım kadarıyla” üzerine kurulamaz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-10",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "10. Birlikte deneyelim",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-10-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Armoni Teknik’in bankasında 400.000 TL bulunuyor. İşletmenin mali durumunu anlamaya çalışırken anlamlı olan bilgileri seç.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-k-5",
+        "type": "kontrol",
+        "props": {
+          "soru": "Birden fazla seçenek seçebilirsin.",
+          "ipucu": "Her olay aynı derecede muhasebeyi ilgilendirmez.",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": true, \"metin\": \"Müşterilerden tahsil edilecek 160.000 TL bulunması\"}, {\"dogru\": false, \"metin\": \"Ofisin duvarlarının gri olması\"}, {\"dogru\": true, \"metin\": \"Tedarikçilere 220.000 TL ödeme yapılacak olması\"}, {\"dogru\": true, \"metin\": \"İşletmenin geçen hafta yeni ürünler satın alması\"}, {\"dogru\": false, \"metin\": \"İşletme sahibinin en sevdiği futbol takımı\"}]",
+          "aciklama": "Tahsilatlar, ödemeler ve ürün alımları işletmenin mali görünümüyle ilgilidir.",
+          "cokluSecim": true,
+          "yanlisAciklama": "Seçtiğin bilgilerin işletmenin parası, hakları, yükümlülükleri veya işlemleriyle ilişkisini yeniden düşün."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-10-p2",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Henüz bu olayların nasıl kaydedileceğini öğrenmiyoruz. Şimdilik yalnız hangi bilgilerin işletmenin mali durumuyla ilgili olduğunu ayırt ediyoruz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-11",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "11. Sıra sende",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-11-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Nova Teknik Servis için elindeki tek bilgi banka bakiyesinin 360.000 TL olmasıdır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-k-6",
+        "type": "kontrol",
+        "props": {
+          "soru": "Yalnız bu bilgiyle işletmenin mali durumunun iyi olduğunu söyleyebilir miyiz?",
+          "ipucu": "Bankadaki 360.000 TL dışında henüz bilmediğin hangi mali bilgiler olabilir?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet. Yüksek banka bakiyesi yeterlidir.\"}, {\"dogru\": true, \"metin\": \"Hayır. Diğer mali bilgileri görmeden kesin sonuca ulaşamayız.\"}]",
+          "aciklama": "Doğru. Tahsil edilecekler, ödeme yükümlülükleri ve henüz parası gelmemiş satışlar bilinmeden kesin değerlendirme yapılamaz.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Banka bakiyesini mali durumla eşleştirmek anlaşılır; ancak Kuzey ve Atlas Ofis’in aynı banka bakiyesine rağmen farklı ilişkileri vardı."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-12",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "12. Biraz daha derin: Para ile bilgi aynı şey değildir",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-12-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Banka bakiyesini, yeni başlayan biri için görünür ve anlaşılır olduğu için kullandık. Banka muhasebenin merkezi değildir. Bir işletmenin ekonomik durumunu tek bir gösterge üzerinden anlamaya çalışmak eksik sonuç verebilir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-12-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebenin değeri yalnız rakamları tutmakta değil, ilişkili mali bilgileri düzenleyerek işletme hakkında anlamlı bir görünüm oluşturmaktadır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-13",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "13. Gerçek hayatta bunun karşılığı ne?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-13-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe çalışanı hangi müşteriden ne kadar tahsil edileceğini, hangi tedarikçiye ne kadar ödeneceğini, banka hareketinin hangi işlemden kaynaklandığını ve bugün hangi mali işlemlerin gerçekleştiğini izler. Bilgilerin birbirinden kopuk değil, düzenli biçimde takip edilmesi gerekir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-14",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "14. İşlem Laboratuvarı",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-14-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Bu alan klasik bir test değildir. Değerleri ve olay nedenlerini değiştirerek aynı kavramı gözlemle.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-lab",
+        "type": "islemlaboratuvari",
+        "props": {
+          "baslik": "Aynı para, farklı işletme",
+          "config": "{\"isletme\":\"Ada Ticaret\",\"banka\":200000,\"min\":0,\"max\":400000,\"adim\":10000,\"tahsil\":20000,\"odeme\":40000,\"hareket\":100000,\"nedenler\":[{\"baslik\":\"Bugün yapılan satışın bedeli tahsil edildi\",\"aciklama\":\"Yeni satış ve tahsilat aynı olayda gerçekleşti.\"},{\"baslik\":\"Müşteri önceki borcunu ödedi\",\"aciklama\":\"Yeni satış yok; daha önce oluşmuş alacak tahsil edildi.\"},{\"baslik\":\"Banka kredisi kullanıldı\",\"aciklama\":\"Para arttı fakat geri ödeme yükümlülüğü de doğdu.\"}]}"
+        },
+        "children": []
+      },
+      {
+        "id": "d1-k-7",
+        "type": "kontrol",
+        "props": {
+          "soru": "Tek başına 200.000 TL banka bakiyesine bakarak işletmenin durumunu değerlendirebilir misin?",
+          "ipucu": "Banka sabitken diğer iki değer ne yaptı?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Hayır. Sürgüler değiştikçe banka aynı kaldı, fakat işletme hakkındaki bilgi değişti.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Tahsil edilecek ve ödenecek tutarları değiştirerek tekrar gözlemle."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-15",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "15. Aynı para, farklı neden",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-15-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Laboratuvarın ikinci bölümünde bankaya gelen +100.000 TL sabit kalırken olayın nedenini değiştir. Aynı tutar yeni satış, eski alacağın tahsili veya banka kredisi olabilir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-15-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Aynı para hareketi farklı nedenlerden kaynaklanabilir. Yalnız tutarı değil, işlemin neden gerçekleştiğini de bilmeliyiz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-16",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "16. Mali Sözlük",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-term-1",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Alacak",
+            "type": "text",
+            "styles": {
+              "term": "İşletmenin başka bir kişi veya işletmeden tahsil etme hakkı bulunan tutar."
+            }
+          },
+          {
+            "text": " — İşletmenin başka bir kişi veya işletmeden tahsil etme hakkı bulunan tutar.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-term-2",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Borç",
+            "type": "text",
+            "styles": {
+              "term": "İşletmenin başka kişi veya işletmelere karşı yerine getirmesi gereken ödeme yükümlülüğü."
+            }
+          },
+          {
+            "text": " — İşletmenin başka kişi veya işletmelere karşı yerine getirmesi gereken ödeme yükümlülüğü.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-term-3",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Mali durum",
+            "type": "text",
+            "styles": {
+              "term": "Bir işletmenin ekonomik açıdan içinde bulunduğu durumu değerlendirmemize yardımcı olan genel görünüm."
+            }
+          },
+          {
+            "text": " — İşletmenin ekonomik açıdan içinde bulunduğu durumu değerlendirmemize yardımcı olan genel görünüm.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-17",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "17. Bu dersten aklında kalması gereken zihinsel model",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-17-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Bankadaki para önemlidir → işletmenin tamamını göstermez → tahsilatlar, ödemeler ve başka mali olaylar vardır → bu bilgilerin düzenli izlenmesi gerekir → muhasebeye duyulan ihtiyaç burada ortaya çıkar.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-18",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "18. Ders sonu kontrolü",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-18-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Üç kısa soruyla öğrendiğini dene. Sonuçtan sonra istersen tekrar çözebilirsin.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-test-1",
+        "type": "kontrol",
+        "props": {
+          "soru": "Bir şirketin banka hesabında 500.000 TL var. Bu bilgi mali durumunun iyi olduğunu söylemek için yeterli midir?",
+          "ipucu": "Tek bir gösterge bütün işletmeyi açıklar mı?",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Banka önemli ama tek başına yeterli değildir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Tahsilatlar ve ödeme yükümlülükleri bilinmiyor."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-test-2",
+        "type": "kontrol",
+        "props": {
+          "soru": "Bir müşteri aldığı ürünlerin bedelini gelecek ay ödeyecek. Bugün önemli bir mali olay gerçekleşmiş olabilir mi?",
+          "ipucu": "Ürün teslim edildi mi?",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": true, \"metin\": \"Evet\"}, {\"dogru\": false, \"metin\": \"Hayır\"}]",
+          "aciklama": "Satış ve tahsil edilecek tutar para gelmeden önce oluşabilir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Para hareketi olayın tek ölçütü değildir."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-test-3",
+        "type": "kontrol",
+        "props": {
+          "soru": "İşletmenin banka hesabına 100.000 TL girdi. Bu bilgi tek başına paranın neden geldiğini gösterir mi?",
+          "ipucu": "Laboratuvardaki üç nedeni hatırla.",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Aynı giriş satış, eski alacak tahsilatı veya kredi olabilir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Tutar aynı olsa da olayın nedeni değişebilir."
+        },
+        "children": []
+      },
+      {
+        "id": "d1-19",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "19. Son kontrol: Bunu açıklayabilir misin?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-19-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Bir işletmenin bankasında çok para olması neden tek başına işletmenin durumunu anlamamıza yetmez?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-19-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmenin mevcut parasının yanında tahsil edeceği ve ödeyeceği tutarlar ile gerçekleşen diğer mali olaylar da önemlidir. Aynı para hareketinin farklı nedenleri olabilir. Bu nedenle mali bilgilerin düzenli takip edilmesi gerekir. Kelimeleri değil, mantığı açıklayabilmen yeterlidir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-20",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "20. Sonraki derse geçiş",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-20-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Artık yalnız banka hesabına bakmanın yeterli olmadığını ve çok sayıdaki mali olayın düzenli bilgiye dönüştürülmesi gerektiğini biliyoruz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-20-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe bu işi nasıl yapıyor?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d1-20-next",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Sonraki ders: Muhasebe Nedir? →",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      }
+    ]
+  },
+  {
+    "ad": "Muhasebe Nedir?",
+    "id": "fd25de85-29db-4743-8ee1-09fd6506ed99",
+    "icerik": [
+      {
+        "id": "d2-01",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "1. Geçen derste neyi fark ettik?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-01-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Kuzey Ofis’in 245.000 TL banka bakiyesi tek başına yeterli değildi. Tahsil edilecekler, ödemeler, farklı nedenli para hareketleri ve para hareketi olmadan gerçekleşen olaylar da vardı.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-01-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Bir işletmeyi anlayabilmek için mali açıdan önemli bilgilerin düzenli takip edilmesine ihtiyaç vardır. Peki bunu nasıl yapacağız?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-02",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "2. Bir işletmede bilgi nasıl görünür?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-vk-1",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Kuzey Ofis · Ağustos’un ilk haftası",
+          "asamali": true,
+          "kartlar": "[{\"baslik\":\"2 Ağustos\",\"satirlar\":[{\"etiket\":\"Satış\",\"deger\":\"120.000 TL\"},{\"etiket\":\"Tahsilat\",\"deger\":\"70.000 TL\"},{\"etiket\":\"Sonra alınacak\",\"deger\":\"50.000 TL\"}]},{\"baslik\":\"3 Ağustos\",\"satirlar\":[{\"etiket\":\"Mal alışı\",\"deger\":\"85.000 TL\"},{\"etiket\":\"Ödeme\",\"deger\":\"Gelecek hafta\"}]},{\"baslik\":\"5–6 Ağustos\",\"satirlar\":[{\"etiket\":\"Eski alacak tahsilatı\",\"deger\":\"40.000 TL\"},{\"etiket\":\"Tedarikçi ödemesi\",\"deger\":\"30.000 TL\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d2-02-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Olayları alt alta yazmak bilgi sağlar; fakat toplam tahsilat, toplam ödeme, satışlarla ödemelerin ayrımı ve işletme durumundaki değişim gibi soruları doğrudan cevaplamaz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-03",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "3. Bilgiyi toplamak ile anlamlı hale getirmek aynı şey değildir",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-03-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Faturalar, banka hareketleri, dekontlar, notlar ve elektronik belgelerin bir klasörde bulunması tek başına yeterli değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-03-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmenin ihtiyacı yalnız “Ne oldu?” değil, “Bütün bunlar birlikte ne anlatıyor?” sorusunun da cevabıdır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-04",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "4. Muhasebe nedir?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-04-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe, işletmede mali açıdan önemli olaylara ilişkin bilgileri belirli bir düzen içinde işleyerek anlamlı finansal bilgiye dönüştüren bir sistemdir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-04-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Tanımı ezberlemek yerine şu modeli kur: işletmede olaylar gerçekleşir → muhasebe bunları düzenli bilgiye dönüştürür → bilgiler işletmenin durumunu anlamaya yardımcı olur.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-05",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "5. Bir örnek üzerinden görelim",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-vk-2",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Aynı olayın üç bilgi parçası",
+          "asamali": true,
+          "kartlar": "[{\"baslik\":\"Belge\",\"satirlar\":[{\"etiket\":\"Müşteriye satış\",\"deger\":\"120.000 TL\"}]},{\"baslik\":\"Banka hareketi\",\"satirlar\":[{\"etiket\":\"Müşteriden gelen\",\"deger\":\"70.000 TL\"}]},{\"baslik\":\"Kalan hak\",\"satirlar\":[{\"etiket\":\"Daha sonra alınacak\",\"deger\":\"50.000 TL\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d2-05-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Üç parça aynı satış olayını anlatır: toplam 120.000 TL satışın 70.000 TL’si ödendi, 50.000 TL’si tahsil edilecek. Muhasebe dağınık rakamlar arasında ilişki kurarak olayın bütününü görünür kılar.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-05-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebenin amacı rakam üretmek değil, işletmedeki dağınık bilgileri ilişkili ve anlaşılabilir hale getirmektir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-06",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "6. Muhasebe yalnız kayıt tutmak mıdır?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-06-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Kayıt tutmak önemlidir ama muhasebenin tamamı değildir. Binlerce tarih sıralı kayıt, “müşterilerden ne kadar alacağımız var?” veya “dönem sonucu ne oldu?” sorularına tek başına uygun cevap değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-06-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Bilginin düzenlenmesi, benzer özelliklerine göre bir araya getirilmesi, özetlenmesi ve anlaşılır sunulması gerekir. Bu işlevleri sonraki derste ayrı ayrı öğreneceğiz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-07",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "7. Karşılaştıralım",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-vk-3",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Kayıt listesi mi, bilgi sistemi mi?",
+          "asamali": false,
+          "kartlar": "[{\"baslik\":\"İşletme A\",\"satirlar\":[{\"etiket\":\"Yaklaşım\",\"deger\":\"Olayları alt alta yazar\"},{\"etiket\":\"Sonuç\",\"deger\":\"Binlerce satır\"}]},{\"baslik\":\"İşletme B\",\"satirlar\":[{\"etiket\":\"Yaklaşım\",\"deger\":\"Bilgiler arasında ilişki kurar\"},{\"etiket\":\"Sonuç\",\"deger\":\"Tahsilat, ödeme ve durum bilgisi\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d2-k-1",
+        "type": "kontrol",
+        "props": {
+          "soru": "Hangi işletme muhasebenin temel amacına daha yakın bir bilgi sistemi oluşturuyor?",
+          "ipucu": "Yönetici sorularına hangi yaklaşım doğrudan cevap verebilir?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"İşletme A\"}, {\"dogru\": true, \"metin\": \"İşletme B\"}]",
+          "aciklama": "İşletme B; bilgileri işletmeyi anlamaya ve karar vermeye yardımcı olacak hale getiriyor.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Geçmişi saklamak önemlidir, ancak anlamlı bilgi üretmek için kayıtlar arasında ilişki kurulmalıdır."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-08",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "8. Dikkat: Excel muhasebe midir?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-08-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Sorun kullanılan araç değildir. Muhasebe kâğıtta, Excel’de, muhasebe yazılımında veya ERP sisteminde yürütülebilir. Önemli olan bilginin hangi muhasebe mantığı ve düzeniyle işlendiğidir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-08-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe programı kullanmak ile muhasebe yapmak aynı şey değildir. Önce mantığı, sonra araçları öğreneceğiz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-09",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "9. Muhasebenin bilgi dönüşümü",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-vk-4",
+        "type": "verikartlari",
+        "props": {
+          "baslik": "Girdi → işleme → çıktı",
+          "asamali": true,
+          "kartlar": "[{\"baslik\":\"Girdiler\",\"satirlar\":[{\"etiket\":\"Olaylar\",\"deger\":\"Satış, alış, tahsilat, ödeme\"}]},{\"baslik\":\"Muhasebe\",\"satirlar\":[{\"etiket\":\"İşlem\",\"deger\":\"Bilgiyi belirli düzende işler\"}]},{\"baslik\":\"Çıktı\",\"satirlar\":[{\"etiket\":\"Sonuç\",\"deger\":\"Karara yardımcı finansal bilgi\"}]}]"
+        },
+        "children": []
+      },
+      {
+        "id": "d2-10",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "10. Ama muhasebe her şeyi kaydeder mi?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-10-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Çalışanın toplantıya girmesi, internetin yavaşlaması, müşterinin fiyat sorması, mal alınması ve müşterinin ödeme yapması işletmeyle ilgilidir; fakat hepsi aynı biçimde muhasebenin konusu değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-10-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Hangi olayların muhasebenin konusu olduğu “Mali Nitelikteki Olay” dersinde öğretilecek. Şimdilik muhasebenin her şeyi rastgele kaydetmediğini bil.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-11",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "11. Muhasebe bize ne kazandırıyor?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-11-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe; müşterilerden tahsil edilecekleri, yapılacak ödemeleri, ekonomik değerleri, dönem sonucunu ve mali durumdaki değişimi düzenli bir sistem içinde izlememizi sağlar. Temeller boyunca bu soruların cevaplarını üreten sistemi adım adım kuracağız.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-12",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "12. Muhasebeyi yanlış tanımlamayalım",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-12-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe yalnız banka hesabı takibi, fatura kesme veya vergi hesaplama değildir. Bunlar muhasebenin bilgi sağladığı alanlar olabilir; muhasebenin bütünü değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-12-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Temel anlayış: mali açıdan önemli olaylara ilişkin bilgileri düzenli ve anlamlı finansal bilgiye dönüştüren sistem.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-13",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "13. Birlikte deneyelim",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-13-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Armoni Teknik; 75.000 TL hizmet, 40.000 TL tahsilat, 18.000 TL ödeme ve 150.000 TL krediyi telefon notlarına yazdı.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-k-2",
+        "type": "kontrol",
+        "props": {
+          "soru": "Bu notların tutulması neden tek başına yeterli olmayabilir?",
+          "ipucu": "Araç ile muhasebe mantığını birbirinden ayır.",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Muhasebede telefon kullanılamaz.\"}, {\"dogru\": true, \"metin\": \"Yazmak, ilişkileri kurup anlamlı bilgi üretildiği anlamına gelmez.\"}, {\"dogru\": false, \"metin\": \"Bütün işlemler ezberlenmelidir.\"}]",
+          "aciklama": "Bilginin nerede tutulduğu değil, belirli bir sistem içinde işlenip anlamlı bilgiye dönüşmesi önemlidir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Telefon veya kâğıt araçtır; asıl sorun bilgi parçaları arasındaki ilişkinin kurulmamış olmasıdır."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-14",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "14. Şimdi sen yap",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-14-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Delta Mobilya yöneticisinin önünde 420 satırlık işlem listesi var ve müşterilerden toplam ne kadar tahsil edileceğini soruyor.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-k-3",
+        "type": "kontrol",
+        "props": {
+          "soru": "Muhasebe sisteminin temel rolü hangisidir?",
+          "ipucu": "Sorulan ihtiyaca uygun çıktı hangisi?",
+          "sunum": "satirici",
+          "siklar": "[{\"dogru\": false, \"metin\": \"420 satırı olduğu gibi vermek.\"}, {\"dogru\": true, \"metin\": \"İlgili bilgileri düzenleyip anlamlı finansal bilgiye dönüştürmek.\"}, {\"dogru\": false, \"metin\": \"İşlem listesini silmek.\"}]",
+          "aciklama": "Yöneticinin sorusuna cevap vermek için kayıtların belirli bir amaç doğrultusunda işlenmesi gerekir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Yöneticinin sorusu işlemlerin hangileri olduğu değil, toplam tahsil edilecek tutardır."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-15",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "15. Biraz daha derin: Muhasebe bir bilgi sistemi gibi düşünülebilir",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-15-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Bir olay gerçekleşir, bilgi sisteme girer, muhasebe düzeni içinde işlenir ve kullanıcının ihtiyacına göre anlamlı çıktıya dönüşür. Kayıt, hesaplarda toplama, kontrol ve finansal tablolar bu zincirin sonraki derslerde açılacak parçalarıdır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-16",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "16. Şimdilik bütün sistemi uzaktan görelim",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-16-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İŞLETME: satış, alış, tahsilat, ödeme ve diğer mali olaylar → MUHASEBE: bilgiyi düzenler ve işler → ANLAMLI FİNANSAL BİLGİ: işletmenin durumu, tahsil edilecekler, ödenecekler, faaliyet sonucu ve raporlar.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-16-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Bu bir ayrıntı dersi değil, yolun nereye çıktığını gösteren haritadır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-17",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "17. Gerçek hayatta muhasebe nasıl görünür?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-17-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Faturalar, banka ve cari hareketler, ödemeler, tahsilatlar, personel ve stok işlemleri yalnız sisteme yazılmaz. Önce olay anlaşılır, doğru muhasebe düzeninde işlenir ve kullanılabilir bilgiye dönüşür. Meslek yalnız veri girişi değildir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-18",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "18. Muhasebe Laboratuvarı",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-18-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Aynı ham olaylardan hangi bilgiye ihtiyaç duyduğunu seç. Sistem ilgili olayları ilişkilendirip vurgulayacak.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-lab",
+        "type": "bilgidonusumu",
+        "props": {
+          "baslik": "Dağınık Bilgiden Anlamlı Bilgiye",
+          "config": "{\"olaylar\":[{\"baslik\":\"Müşteriye satış yapıldı\",\"tutar\":100000,\"tur\":\"satis\"},{\"baslik\":\"Müşteri ödeme yaptı\",\"tutar\":60000,\"tur\":\"tahsilat\"},{\"baslik\":\"Tedarikçiden mal alındı\",\"tutar\":70000,\"tur\":\"alis\"},{\"baslik\":\"Tedarikçiye ödeme yapıldı\",\"tutar\":20000,\"tur\":\"odeme\"}]}"
+        },
+        "children": []
+      },
+      {
+        "id": "d2-19",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "19. Laboratuvar — Düzeni boz",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-19-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Laboratuvarda “Muhasebe sistemini kapat” seçeneğini kullan. Açıklamalar ve ilişkiler kalkınca yalnız 100.000, 60.000, 70.000 ve 20.000 rakamları kalır; müşteriden tahsil edilecek tutarı çıkarmak zorlaşır.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-19-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Rakam tek başına bilgi değildir; bağlam ve düzen gerekir.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-20",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "20. Mali Sözlük",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-term-1",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe",
+            "type": "text",
+            "styles": {
+              "term": "Mali açıdan önemli olaylara ilişkin bilgileri düzenli biçimde işleyerek anlamlı finansal bilgiye dönüştüren sistem ve süreç."
+            }
+          },
+          {
+            "text": " — İşletmedeki mali açıdan önemli olaylara ilişkin bilgileri anlamlı finansal bilgiye dönüştüren sistem ve süreç.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-term-2",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Finansal Bilgi",
+            "type": "text",
+            "styles": {
+              "term": "Bir işletmenin ekonomik durumu, faaliyetleri veya mali olayları hakkında değerlendirme yapmaya yardımcı olan bilgi."
+            }
+          },
+          {
+            "text": " — İşletmenin ekonomik durumu, faaliyetleri veya mali olayları hakkında değerlendirmeye yardımcı olan bilgi.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-21",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "21. Muhasebenin bütün ayrıntısını bugün öğrenmedik",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-21-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebenin içinde işlemlerin belirlenmesi, kayıt, hesaplar, sınıflandırma, kontrol ve raporlama vardır. Bugün sistemin ne olduğunu gördük; teknik parçaları ilerleyen derslerde tek tek öğreneceğiz.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-22",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "22. Bu dersten aklında kalması gereken zihinsel model",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-22-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmede mali olaylar gerçekleşir → ham bilgi oluşur → muhasebe bilgileri belirli düzende işler → anlamlı finansal bilgi oluşur → bu bilgi karar vermeye yardımcı olur.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-23",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "23. Ders sonu kontrolü",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-23-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Üç kısa soruyla ana zihinsel modeli kontrol et.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-test-1",
+        "type": "kontrol",
+        "props": {
+          "soru": "Bütün faturaları bir klasöre koymak tek başına muhasebe sisteminin amacını gerçekleştirir mi?",
+          "ipucu": "Saklamak ile işlemek aynı mı?",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Belgelerin saklanmasının yanında bilgilerin işlenmesi ve anlamlı hale gelmesi gerekir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Klasör bilgiyi saklar; ihtiyaç duyulan finansal bilgiyi kendiliğinden üretmez."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-test-2",
+        "type": "kontrol",
+        "props": {
+          "soru": "Muhasebeyi en iyi hangi ifade açıklar?",
+          "ipucu": "Girdi → işleme → çıktı modelini düşün.",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Banka hesabını takip etmek.\"}, {\"dogru\": false, \"metin\": \"Vergiyi hesaplamak.\"}, {\"dogru\": true, \"metin\": \"Mali olaylara ilişkin bilgileri anlamlı finansal bilgiye dönüştüren sistem.\"}]",
+          "aciklama": "Muhasebe belirli tek bir araç veya kullanım alanı değil, bilgi dönüştüren sistemdir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Banka ve vergi muhasebenin temas ettiği alanlardır; bütünü değildir."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-test-3",
+        "type": "kontrol",
+        "props": {
+          "soru": "Programda binlerce işlem bulunması, yöneticinin doğru bilgiye sahip olduğu anlamına gelir mi?",
+          "ipucu": "Kayıt sayısı mı, bilginin niteliği mi önemli?",
+          "sunum": "test",
+          "siklar": "[{\"dogru\": false, \"metin\": \"Evet\"}, {\"dogru\": true, \"metin\": \"Hayır\"}]",
+          "aciklama": "Verinin bulunması ile doğru işlenip anlamlı bilgiye dönüşmesi aynı şey değildir.",
+          "cokluSecim": false,
+          "yanlisAciklama": "Çok kayıt, kendiliğinden doğru ve kullanılabilir çıktı üretmez."
+        },
+        "children": []
+      },
+      {
+        "id": "d2-24",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "24. Kendi cümlenle açıkla",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-24-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Muhasebe nedir?",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-24-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "İşletmede çok sayıda mali olay gerçekleşir. Muhasebe bu olaylara ilişkin dağınık bilgileri düzenli bir sistem içinde işleyerek işletmenin durumunu anlamaya ve karar vermeye yardımcı olacak finansal bilgiye dönüştürür. Kelimeleri değil, mantığı bil.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-25",
+        "type": "heading",
+        "props": {
+          "level": 2
+        },
+        "content": [
+          {
+            "text": "25. Sonraki derse geçiş",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-25-p",
+        "type": "paragraph",
+        "props": {},
+        "content": [
+          {
+            "text": "Ders 1’de muhasebeye neden ihtiyaç duyduğumuzu, Ders 2’de bu ihtiyacı karşılayan sistemin ne olduğunu öğrendik. Şimdi bu dönüşümün dört temel işlevini ayıracağız.",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      },
+      {
+        "id": "d2-25-q",
+        "type": "quote",
+        "props": {},
+        "content": [
+          {
+            "text": "Sonraki ders: Muhasebenin Kaydetme, Sınıflandırma, Özetleme ve Raporlama İşlevi →",
+            "type": "text",
+            "styles": {}
+          }
+        ],
+        "children": []
+      }
+    ]
+  }
+]

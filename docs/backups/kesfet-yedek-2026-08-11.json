@@ -1,0 +1,1733 @@
+{
+  "kartlar": [
+    {
+      "ad": "Muhasebenin Mantığı",
+      "id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7",
+      "tip": "kesfet",
+      "ikon": "Lightbulb",
+      "sira": 0,
+      "slug": "muhasebe-baslangic",
+      "durum": "acik",
+      "aciklama": "İşletmedeki ekonomik olayları, belgeleri ve muhasebe denklemini kullanarak muhasebe açısından düşünmeyi öğren.",
+      "kategori": "Temeller",
+      "created_at": "2026-07-17T22:39:09.947809+00:00",
+      "updated_at": "2026-08-09T19:27:02.37262+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Hesap ve Kayıt Mantığı",
+      "id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "tip": "kesfet",
+      "ikon": "SplitSquareVertical",
+      "sira": 1,
+      "slug": "hesap-kayit-mantigi",
+      "durum": "acik",
+      "aciklama": "Hesap, borç/alacak ve çift taraflı kayıt sistemini işletme olaylarından hareketle kur.",
+      "kategori": "Temeller",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:27:02.37262+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Kayıttan Finansal Tabloya",
+      "id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "tip": "kesfet",
+      "ikon": "ChartNoAxesCombined",
+      "sira": 2,
+      "slug": "kayittan-finansal-tabloya",
+      "durum": "acik",
+      "aciklama": "Yevmiye, büyük defter, mizan ve finansal tablolar arasındaki veri akışını uçtan uca izle.",
+      "kategori": "Temeller",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:27:02.37262+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Maliyet ve Üretim",
+      "id": "c1401f3c-3a9b-4b20-8e66-5940113dba74",
+      "tip": "kesfet",
+      "ikon": "Factory",
+      "sira": 20,
+      "slug": "maliyet-uretim",
+      "durum": "gizli",
+      "aciklama": "İlk madde, işçilik ve genel üretim giderlerini mamul maliyetine taşı. Ön koşul: Dönem Sonu İşlemleri.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-11T11:35:10.083627+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Maliyet Muhasebesi",
+      "id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5",
+      "tip": "kesfet",
+      "ikon": "Factory",
+      "sira": 20,
+      "slug": "maliyet-muhasebesi",
+      "durum": "yakinda",
+      "aciklama": "Maliyet unsurlarını mamul ve sipariş maliyetine taşı.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "gunluk-muhasebe-islemleri",
+        "donem-sonu-islemleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Proje Muhasebesi ve Proje Kontrolü",
+      "id": "b9d98b2c-80c5-4a41-a1c4-53c7ce8ef362",
+      "tip": "kesfet",
+      "ikon": "Milestone",
+      "sira": 21,
+      "slug": "proje-muhasebesi",
+      "durum": "yakinda",
+      "aciklama": "Proje maliyetlerini bütçe, gerçekleşen ve kârlılıkla birlikte izle.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "gunluk-muhasebe-islemleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Vergi Uygulamaları",
+      "id": "ab662933-d004-40c8-a433-02bda3fee94a",
+      "tip": "kesfet",
+      "ikon": "Percent",
+      "sira": 22,
+      "slug": "vergi-uygulamalari",
+      "durum": "gizli",
+      "aciklama": "Karmaşık vergi olaylarını belge, kayıt ve beyan bağlantısıyla çöz. Ön koşul: Vergi ve Belge Uygulamaları.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-11T11:35:10.083627+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "İleri Vergi Uygulamaları",
+      "id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9",
+      "tip": "kesfet",
+      "ikon": "Percent",
+      "sira": 22,
+      "slug": "ileri-vergi",
+      "durum": "yakinda",
+      "aciklama": "Vergi olaylarını belge, kayıt ve beyan bağlantısıyla çöz.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "vergi-belge-uygulamalari",
+        "beyanname-surecleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Bordro ve İş Hukuku",
+      "id": "13ce9920-3ff5-4bed-ae53-7aaf13420ddf",
+      "tip": "kesfet",
+      "ikon": "Scale",
+      "sira": 23,
+      "slug": "bordro-is-hukuku",
+      "durum": "yakinda",
+      "aciklama": "Ücret, teşvik, kıdem ve iş hukuku bağlantılarını uygula.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "bordro-sgk"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Finansal Raporlama / TMS-TFRS",
+      "id": "33bf233e-fc3f-41b6-b6b9-d82a1a7ee385",
+      "tip": "kesfet",
+      "ikon": "LineChart",
+      "sira": 24,
+      "slug": "finansal-raporlama",
+      "durum": "yakinda",
+      "aciklama": "Düzeltilmiş kayıtlardan dipnotlarıyla birlikte finansal rapor üret.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "donem-sonu-islemleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Savunma Sanayii Muhasebesi",
+      "id": "16ddcf23-8c93-4917-ab49-59525525684a",
+      "tip": "kesfet",
+      "ikon": "ShieldCheck",
+      "sira": 25,
+      "slug": "savunma-sanayii-muhasebesi",
+      "durum": "gizli",
+      "aciklama": "Sözleşme, proje maliyeti, hakediş ve teşvik kayıtlarını aynı vaka içinde yönet. Ön koşul: Proje, Vergi ve Bordro.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-11T11:35:10.083627+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Yönetim Muhasebesi ve Finansal Analiz",
+      "id": "6bf64962-d65c-49ba-a7f6-34f2c1f0e52a",
+      "tip": "kesfet",
+      "ikon": "ChartNoAxesCombined",
+      "sira": 25,
+      "slug": "yonetim-muhasebesi",
+      "durum": "yakinda",
+      "aciklama": "Bütçe, nakit akışı, KPI ve kârlılık analizleri üret.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "muhasebe-baslangic"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "finansal-raporlama"
+      ]
+    },
+    {
+      "ad": "Dış Ticaret",
+      "id": "7ef2491c-caed-402b-a151-2314ea44ff24",
+      "tip": "kesfet",
+      "ikon": "Globe",
+      "sira": 26,
+      "slug": "dis-ticaret",
+      "durum": "gizli",
+      "aciklama": "İthalat ve ihracat belgelerini kur, vergi ve kur farkı kayıtlarına bağla. Ön koşul: Vergi ve Belge Uygulamaları.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-11T11:35:10.083627+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Dış Ticaret ve Dövizli İşlemler",
+      "id": "6af1c49e-32fe-4e48-aaf9-172f84217898",
+      "tip": "kesfet",
+      "ikon": "Globe",
+      "sira": 26,
+      "slug": "dis-ticaret-doviz",
+      "durum": "yakinda",
+      "aciklama": "İthalat, ihracat, döviz ve kur farkı kayıtlarını uygula.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "fonksiyonel",
+      "on_kosul_sluglari": [
+        "vergi-belge-uygulamalari",
+        "gunluk-muhasebe-islemleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Üretim Muhasebesi",
+      "id": "af8e061e-d19d-456d-a4f4-31aec850e7d8",
+      "tip": "kesfet",
+      "ikon": "Factory",
+      "sira": 30,
+      "slug": "uretim-muhasebesi",
+      "durum": "gizli",
+      "aciklama": "Üretim akışını stok, yarı mamul, mamul ve maliyet kontrolüyle izle.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "sektorel",
+      "on_kosul_sluglari": [
+        "maliyet-muhasebesi"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "donem-sonu-islemleri"
+      ]
+    },
+    {
+      "ad": "Ar-Ge, Teknokent ve Teşvik Uygulamaları",
+      "id": "f93210d1-47af-4b93-ad10-0312e207e5ef",
+      "tip": "kesfet",
+      "ikon": "Rocket",
+      "sira": 31,
+      "slug": "arge-teknokent",
+      "durum": "gizli",
+      "aciklama": "Proje ve personel maliyetlerini teşvik ve istisna bağlamında izle.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "sektorel",
+      "on_kosul_sluglari": [
+        "ileri-vergi",
+        "bordro-is-hukuku",
+        "proje-muhasebesi"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "maliyet-muhasebesi"
+      ]
+    },
+    {
+      "ad": "Savunma Sanayii Muhasebe ve Vergi Uygulamaları",
+      "id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "tip": "kesfet",
+      "ikon": "ShieldCheck",
+      "sira": 32,
+      "slug": "savunma-sanayii",
+      "durum": "gizli",
+      "aciklama": "Proje, üretim, sözleşme, teşvik ve raporlamayı ileri seviye bir vakada birleştir.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "sektorel",
+      "on_kosul_sluglari": [
+        "maliyet-muhasebesi",
+        "proje-muhasebesi",
+        "ileri-vergi",
+        "bordro-is-hukuku",
+        "arge-teknokent"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "finansal-raporlama",
+        "yonetim-muhasebesi",
+        "dis-ticaret-doviz"
+      ]
+    },
+    {
+      "ad": "İnşaat Muhasebesi",
+      "id": "2d18859d-dfd1-4fb0-a41f-cc7691f2cccf",
+      "tip": "kesfet",
+      "ikon": "HardHat",
+      "sira": 33,
+      "slug": "insaat-muhasebesi",
+      "durum": "gizli",
+      "aciklama": "Hakediş, proje maliyeti, sözleşme ve dönemsel vergi işlemlerini birlikte izle.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "sektorel",
+      "on_kosul_sluglari": [
+        "proje-muhasebesi",
+        "ileri-vergi"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "donem-sonu-islemleri"
+      ]
+    },
+    {
+      "ad": "Dış Ticaret Muhasebesi",
+      "id": "ac031c8c-978c-4778-a064-15cd27659339",
+      "tip": "kesfet",
+      "ikon": "Ship",
+      "sira": 34,
+      "slug": "dis-ticaret-muhasebesi",
+      "durum": "gizli",
+      "aciklama": "Gümrük, KDV, döviz ve kur farkı bağlantılarını dış ticaret dosyasında yönet.",
+      "kategori": "Uzmanlıklar",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": "sektorel",
+      "on_kosul_sluglari": [
+        "ileri-vergi",
+        "dis-ticaret-doviz"
+      ],
+      "onerilen_on_kosul_sluglari": [
+        "finansal-raporlama"
+      ]
+    },
+    {
+      "ad": "Günlük Muhasebe Operasyonları",
+      "id": "a264cd73-b74c-42d3-8782-2b56757f2843",
+      "tip": "kesfet",
+      "ikon": "Receipt",
+      "sira": 10,
+      "slug": "gunluk-muhasebe-islemleri",
+      "durum": "acik",
+      "aciklama": "Alış, satış, kasa, banka, cari, gider ve duran varlık işlemlerini belge üzerinden kaydet.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "muhasebe-baslangic"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Vergi ve Belge Uygulamaları",
+      "id": "24d4b9f7-74b9-4197-bc3f-414b759a4815",
+      "tip": "kesfet",
+      "ikon": "FileCheck",
+      "sira": 11,
+      "slug": "vergi-belge-uygulamalari",
+      "durum": "acik",
+      "aciklama": "Belgedeki matrah, KDV ve ödeme bilgisini ayır; kayıt ve belge kontrollerini uygula.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "muhasebe-baslangic"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Beyanname Süreçleri",
+      "id": "410dddfe-f03e-4a3c-a3f6-9918c0cfdf90",
+      "tip": "kesfet",
+      "ikon": "CalendarCheck",
+      "sira": 12,
+      "slug": "beyanname-surecleri",
+      "durum": "yakinda",
+      "aciklama": "Dönem verilerini kontrol listeleriyle beyanname hazırlığına taşı.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "vergi-belge-uygulamalari"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Bordro ve SGK",
+      "id": "60b236d2-0530-44c8-b0ce-64d605cf4fa3",
+      "tip": "kesfet",
+      "ikon": "Users",
+      "sira": 13,
+      "slug": "bordro-sgk",
+      "durum": "yakinda",
+      "aciklama": "Brütten nete bordro bileşenlerini, tahakkuku ve ödeme kayıtlarını uygula.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "muhasebe-baslangic"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Dönem Sonu İşlemleri",
+      "id": "65085d68-1b00-470f-aebb-346d9bda18ed",
+      "tip": "kesfet",
+      "ikon": "Calendar",
+      "sira": 14,
+      "slug": "donem-sonu-islemleri",
+      "durum": "yakinda",
+      "aciklama": "Amortisman, değerleme, stok, tahakkuk ve kapanış kontrollerini yürüt.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "gunluk-muhasebe-islemleri"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Şirket İşlemleri",
+      "id": "cd377170-db57-442b-99c9-0f737529984e",
+      "tip": "kesfet",
+      "ikon": "Briefcase",
+      "sira": 15,
+      "slug": "sirket-islemleri",
+      "durum": "gizli",
+      "aciklama": "Kuruluş, sermaye, ortaklar ve kâr dağıtımı kayıtlarını belge üzerinden çöz. Ön koşul: Temeller.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-11T11:35:10.083627+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [],
+      "onerilen_on_kosul_sluglari": []
+    },
+    {
+      "ad": "Şirket ve Ticaret İşlemleri",
+      "id": "eee618bd-8b13-4630-aba1-4ca5da4462b1",
+      "tip": "kesfet",
+      "ikon": "Briefcase",
+      "sira": 15,
+      "slug": "sirket-ticaret-islemleri",
+      "durum": "yakinda",
+      "aciklama": "Sermaye, ortaklar, kâr dağıtımı ve temel ticaret işlemlerini çöz.",
+      "kategori": "Yetkinlikler",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00",
+      "uzmanlik_turu": null,
+      "on_kosul_sluglari": [
+        "muhasebe-baslangic"
+      ],
+      "onerilen_on_kosul_sluglari": []
+    }
+  ],
+  "bolumler": [
+    {
+      "ad": "Belgeyi Okumak",
+      "id": "804d2234-90cc-43d2-a835-cc9d9425c210",
+      "tur": "normal",
+      "sira": 0,
+      "kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "KDV Kayıtları",
+      "id": "edd9472d-ede2-422a-bf47-996f42364347",
+      "tur": "normal",
+      "sira": 1,
+      "kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "Belge Kontrol Vakası",
+      "id": "5810ef38-509e-45c8-b2db-2ef94d98bcde",
+      "tur": "normal",
+      "sira": 2,
+      "kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "Alış ve Satış",
+      "id": "f3df8d4d-2796-4627-8bd6-0c5ab54083f5",
+      "tur": "normal",
+      "sira": 0,
+      "kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "Kasa ve Banka",
+      "id": "2499f06e-56d3-4e04-8f12-d43fafa6ac7c",
+      "tur": "normal",
+      "sira": 1,
+      "kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "Gün Sonu Kontrolü",
+      "id": "d95fb881-c179-4610-a082-2ff2e9413446",
+      "tur": "normal",
+      "sira": 2,
+      "kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843",
+      "created_at": "2026-08-09T13:49:40.308144+00:00",
+      "updated_at": "2026-08-09T18:01:42.292865+00:00"
+    },
+    {
+      "ad": "Muhasebe Kaydı",
+      "id": "12bec47e-4e93-49a4-a932-7c4987d84133",
+      "tur": "normal",
+      "sira": 0,
+      "kart_id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Sınıflandırma ve Kontrol",
+      "id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "tur": "normal",
+      "sira": 1,
+      "kart_id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Raporlama",
+      "id": "f564c6a1-baf5-427b-ae36-bc7616dd0625",
+      "tur": "normal",
+      "sira": 2,
+      "kart_id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Kayıttan Finansal Tabloya Finali",
+      "id": "1f071ef8-85f5-44ac-a106-130dd01aa30e",
+      "tur": "kart_finali",
+      "sira": 99,
+      "kart_id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Hesap",
+      "id": "5a355628-58bd-4335-a526-eb14553cda11",
+      "tur": "normal",
+      "sira": 0,
+      "kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesapların çalışma mantığı",
+      "id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "tur": "normal",
+      "sira": 1,
+      "kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Çift taraflı kayıt",
+      "id": "245357a8-5049-4c61-acbd-603582d7b934",
+      "tur": "normal",
+      "sira": 2,
+      "kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesap Planı",
+      "id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "tur": "normal",
+      "sira": 3,
+      "kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Muhasebe neden var?",
+      "id": "0755169a-14f6-4880-a48c-0b369f5b2046",
+      "tur": "normal",
+      "sira": 0,
+      "kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "İşletmede neyi muhasebeleştiriyoruz?",
+      "id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "tur": "normal",
+      "sira": 1,
+      "kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "İşletmenin ekonomik yapısı",
+      "id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "tur": "normal",
+      "sira": 2,
+      "kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "updated_at": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Muhasebenin Mantığı Finali",
+      "id": "3db7cabc-4334-42dd-a24b-403cb3d0f5fb",
+      "tur": "kart_finali",
+      "sira": 99,
+      "kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "updated_at": "2026-08-09T19:27:02.37262+00:00"
+    }
+  ],
+  "ilerleme": [
+    {
+      "item_id": "226ea15c-1517-4792-922c-6209d9099ab5",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "fd25de85-29db-4743-8ee1-09fd6506ed99",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "db822b98-789e-4af5-aef8-f9c3057c3681",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "c7b48b90-eba9-427a-8585-7fb783396025",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "d80ced7f-1236-40ce-a773-53c86a778763",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "bafafcb2-384d-4ad8-b8d7-0dfd2940447f",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "1cac6d10-9e4c-4aa6-886f-d69b97a8d303",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "c348f655-d6bf-4181-8278-c3976698d602",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "c5f0990b-1bfb-456d-8abb-67045f8fa988",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "3d0d2996-2d59-4a2a-83c3-62a6a5f089f2",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "eb2249e5-6a61-421e-9e1b-7df0c1c549ba",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "5f2b7223-f68f-41c4-a654-9d77303ed7d8",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "7631373c-f4c3-476a-95e4-095249efb8bb",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "9906bbb6-d7f5-42c0-a41d-33a17183b020",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "9bcf619b-946d-424c-a01d-4d521c2e1773",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "c3e733a5-db9b-4dbb-a6a2-58881a8d707d",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "c4ba731d-7097-4e2a-aa2d-85419d9c0f68",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    },
+    {
+      "item_id": "d9b6a66a-f609-4b3c-961b-a6ec3d9a1001",
+      "kullanici_id": "7f81e6a8-6d55-4161-98d0-6e1ae146c857",
+      "tamamlandi_at": "2026-07-28T09:12:41.687558+00:00"
+    }
+  ],
+  "on_kosullar": [
+    {
+      "tur": "zorunlu",
+      "kart_id": "410dddfe-f03e-4a3c-a3f6-9918c0cfdf90",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "65085d68-1b00-470f-aebb-346d9bda18ed",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "b9d98b2c-80c5-4a41-a1c4-53c7ce8ef362",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "33bf233e-fc3f-41b6-b6b9-d82a1a7ee385",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "65085d68-1b00-470f-aebb-346d9bda18ed"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "f93210d1-47af-4b93-ad10-0312e207e5ef",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "f93210d1-47af-4b93-ad10-0312e207e5ef",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "13ce9920-3ff5-4bed-ae53-7aaf13420ddf"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "f93210d1-47af-4b93-ad10-0312e207e5ef",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "b9d98b2c-80c5-4a41-a1c4-53c7ce8ef362"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "65085d68-1b00-470f-aebb-346d9bda18ed"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "410dddfe-f03e-4a3c-a3f6-9918c0cfdf90"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "13ce9920-3ff5-4bed-ae53-7aaf13420ddf",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "60b236d2-0530-44c8-b0ce-64d605cf4fa3"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "6bf64962-d65c-49ba-a7f6-34f2c1f0e52a",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "6af1c49e-32fe-4e48-aaf9-172f84217898",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "6af1c49e-32fe-4e48-aaf9-172f84217898",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "af8e061e-d19d-456d-a4f4-31aec850e7d8",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "b9d98b2c-80c5-4a41-a1c4-53c7ce8ef362"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "13ce9920-3ff5-4bed-ae53-7aaf13420ddf"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "f93210d1-47af-4b93-ad10-0312e207e5ef"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "2d18859d-dfd1-4fb0-a41f-cc7691f2cccf",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "b9d98b2c-80c5-4a41-a1c4-53c7ce8ef362"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "2d18859d-dfd1-4fb0-a41f-cc7691f2cccf",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac031c8c-978c-4778-a064-15cd27659339",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "0ed6748d-ca9c-4b20-a328-fa4f945186c9"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "ac031c8c-978c-4778-a064-15cd27659339",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "6af1c49e-32fe-4e48-aaf9-172f84217898"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "f93210d1-47af-4b93-ad10-0312e207e5ef",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "3ddb8943-08ef-4980-a6a3-03d23ea435c5"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "6bf64962-d65c-49ba-a7f6-34f2c1f0e52a",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "33bf233e-fc3f-41b6-b6b9-d82a1a7ee385"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "af8e061e-d19d-456d-a4f4-31aec850e7d8",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "65085d68-1b00-470f-aebb-346d9bda18ed"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "33bf233e-fc3f-41b6-b6b9-d82a1a7ee385"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "6bf64962-d65c-49ba-a7f6-34f2c1f0e52a"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "ac892b94-4dea-4891-ad2a-877d066fc501",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "6af1c49e-32fe-4e48-aaf9-172f84217898"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "2d18859d-dfd1-4fb0-a41f-cc7691f2cccf",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "65085d68-1b00-470f-aebb-346d9bda18ed"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "ac031c8c-978c-4778-a064-15cd27659339",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "33bf233e-fc3f-41b6-b6b9-d82a1a7ee385"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "on_kosul_kart_id": "c3c8adbd-c9f7-4880-a48c-c9a87351e4d7"
+    },
+    {
+      "tur": "onerilen",
+      "kart_id": "a8e5de34-df0b-402e-a434-2e738224312c",
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "on_kosul_kart_id": "c02084b6-bc6b-4a93-aef2-69573ff2370a"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "a264cd73-b74c-42d3-8782-2b56757f2843",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a8e5de34-df0b-402e-a434-2e738224312c"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "24d4b9f7-74b9-4197-bc3f-414b759a4815",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a8e5de34-df0b-402e-a434-2e738224312c"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "60b236d2-0530-44c8-b0ce-64d605cf4fa3",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a8e5de34-df0b-402e-a434-2e738224312c"
+    },
+    {
+      "tur": "zorunlu",
+      "kart_id": "eee618bd-8b13-4630-aba1-4ca5da4462b1",
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "on_kosul_kart_id": "a8e5de34-df0b-402e-a434-2e738224312c"
+    }
+  ],
+  "itemler_meta": [
+    {
+      "ad": "Muhasebe Neden Gereklidir?",
+      "id": "226ea15c-1517-4792-922c-6209d9099ab5",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "0755169a-14f6-4880-a48c-0b369f5b2046",
+      "icerik_md5": "4a438a79662daf3faaa265805e903b9a",
+      "icerik_bayt": 22338,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 72,
+      "icerik_guncellendi": "2026-08-09T20:11:14.593758+00:00"
+    },
+    {
+      "ad": "Muhasebe Nedir?",
+      "id": "fd25de85-29db-4743-8ee1-09fd6506ed99",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "0755169a-14f6-4880-a48c-0b369f5b2046",
+      "icerik_md5": "0cb71bd89417872c7e89c7397bdd3cc7",
+      "icerik_bayt": 20610,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 72,
+      "icerik_guncellendi": "2026-08-09T20:20:34.607959+00:00"
+    },
+    {
+      "ad": "Muhasebenin Kaydetme, Sınıflandırma, Özetleme ve Raporlama İşlevi",
+      "id": "ac841025-635f-40d3-a987-44ed669c985b",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "0755169a-14f6-4880-a48c-0b369f5b2046",
+      "icerik_md5": "30d8c30625482d102e61fe88623c19aa",
+      "icerik_bayt": 2459,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Muhasebe Bilgisini Kim, Neden Kullanır?",
+      "id": "dfb93689-8141-4c23-a237-242a3383b67c",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "0755169a-14f6-4880-a48c-0b369f5b2046",
+      "icerik_md5": "49566df727e3f02a21b9e7ec05375980",
+      "icerik_bayt": 2381,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Yevmiye Kaydı Nedir?",
+      "id": "d9b6a66a-f609-4b3c-961b-a6ec3d9a1001",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "12bec47e-4e93-49a4-a932-7c4987d84133",
+      "icerik_md5": "333cb022a1b43e99f83e52266ecca266",
+      "icerik_bayt": 2382,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Bir Yevmiye Kaydının Anatomisi",
+      "id": "69d7cbd8-e9bb-4d62-aa5a-474a41922457",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "12bec47e-4e93-49a4-a932-7c4987d84133",
+      "icerik_md5": "45a77923187ce3e138500fb766687ba0",
+      "icerik_bayt": 2412,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Basit Muhasebe Kaydı",
+      "id": "48d27f93-2af7-4e0a-932c-3da629637e76",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "12bec47e-4e93-49a4-a932-7c4987d84133",
+      "icerik_md5": "2d5d0ec0f0fdc20d4ee71875abcb8d2d",
+      "icerik_bayt": 2382,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Birden Fazla Hesaplı Kayıt",
+      "id": "a551f8ce-3f25-412a-a5fd-24afeef4727b",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "12bec47e-4e93-49a4-a932-7c4987d84133",
+      "icerik_md5": "28d37b6012c49377ef690ac1548f3341",
+      "icerik_bayt": 2400,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Bir İşletmenin İlk 10 İşlemi",
+      "id": "f5855c87-8abb-4697-a56f-61035725c5d5",
+      "tip": "alistirma",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "1f071ef8-85f5-44ac-a106-130dd01aa30e",
+      "icerik_md5": "c5bd1b73f51adb904c2d35e9a6c93ef1",
+      "icerik_bayt": 533,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 2,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Bir İşlem Neden En Az İki Hesabı Etkiler?",
+      "id": "128fe7b5-d25e-47fb-abb2-58e91a7a1f4b",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "245357a8-5049-4c61-acbd-603582d7b934",
+      "icerik_md5": "d3a645a58d66b1f3f1d578fcdc06bf7d",
+      "icerik_bayt": 2395,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Çift Taraflı Kayıt",
+      "id": "eb2249e5-6a61-421e-9e1b-7df0c1c549ba",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "245357a8-5049-4c61-acbd-603582d7b934",
+      "icerik_md5": "c9241163a5cdaab56099c81cea1f9941",
+      "icerik_bayt": 2326,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Borç = Alacak Kontrolü",
+      "id": "a76393ed-7f23-4d11-a522-0515bb99dbb6",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "245357a8-5049-4c61-acbd-603582d7b934",
+      "icerik_md5": "9aa8d1c37e20f8954a5f6ebf8991fedf",
+      "icerik_bayt": 2338,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Kasa ile Bankayı Ayırmak",
+      "id": "2d596151-a9b0-4364-813c-51e7d51691af",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "2499f06e-56d3-4e04-8f12-d43fafa6ac7c",
+      "icerik_md5": "e60551831acffded30876f0182403169",
+      "icerik_bayt": 1496,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Büyük Defter: Kayıtları Hesaplara Göre Toplamak",
+      "id": "9bcf619b-946d-424c-a01d-4d521c2e1773",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "icerik_md5": "7c23d04c270bfb7f72f8e8c8d7f980d1",
+      "icerik_bayt": 2462,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesap Bakiyesi",
+      "id": "01169e76-db24-4372-aa32-8a13678c6b5c",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "icerik_md5": "776790fb39ef1eb5cd71888d0680db3a",
+      "icerik_bayt": 2363,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Mizan: Hesapları Tek Yerde Görmek",
+      "id": "5105c5ef-d5fe-4adb-a213-140de1075cf9",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "icerik_md5": "58f18a762bd7731d046b3db3f006dc63",
+      "icerik_bayt": 2420,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Mizan Neyi Kontrol Eder, Neyi Edemez?",
+      "id": "8702c1dd-6554-4fa9-ad37-2f8d60233035",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "icerik_md5": "88d0dbee25dfede9c6029213c5a1cb39",
+      "icerik_bayt": 2432,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Mizan Neyi Kontrol Edemez?",
+      "id": "07945e36-8689-4dfe-ae56-15d831735420",
+      "tip": "ders",
+      "sira": 4,
+      "soru_id": null,
+      "bolum_id": "35aad29b-47fd-4715-a952-7e845f9a14c9",
+      "icerik_md5": "bbc32ceedaea5c874a572bc81feec6a7",
+      "icerik_bayt": 2399,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "10 Olayda Muhasebe Mantığı",
+      "id": "baacf978-6ffb-41f7-a7d6-92122ef9197b",
+      "tip": "alistirma",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "3db7cabc-4334-42dd-a24b-403cb3d0f5fb",
+      "icerik_md5": "6795983848c20a72ad1305578f8d9a40",
+      "icerik_bayt": 496,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 2,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Eksik Belgede Kayıt Kararı",
+      "id": "34c3d4c6-b023-4303-834c-e53729624e2b",
+      "tip": "alistirma",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "5810ef38-509e-45c8-b2db-2ef94d98bcde",
+      "icerik_md5": "37c9b45dbdc67da4b64b9648a47f2edc",
+      "icerik_bayt": 1617,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Hesap Nedir ve Neden Hesaplara İhtiyaç Duyarız?",
+      "id": "3d0d2996-2d59-4a2a-83c3-62a6a5f089f2",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "5a355628-58bd-4335-a526-eb14553cda11",
+      "icerik_md5": "30397c22c7827c058efcc30c577da876",
+      "icerik_bayt": 2400,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Neden Her Şeyi Tek Listede Tutmuyoruz?",
+      "id": "1fb9eea4-a403-4083-a111-d63b0a47862e",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "5a355628-58bd-4335-a526-eb14553cda11",
+      "icerik_md5": "193bc0ecc8f74acac92c98a8f84ce9f3",
+      "icerik_bayt": 2373,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Hesabın İki Tarafı: Borç ve Alacak",
+      "id": "d80ced7f-1236-40ce-a773-53c86a778763",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "5a355628-58bd-4335-a526-eb14553cda11",
+      "icerik_md5": "54c7a29feab06a99cfaf47ca0c37970d",
+      "icerik_bayt": 2361,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesaplarda Artış ve Azalış Nasıl İzlenir?",
+      "id": "cdb05a8c-2c6d-44f4-ab0a-46de64791cb3",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "5a355628-58bd-4335-a526-eb14553cda11",
+      "icerik_md5": "bdc8977093f08831b658eec9377dcaaa",
+      "icerik_bayt": 2382,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Faturada Matrah ve KDV",
+      "id": "60b8c3f8-8f39-47be-bbfb-8de35e8c7907",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "804d2234-90cc-43d2-a835-cc9d9425c210",
+      "icerik_md5": "8366881cd997cb612a29b964ba3d201a",
+      "icerik_bayt": 1510,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Fatura, İrsaliye ve Dekontun Rolü",
+      "id": "8d058206-60f9-441d-b337-3603f2f67516",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "804d2234-90cc-43d2-a835-cc9d9425c210",
+      "icerik_md5": "4a450691987ab6e5f055de362563eef8",
+      "icerik_bayt": 1543,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Tekdüzen Hesap Planı Neden Var?",
+      "id": "5f2b7223-f68f-41c4-a654-9d77303ed7d8",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "6767248ff3e40d2b8422901d5ef893b0",
+      "icerik_bayt": 2358,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Hesap Kodunu Okumak: Sınıf → Grup → Ana Hesap",
+      "id": "a16a35f8-dffb-4af6-a838-e6fb856b3e66",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "260ec4b247a867c1fcc78d387f4644ec",
+      "icerik_bayt": 2400,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesap Grubu",
+      "id": "ebac161d-fc19-4f23-a92a-1ff73f82549d",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "791ea41104eb4333d6dbef34ac1d6ecf",
+      "icerik_bayt": 2298,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Alt Hesap ve Muhasebe Detayı",
+      "id": "bf1bb542-b01f-426b-a3d4-9255c1f5da27",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "c4153953f40a513e6dc8f2533eea5e9f",
+      "icerik_bayt": 2349,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Hesabı Ezberlemek Yerine Bulmak",
+      "id": "710e7aab-8d62-4447-a751-cb6ab73156ef",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "f275299426e8307f00cbe06918fac01d",
+      "icerik_bayt": 2358,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Ana Hesap",
+      "id": "63de4d57-b64b-4c36-ad00-0e0f47511325",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "a82ad461-6e64-4f7b-a696-97a8e3972933",
+      "icerik_md5": "b32188f8a85156433a53be4d41810781",
+      "icerik_bayt": 2292,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "İşletme ile Sahibinin İşlemlerini Ayırmak",
+      "id": "3b8d2712-0d1b-43f8-a6e0-6516ccb761d0",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "icerik_md5": "738e135b987dfdf9aba39bcdf10c3f42",
+      "icerik_bayt": 2404,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Mali Nitelikteki Olay",
+      "id": "db822b98-789e-4af5-aef8-f9c3057c3681",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "icerik_md5": "c489060ba2e95a491acde6c029c238c2",
+      "icerik_bayt": 2344,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Para Hareketi Her Zaman Gelir veya Gider midir?",
+      "id": "680c3dbe-4093-4bdd-a06c-0628d5ac9f5e",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "icerik_md5": "2ba3898a686c12c3649c222c93ae1763",
+      "icerik_bayt": 2422,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Belge ile Olay Arasındaki İlişki",
+      "id": "25d1d4f0-0b3d-48db-a441-85df19f0a22b",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "icerik_md5": "09df8d5f77dfb3041c608cb8e8d49fff",
+      "icerik_bayt": 2377,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Belge: Ekonomik Olayın Kayıt Dayanağı",
+      "id": "9906bbb6-d7f5-42c0-a41d-33a17183b020",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "c041a0c8-d503-4cfb-a71c-0799fdead886",
+      "icerik_md5": "88d38d6688590177d7a6053ff42a2c9b",
+      "icerik_bayt": 2392,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Belge, Kayıt ve Bakiye Kontrolü",
+      "id": "b5a46b9b-8e92-4dd6-8455-bd0764f6d1cf",
+      "tip": "alistirma",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "d95fb881-c179-4610-a082-2ff2e9413446",
+      "icerik_md5": "bf5f4f54a9862226c7834a8e261a41b7",
+      "icerik_bayt": 1585,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "İndirilecek KDV Kaydı",
+      "id": "fc74efca-77ef-4cd8-b810-2bd51ee9c895",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "edd9472d-ede2-422a-bf47-996f42364347",
+      "icerik_md5": "ddaaa6f91335fdea884104a95d1cc59c",
+      "icerik_bayt": 2079,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 7,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "İşletmenin Varlıkları",
+      "id": "bafafcb2-384d-4ad8-b8d7-0dfd2940447f",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "8f467bab240faa82f2d8ec9ae1bf2bca",
+      "icerik_bayt": 2334,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Varlıklar Nereden Gelir? Borçlar ve Özkaynak",
+      "id": "1cac6d10-9e4c-4aa6-886f-d69b97a8d303",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "9501e57e871062a64a7930dd4162332d",
+      "icerik_bayt": 2403,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Varlıklar = Kaynaklar",
+      "id": "c348f655-d6bf-4181-8278-c3976698d602",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "bede250f84e900b332ffd75d00bd383f",
+      "icerik_bayt": 2334,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Temel Muhasebe Denklemi: Varlıklar = Borçlar + Özkaynak",
+      "id": "c7b48b90-eba9-427a-8585-7fb783396025",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "320b1802374e2073cbc857be7ee70996",
+      "icerik_bayt": 2436,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "İşlemlerin Muhasebe Denklemine Etkisi",
+      "id": "c5f0990b-1bfb-456d-8abb-67045f8fa988",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "d21631cedeb71463332853a812c01a99",
+      "icerik_bayt": 2382,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Gelir, Gider ve Özkaynak İlişkisi",
+      "id": "c4ba731d-7097-4e2a-aa2d-85419d9c0f68",
+      "tip": "ders",
+      "sira": 4,
+      "soru_id": null,
+      "bolum_id": "f0e32ada-1109-4559-a15b-a892b0271fe0",
+      "icerik_md5": "65ee4c451d96db1d569fe29e2187f3e4",
+      "icerik_bayt": 2370,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Peşin Mal Alışı",
+      "id": "e356406a-94f5-4804-8666-c7571205b50e",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "f3df8d4d-2796-4627-8bd6-0c5ab54083f5",
+      "icerik_md5": "181c829d88224db8b041a67274b8e7e4",
+      "icerik_bayt": 1554,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 6,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Vadeli Satış ve Tahsilat",
+      "id": "ecb08ef6-bc6e-4fa3-9a99-f371c1bf4d94",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "f3df8d4d-2796-4627-8bd6-0c5ab54083f5",
+      "icerik_md5": "7791bf416bc4d37b14d78fa623b8ae85",
+      "icerik_bayt": 2025,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 7,
+      "icerik_guncellendi": "2026-08-09T13:49:40.308144+00:00"
+    },
+    {
+      "ad": "Bilanço / Finansal Durum Tablosu",
+      "id": "c3e733a5-db9b-4dbb-a6a2-58881a8d707d",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "f564c6a1-baf5-427b-ae36-bc7616dd0625",
+      "icerik_md5": "05effa181898a5a6f9b0f27544248f35",
+      "icerik_bayt": 2413,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Gelir Tablosu",
+      "id": "feb6a942-09fb-4f31-a035-31008ca77244",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "f564c6a1-baf5-427b-ae36-bc7616dd0625",
+      "icerik_md5": "7ccb3d90d4cf2f812f2d492ee8e81cea",
+      "icerik_bayt": 2356,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Kâr ile Nakit Neden Aynı Şey Değildir?",
+      "id": "a0b98796-5a2f-444d-ac0f-87cfc5403715",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "f564c6a1-baf5-427b-ae36-bc7616dd0625",
+      "icerik_md5": "234dd09ae11cd547236e6d402aaa6a6c",
+      "icerik_bayt": 2431,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Kayıttan Finansal Tabloya: Muhasebe Döngüsü",
+      "id": "4870e180-8217-4717-a12f-e25a6871b817",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "f564c6a1-baf5-427b-ae36-bc7616dd0625",
+      "icerik_md5": "7f3f2e0bb133a0372186868210ce32bc",
+      "icerik_bayt": 2446,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    },
+    {
+      "ad": "Borç ve Alacak Ne Demektir?",
+      "id": "7631373c-f4c3-476a-95e4-095249efb8bb",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "icerik_md5": "b8e5934b9f57f108ac3224364f1499cf",
+      "icerik_bayt": 2349,
+      "yayin_durumu": "arsiv",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Varlık Hesapları",
+      "id": "12faf984-8fee-4faa-a2dc-85420d2abd69",
+      "tip": "ders",
+      "sira": 0,
+      "soru_id": null,
+      "bolum_id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "icerik_md5": "915d7d33be40a96a16f0f9354aab37d5",
+      "icerik_bayt": 2316,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Kaynak Hesapları",
+      "id": "d6a2f39f-203c-4a48-abc7-d5896485a867",
+      "tip": "ders",
+      "sira": 1,
+      "soru_id": null,
+      "bolum_id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "icerik_md5": "0bda96f580c620f7db218ed03b85deb3",
+      "icerik_bayt": 2316,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Gelir ve Gider Hesapları",
+      "id": "8a623364-003a-4bce-a107-e2715bbf22ba",
+      "tip": "ders",
+      "sira": 2,
+      "soru_id": null,
+      "bolum_id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "icerik_md5": "fa55369c69c4cc28eea4498ded8dc550",
+      "icerik_bayt": 2340,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:27:02.37262+00:00"
+    },
+    {
+      "ad": "Hesabın Doğal Yönü: Normal Bakiye",
+      "id": "526a85c4-fc58-4c12-a235-496f6c7f3fb8",
+      "tip": "ders",
+      "sira": 3,
+      "soru_id": null,
+      "bolum_id": "f6cd81f5-0a4e-406f-ae1d-05c67affd9c4",
+      "icerik_md5": "8ec17e651d151c64eebc6b023f3b538d",
+      "icerik_bayt": 2367,
+      "yayin_durumu": "incelemede",
+      "icerik_blok_sayisi": 9,
+      "icerik_guncellendi": "2026-08-09T19:56:03.246647+00:00"
+    }
+  ],
+  "yedek_tarihi": "2026-08-11",
+  "item_sorulari": [
+    {
+      "sira": 0,
+      "item_id": "48d27f93-2af7-4e0a-932c-3da629637e76",
+      "soru_id": "soru-mal-alis-veresiye-001",
+      "zorunlu": true,
+      "created_at": "2026-08-09T18:01:42.292865+00:00",
+      "minimum_basari": 100,
+      "destek_seviyesi": "standart"
+    },
+    {
+      "sira": 0,
+      "item_id": "baacf978-6ffb-41f7-a7d6-92122ef9197b",
+      "soru_id": "kesfet-t1-final-001",
+      "zorunlu": true,
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "minimum_basari": 100,
+      "destek_seviyesi": "standart"
+    },
+    {
+      "sira": 0,
+      "item_id": "f5855c87-8abb-4697-a56f-61035725c5d5",
+      "soru_id": "soru-mal-alis-veresiye-001",
+      "zorunlu": true,
+      "created_at": "2026-08-09T19:27:02.37262+00:00",
+      "minimum_basari": 100,
+      "destek_seviyesi": "standart"
+    }
+  ]
+}
