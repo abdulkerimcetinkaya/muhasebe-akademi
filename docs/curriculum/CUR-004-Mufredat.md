@@ -1,189 +1,140 @@
 # CUR-004 — Müfredat
 
-**Durum:** v2.0 · 11 Ağustos 2026
-**Karar dayanağı:** [ADR-004 — V3: Beceri merkezli müfredat](../adr/ADR-004-v3-beceri-merkezli-mufredat.md)
-**Kaynak belgeler:** `docs/sources/Muhasebe2.docx` (Temeller tabanı) · `docs/sources/Muhasebe.docx` (Yetkinlikler, Uzmanlıklar tabanı) · Chief Architect V3 revizyonu (11 Ağu 2026)
+**Durum:** v3.0 · 11 Ağustos 2026
+**Karar dayanağı:** [ADR-005 — V6: 31 kartlık mimari](../adr/ADR-005-v6-31-kart-mimarisi.md)
+**Referanslar:** IFAC IES 2 (foundation/intermediate/advanced) · ACCA (Applied
+Knowledge → Applied Skills → Strategic Professional) · OpenStax muhasebe döngüsü
 
-> v1.0 (39 ders) ADR-003 ile birlikte tarihseldir; 39 → 26 eşleştirmesi
-> `supabase/migrations/20260811000002_temeller_26_birim.sql` içindedir.
-
----
-
-# Amaç
-
-Bu doküman müfredatın **okunur kanonik dökümüdür**. Makine tarafında tek kaynak
-ilgili migration'lardaki hedef tablolarıdır; bu doküman onlarla aynı olmak
-zorundadır.
-
-Ürünün öğretim omurgası:
-
-> Belge / olay → ne oldu? → hangi ekonomik değer değişti? → hesabı bul →
-> yönü belirle → yevmiyeyi yap → sonucu kontrol et.
-
-Yevmiye kaydı bu zincirin **çıktısıdır**, başlangıç noktası değil.
-
-Katman rolleri: **Temeller** anlamayı öğretir · **Yetkinlikler** iş yapmayı
-öğretir · **Uzmanlıklar** muhasebe muhakemesi öğretir · **İşletmeler** dönem
-simülasyonuyla pratik yaptırır (ayrı track, ADR-001/ADR-004 rol ayrımı:
-kavram dersi yalnız Keşfet'te yazılır).
+> v1.0 (39 ders) ve v2.0 (26 birim) tarihseldir. Kanonik makine kaynağı
+> `supabase/migrations/20260811000007_kesfet_31_kart.sql`.
 
 ---
 
-# TEMELLER — 3 kart · 26 öğrenme birimi
+# Ölçek felsefesi
 
-Kapsam sınırı: KDV ayrıntısı, bordro, beyanname, dönem sonu uygulamaları,
-TMS/TFRS ve ileri mevzuat Temeller'e girmez.
+> **Müfredatı büyüterek değil, senaryo uzayını büyüterek kapsamlı hale getir.**
 
-## Kart 1 — İşletmeyi Muhasebe Gibi Görmek (10 birim)
+500 ders başlığı hedef değil. Aynı muhasebe bilgisini giderek zorlaşan gerçek
+hayat durumlarında tekrar tekrar uygulatmak hedef. Bir bölüm ("Vadeli Ticari
+Mal Alışı") altında iskonto · eksik belge · kısmi ödeme · iade · fiyat farkı ·
+döviz · tevkifat gibi onlarca varyasyon yaşayabilir.
 
-**Bölüm 1 — Muhasebeye neden ihtiyaç var?**
-1. Muhasebe Neden Gereklidir?
-2. Muhasebe Ne Yapar? *(kaydetme→sınıflandırma→özet→bilgi akışı tek görselde; paydaşlar soru örnekleriyle)*
+Büyüme katmanı: **Bölüm → Ders → Senaryo → Soru → Varyasyon**
 
-**Bölüm 2 — Muhasebenin konusu**
-3. İşletme ile Sahibinin Ayrılması
-4. Mali Nitelikteki Olay *(kayıt doğurmayan olaylar dahil)*
-5. Belge ve Ekonomik Olay *("bu bilgi nereden geliyor?")*
-
-**Bölüm 3 — İşletmenin ekonomik yapısı**
-6. Varlıklar
-7. Borçlar ve Özkaynak
-8. Temel Muhasebe Denklemi
-9. İşlemler Denklemi Nasıl Değiştirir?
-10. Gelir, Gider ve Özkaynak
-
-*Kart sonunda kullanıcı hiç hesap kodu kullanmadan 15–20 işletme olayı analiz etmiş olmalı.*
-★ Kart finali: 10 Olayda Muhasebe Mantığı (mevcut, korunur)
-
-## Kart 2 — Olaydan Muhasebe Kaydına (10 birim)
-
-**Bölüm 1 — Hesap mantığı**
-11. Neden Hesaplara İhtiyaç Var?
-12. Hesabın İki Tarafı: Borç ve Alacak *(borç=eksi/alacak=artı algısı burada kırılır)*
-
-**Bölüm 2 — Hesapların çalışma mantığı**
-13. Varlık, Borç ve Özkaynak Hesaplarının Çalışması *(tek karşılaştırma tablosu)*
-14. Gelir ve Gider Hesaplarının Çalışması
-15. Hesabın Bakiyesi *("normal bakiye" terimi Mali Sözlük katmanında)*
-
-**Bölüm 3 — Olayı kayda dönüştürmek**
-16. İşlem Analizi — platformun ana algoritması:
-    *ne oldu? → hangi değerler değişti? → hangi hesaplar? → arttı mı azaldı mı? → borç mu alacak mı? → dengeli mi?*
-17. İlk Yevmiye Kaydın *(sermaye örneği: KDV yok, cari yok, belge karmaşası yok)*
-18. Basit Yevmiye Kayıtları *(sermaye, virman, gider, hizmet geliri, kredi, borç ödeme, tahsilat — KDV'siz)*
-19. Birden Fazla Hesaplı Kayıt
-20. Hesap Planında Hesabı Bulmak *(TDHP'yi harita gibi okumak; ezber yok)*
-
-⚠ Kart finali yok — içerik fazında eklenecek (ADR-004).
-
-## Kart 3 — Kayıttan Finansal Tabloya (6 birim)
-
-**Bölüm 1 — Kaydın yolculuğu**
-21. Yevmiye Kaydının Yapısı
-22. Büyük Defter ve Hesap Bakiyesi
-
-**Bölüm 2 — Kontrol**
-23. Mizan *(nedir + neyi kontrol eder + neyi edemez — tek güçlü ders)*
-
-**Bölüm 3 — Sonuç**
-24. Bilanço ve Gelir Tablosu *(biri durum, biri dönem sonucu)*
-25. Kâr ile Nakit Aynı Şey Değildir
-26. Muhasebe Döngüsü — Baştan Sona
-
-★ Kart finali: Bir İşletmenin İlk 10 İşlemi (mevcut, korunur)
-
----
-
-# YETKİNLİKLER — 9 iş akışı kartı
-
-Yetkinlik = konu bilmek değil, iş akışı yönetmek. Her kart belgeyle başlar,
-kayıtla bitmez — kontrol/mutabakatla biter.
-
-| # | Kart | Slug | İş akışı |
-|---|---|---|---|
-| Y1 | Belgeden Muhasebe İşlemine | `belgeden-muhasebe-islemine` | belge kontrolü → işlem türü → taraflar → tutarlar → hesap → kayıt |
-| Y2 | Satın Alma, Satıcı ve Ödeme | `gunluk-muhasebe-islemleri` | belge → mal/hizmet → satıcı → KDV → kayıt → borç → ödeme → cari kapanışı → mutabakat |
-| Y3 | Satış, Müşteri ve Tahsilat | `satis-musteri-tahsilat` | satış → belge → gelir → KDV → alacak → tahsilat → iade/iskonto → mutabakat |
-| Y4 | Kasa, Banka, Kart ve Finansman | `kasa-banka-kart-finansman` | kasa · banka · EFT · POS · komisyon · kredi · faiz · virman · banka mutabakatı |
-| Y5 | Stok ve Duran Varlık İşlemleri | `stok-duran-varlik` | stok giriş/çıkış/sayım · duran varlık edinim/amortisman/satış |
-| Y6 | KDV ve e-Belge Operasyonları | `vergi-belge-uygulamalari` | hesaplanan/indirilecek · e-Fatura/e-Arşiv/e-İrsaliye · muhasebe-beyan bağlantısı |
-| Y7 | Bordro ve SGK | `bordro-sgk` | brüt/net → kesintiler → tahakkuk → ödeme → SGK/vergi borçları → MPHB |
-| Y8 | Mutabakat ve Dönem Sonu Kontrolleri | `donem-sonu-islemleri` | cari/banka/kasa/stok kontrolleri · tahakkuklar · mizan analizi · hata düzeltme |
-| Y9 | Beyanname, Kapanış ve Raporlama | `beyanname-surecleri` | KDV → MPHB → geçici/kurumlar girişi → tahakkuk → ödeme → kapanış |
-
-Şirket/sermaye işlemleri ayrı Yetkinlik kartı değildir (İşletmeler M1/M13 +
-Uzmanlık katmanı). `sirket-ticaret-islemleri` kartı gizlendi.
-
----
-
-# UZMANLIKLAR — 7 çekirdek + sektör rotaları
-
-Uzmanlık sorusu: *"Bu dosyada işlemi yapabilmek için yeterli bilgi var mı?"*
-(belge iste → mevzuat kontrol et → yaklaşım seç → kaydet → vergi/tablo etkisini değerlendir)
-
-**Çekirdek (fonksiyonel):**
-U1 Vergi Uygulamaları (`ileri-vergi`) · U2 Finansal Raporlama ve TMS/TFRS
-(`finansal-raporlama`) · U3 Maliyet ve Üretim (`maliyet-muhasebesi`) ·
-U4 Proje ve Sözleşme (`proje-muhasebesi`) · U5 İleri Bordro, SGK ve Teşvikler
-(`bordro-is-hukuku`) · U6 Dış Ticaret (`dis-ticaret-doviz`) ·
-U7 Ar-Ge, Teknokent ve Teşvikler (`arge-teknokent`)
-
-**Sektör rotaları (capstone — yeni ders seti değil, ön koşul ağıyla birleşim):**
-Savunma Sanayii (`savunma-sanayii`) · İnşaat & Taahhüt (`insaat-muhasebesi`) ·
-e-Ticaret (`e-ticaret`)
-
----
-
-# Ön Koşullar ve Sıralama
+# Pedagojik omurga
 
 ```
-Temeller (K1 → K2 → K3, zorunlu başlangıç)
-   ↓
-Y1 Belgeden İşleme
-   ↓                ↓
-Y2 Satın Alma    Y3 Satış        Y4 Kasa-Banka (←Temeller)
-   ↓                ↓                ↓
-Y5 Stok-DV       Y6 KDV/e-Belge   Y7 Bordro (←Temeller)
-        ↓             ↓              ↓
-        Y8 Mutabakat ve Dönem Sonu
-                 ↓
-        Y9 Beyanname-Kapanış-Raporlama
-                 ↓
-        Uzmanlıklar (U1–U7) → Sektör rotaları
+Belge → Ekonomik olay → Finansal etki → Hesap → Borç/Alacak
+      → Yevmiye → Büyük Defter → Mizan → Dönem sonu → Finansal tablo
 ```
 
-Makine karşılığı: `kesfet_kart_on_kosullari` (zorunlu/önerilen, döngü engelleyici trigger).
+# Katman rolleri
+
+| Katman | Ne öğretir | IES karşılığı |
+|---|---|---|
+| **Temeller** | Muhasebenin dilini anlamak | Foundation |
+| **Yetkinlikler** | Muhasebe işini yapmak | Intermediate |
+| **Uzmanlıklar** | Belirsizlikte muhakeme | Advanced |
+| *Sektör patikaları* | *Uzmanlıkların sektöre uygulanması* | *ileride* |
 
 ---
 
-# Öğretim modeli (içerik fazının sözleşmesi)
+# TEMELLER — 7 kart
 
-- **Yeni kayıt türü öğretimi:** çözümlü örnek → tamamlama → hesap seçimi →
-  yön belirleme → sıfırdan kayıt → yakın transfer → uzak transfer → interleaved.
-- **Pratik düzeni:** blocked başlar (5–8 varyasyon) → karıştırılır → aralıklı geri getirilir.
-- **Anlatım/pratik hedefi:** Temeller ~%35/65 · Yetkinlik ~%20/80 · Uzmanlık ~%10/90.
-- **Temas hedefi:** Temeller boyunca ~75–100 kayıt teması.
-- **Mevzuat yoğunluğu:** Temeller %0–5 → Yetkinlik işlem içi "Neden böyle?" paneli →
-  Uzmanlık problemin parçası (sürümleme zorunlu).
-- **Mali Sözlük:** dersi bölmez — popover/bottom-sheet, "detaya git" bağlantısı.
-- Mastery (M0–M9) ve belge zorluğu (B0–B5): ADR-004 "Gelecek fazlar".
+| # | Kart | slug |
+|---|---|---|
+| 1 | Muhasebeyi Anlamak | `muhasebeyi-anlamak` |
+| 2 | İşletmenin Finansal Yapısı | `isletmenin-finansal-yapisi` |
+| 3 | Hesapların Mantığı | `hesaplarin-mantigi` |
+| 4 | Borç, Alacak ve Çift Taraflı Kayıt | `borc-alacak-cift-tarafli-kayit` |
+| 5 | Belgeden Muhasebe Kaydına | `belgeden-muhasebe-kaydina` |
+| 6 | Kayıttan Mizana | `kayittan-mizana` |
+| 7 | Finansal Tablolar ve Muhasebe Döngüsü | `finansal-tablolar-ve-dongu` |
+
+**Hedef:** kullanıcı herhangi basit bir işletme olayına baktığında
+*ne oldu → ne değişti → hangi hesap → hangi yön → hangi kayıt → hangi tablo
+etkisi* zincirini kurabilsin.
+
+**Kapsam sınırı:** ticari mal alışı, satış, banka, cari, KDV, tahsilat, ödeme
+Temeller'de **öğretim örneği** olarak kullanılır; konu olarak öğretilmez.
+Bunların varyasyonları Yetkinlik kartlarına aittir.
+
+Tahmini hacim: 40–50 bölüm.
 
 ---
 
-# Finaller
+# YETKİNLİKLER — 16 kart
 
-- **Temeller Finali — İlk Ay:** sade işletmenin 15–20 olayı; olay → hesap →
-  yön → kayıt → mizan → basit tablo etkisi.
-- **Yetkinlik Finali — Muhasebe Masası:** ~1 haftalık gerçekçi işlem paketi.
-- **Uzmanlık Finali — Dosya:** tek doğru cevabı olmayan vaka; incele → bilgi
-  iste → karar ver → muhasebeleştir → gerekçelendir.
+| # | Kart | slug |
+|---|---|---|
+| 1 | Belge Okuma ve İşlem Analizi | `belge-okuma-islem-analizi` |
+| 2 | Hesap Seçimi ve Muhasebe Kaydı | `hesap-secimi-muhasebe-kaydi` |
+| 3 | Satın Alma ve Borç Yönetimi | `satin-alma-borc-yonetimi` |
+| 4 | Satış ve Alacak Yönetimi | `satis-alacak-yonetimi` |
+| 5 | Cari Hesap ve Mutabakat | `cari-hesap-mutabakat` |
+| 6 | Nakit, Banka ve Ödeme İşlemleri | `nakit-banka-odeme` |
+| 7 | Çek, Senet, Kart ve POS İşlemleri | `cek-senet-kart-pos` |
+| 8 | KDV İşlemleri | `kdv-islemleri` |
+| 9 | e-Belge ve Dijital Muhasebe | `e-belge-dijital-muhasebe` |
+| 10 | Stok İşlemleri | `stok-islemleri` |
+| 11 | Duran Varlık İşlemleri | `duran-varlik-islemleri` |
+| 12 | Personel, Bordro ve SGK | `personel-bordro-sgk` |
+| 13 | Finansman ve Yabancı Para İşlemleri | `finansman-yabanci-para` |
+| 14 | Dönemsellik, Tahakkuk ve Değerleme | `donemsellik-tahakkuk-degerleme` |
+| 15 | Dönem Sonu, Vergi ve Kapanış İşlemleri | `donem-sonu-vergi-kapanis` |
+| 16 | Muhasebe Kontrolü, Mutabakat ve Raporlama | `muhasebe-kontrolu-raporlama` |
+
+Tahmini hacim: 110–140 bölüm (kart başına 6–10).
 
 ---
 
-# Bilinen Boşluklar
+# UZMANLIKLAR — 8 kart
 
-1. 26 birimin 24'ünün gövdesi şablon (yalnız birim 1–2 yazılı).
-2. Kart 2 finali yok.
-3. Arşivdeki 20 eski ders (7 + 13) içerik yazarken kaynak metindir.
-4. Soru havuzu boş; hiçbir birime onaylı soru bağlı değil.
-5. Zamana bağlı mevzuat değerleri kaynak+tarih metadata'sına bağlanmadı.
+| # | Kart | slug |
+|---|---|---|
+| 1 | Vergi | `vergi-uzmanligi` |
+| 2 | Maliyet ve Üretim Muhasebesi | `maliyet-uretim-muhasebesi` |
+| 3 | Finansal Raporlama ve TMS/TFRS | `finansal-raporlama-tfrs` |
+| 4 | Bordro, SGK ve İşçilik | `bordro-sgk-iscilik` |
+| 5 | Ar-Ge, Teknokent ve Teşvikler | `arge-teknokent-tesvikler` |
+| 6 | Dış Ticaret Muhasebesi | `dis-ticaret-muhasebesi` |
+| 7 | Proje Muhasebesi | `proje-muhasebesi` |
+| 8 | Finansal Analiz ve Yönetim Raporlama | `finansal-analiz-yonetim-raporlama` |
+
+Tahmini hacim: 70–100 bölüm.
+
+---
+
+# Ölçülen beceriler (kartlardan ayrı katman)
+
+Kullanıcı bir soru çözerken aynı anda birden çok beceri skoru gelişir. Bu
+katman `yetkinlikler` → `olay_yetkinlikleri` → `ilerleme_kaydet` →
+`kullanici_yetkinlikleri` zinciriyle **zaten çalışıyor** (22 tanımlı beceri).
+
+Mevcut: Amortisman · Belge Okuma · Beyanname Analizi · Bordro · Cari Hesap ·
+Dış Ticaret · Dönem Sonu · Hata Bulma · İhracat · İthalat · KDV · KDV İadesi ·
+KDV Tahakkuku · Mizan Analizi · Muavin Hesap · Muhasebe Temelleri · SGK ·
+Teşvik Muhasebesi · Tevkifat · Üretim Muhasebesi · Vergi Muhasebesi ·
+Yevmiye Kaydı
+
+**Eksik (eklenecek):** Hesap Seçimi · Borç/Alacak Yönü · Finansal Tablo Etkisi ·
+Mevzuat Bağlantısı · Olay Analizi
+
+> İsim çakışması: menüdeki kategori "Yetkinlikler" (16 kart) ile buradaki
+> "yetkinlik" (ölçülen beceri) farklı şeyler. Karar: ölçüm tarafı arayüzde
+> **"Beceri"** olarak adlandırılacak (ADR-005 §5).
+
+---
+
+# Mevcut durum
+
+| | Durum |
+|---|---|
+| 31 kart | ✅ canlıda, hepsi `yakinda` |
+| Bölüm / ders | ❌ yok — kart kart eklenecek |
+| Ders içeriği | ❌ yok |
+| Ön koşul ağı | ❌ boş (bilinçli — boş kart kapıyı yanlış açar) |
+| Sektör patikaları | ❌ ileride |
+| Beceri listesi genişletmesi | ❌ bekliyor |
+
+**Sıradaki iş:** Temeller kart 1'in bölüm + ders kırılımı.
