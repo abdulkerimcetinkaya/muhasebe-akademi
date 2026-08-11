@@ -27,7 +27,7 @@ export const BakimSayfasi = () => {
         </h1>
 
         <p className="mt-7 text-[15px] sm:text-[16px] text-ink-soft font-medium max-w-md mx-auto">
-          Kaydın alındı — açılışta ilk sen haberdar olacaksın.
+          Kaydın alındı. Açılış tarihini e-postayla bildireceğiz.
         </p>
       </div>
 

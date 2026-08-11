@@ -35,7 +35,7 @@ export interface UnitelerVerisi {
 
 // Liste yüklemesinde çekilen kolonlar — icerik/icerik_guncellendi YOK
 const SORU_LISTE_KOLONLARI =
-  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, isletme_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler, olay_id, tip';
+  'id, baslik, zorluk, senaryo, ipucu, aciklama, durum, isletme_id, konu_id, alt_baslik_id, ekleyen_id, muavinler, etiketler, olay_id, tip, config';
 const MODUL_LISTE_KOLONLARI =
   'id, isletme_id, sira, baslik, aciklama, zorluk_seviyesi, opsiyonel, aktif';
 const ALT_BASLIK_LISTE_KOLONLARI = 'id, modul_id, sira, baslik, karma, aktif';
@@ -173,6 +173,8 @@ export const uniteleriYukle = async (): Promise<UnitelerVerisi> => {
       muavinler,
       etiketler,
       ekleyenId: s.ekleyen_id ?? null,
+      tip: (s as { tip?: string }).tip ?? 'yevmiye_kaydi',
+      config: (s as { config?: unknown }).config ?? {},
     };
     soruById[s.id] = soru;
     sorularByUnite[s.isletme_id].push(soru);

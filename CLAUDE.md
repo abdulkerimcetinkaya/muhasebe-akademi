@@ -7,6 +7,14 @@ Tek Düzen Hesap Planı'nı senaryo tabanlı yevmiye kaydı alıştırmalarıyla
 Gerçeğe yakın belgelerle (fatura, makbuz, dekont) çalışılır; anında kontrol,
 puan + streak, rozet, aktivite ısı haritası ile motivasyon katmanı sağlanır.
 
+## Kanonik Çalışma Ağacı
+Tek geçerli çalışma ağacı: **`/Users/abdulkerimcetinkaya/Desktop/muhasebelab`**
+(git remote: `github.com/abdulkerimcetinkaya/muhasebe-akademi`).
+
+`~/Documents/Codex/…/repo` altındaki kopya **eski bir anlık görüntüdür** — Keşfet
+39-ders migration'ı ve `src/lib/kesfet-icerik.ts` orada yoktur. Oraya yapılan
+düzeltmeler kaybolur; kullanılmamalıdır.
+
 ## Teknik Yapı
 - **Vite + React 19 + TypeScript** (tek HTML + CDN mimarisi terk edildi; eski sürüm
   [src/_legacy-reference.html](src/_legacy-reference.html) içinde referans olarak duruyor)
@@ -56,12 +64,12 @@ supabase/
 │   ├── 20260422000001_init                — şema + RLS
 │   ├── 20260422000002_admin_rls           — admin politikaları
 │   ├── 20260422000003_premium_rpc         — erken erişim aktivasyon RPC (ilk 100 kişiye 1 yıl)
-│   ├── 20260423000000_hesap_plani_seed    — 268 hesap (TDHP — Fuat Hoca PDF referansı)
+│   ├── 20260423000000_hesap_plani_seed    — 268 hesap (TDHP — Fuat Hoca PDF referansı; 20260504000001 ile 272'ye çıktı)
 │   ├── 20260423000001_belgeler            — fatura/makbuz/dekont tablosu
 │   ├── 20260423000002_seed_static_sorular — 11 ünite + 98 statik soru
 │   ├── 20260425000001_ai_kullanim         — AI çağrı sayacı
 │   ├── 20260425000002_iyzico              — ödeme tablosu (entegrasyon henüz yapılmadı)
-│   ├── 20260425000003_more_sorular        — 115 ek soru (toplam 213)
+│   ├── 20260425000003_more_sorular        — 132 ek soru (toplam 213)
 │   ├── 20260426000001_rls_sikilastir      — RLS policy güçlendirme
 │   ├── 20260427000001_kullanici_profil_alanlari — onboarding profil alanları
 │   ├── 20260427000002_kullanici_adi_unique      — username UNIQUE constraint
@@ -97,8 +105,11 @@ supabase/
   9. MDV Alış-Satış · 10. Amortisman · 11. Reeskont/Karşılık ·
   12. Stok Değerleme · 13. Yabancı Kaynaklar · 14. Gelir Tablosu ·
   15. Dönem Sonu Kapanış
-- `sorular` tablosu — **213 soru** seed edilmiş; restructure migration'ında
-  keyword bazlı yeni ünitelere taşındı, admin panelinden manuel düzeltme yapılabilir
+- `sorular` tablosu — 213 soru seed edilmişti; **16 Mayıs 2026'da tamamı
+  `durum='arsiv'` yapıldı** (`20260516000010_tum_sorulari_arsivle.sql`), yani
+  bu 213 soru kullanıcıya görünmüyor. 9 Temmuz 2026 ölçümüne göre canlı soru
+  sayısı **71** (70 legacy + 1 KUR-001) — bkz. [LEGACY-ICERIK-ENVANTER.md](LEGACY-ICERIK-ENVANTER.md).
+  Admin panelinden manuel düzeltme yapılabilir
   (`durum`: taslak/inceleme/onayli/arsiv). Cozumler tablosu hesap_plani'ye
   FK ile bağlı.
 - `ROZETLER` — 12 başarı rozeti (kodda)
@@ -126,7 +137,8 @@ supabase/
 - Onboarding akışı
 - **TDHP tam entegrasyon:** 272 hesap (TDHP standart, eksik 4 hesap eklendi), 58 grup başlığı, 3
   seviyeli hiyerarşi (sınıf > grup > hesap)
-- **11 ünite, 213 soru** — pazar pilot eşiği (150) aşıldı
+- ~~**11 ünite, 213 soru**~~ — 213 sorunun tamamı 16 Mayıs 2026'da arşive alındı;
+  güncel canlı soru sayısı 71 (bkz. Veri Yapısı bölümü)
 - Ventriloc/qvery esinli major reskin (slate blue + cool pearl + bakır accent)
 
 ### Yol haritası (pazar analizi sonrası öncelikli — [PAZAR-ANALIZI.md](PAZAR-ANALIZI.md))

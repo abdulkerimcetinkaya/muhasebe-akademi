@@ -198,8 +198,8 @@ export const AIAsistanYanPanel = ({ acik, onKapat, baglam }: Props) => {
                 Bugünkü 3 hakkın doldu
               </div>
               <p className="text-[12px] text-ink-soft leading-relaxed mb-3">
-                Yarın tekrar 3 yeni hak. Premium ile sınırsız sohbet et, AI yanlış analizi
-                ve adım adım çözüm anlatımı da açılır.
+                Ücretsiz hesabına yarın 3 yeni sorgu tanımlanır. Premium; sınırsız sorgu,
+                yanlış analizi ve adım adım çözüm desteği sunar.
               </p>
               <button
                 onClick={() => {
@@ -209,7 +209,7 @@ export const AIAsistanYanPanel = ({ acik, onKapat, baglam }: Props) => {
                 className="bg-ink text-bg px-4 py-2 text-[11px] tracking-wide uppercase font-bold rounded-lg hover:opacity-90 active:scale-[0.98] transition inline-flex items-center gap-1.5"
               >
                 <Icon name="Sparkles" size={12} />
-                Premium&apos;u Keşfet
+                Premium’u incele
               </button>
             </div>
           )}
@@ -233,7 +233,7 @@ export const AIAsistanYanPanel = ({ acik, onKapat, baglam }: Props) => {
               }}
               placeholder={
                 kotaBitti && !isPremium
-                  ? 'Bugünkü hakkın doldu — yarın tekrar dene'
+                  ? 'Bugünkü hakkın doldu. Yarın tekrar deneyebilirsin.'
                   : 'Sor: KDV indirimi nasıl çalışır?'
               }
               rows={2}
@@ -253,7 +253,7 @@ export const AIAsistanYanPanel = ({ acik, onKapat, baglam }: Props) => {
               ? 'Premium · sınırsız sorgu'
               : kalan != null
                 ? `Bugün kalan: ${kalan}/3 · Enter göndermek için`
-                : 'Free · günde 3 sorgu · Enter göndermek için'}
+                : 'Ücretsiz · günde 3 sorgu · Enter ile gönder'}
           </div>
         </div>
       </aside>

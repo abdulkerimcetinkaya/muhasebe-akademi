@@ -5,9 +5,17 @@ import { AdminYanMenu } from '../../components/AdminYanMenu';
 import { AdminSayfaBaslik } from '../../components/AdminSayfaBaslik';
 import { kartDersSayisi, type KesfetKart } from '../../data/kesfet';
 import {
+  TEMELLER_HEDEF_DERSLER,
+  OGRENME_ZINCIRI,
+  dersZinciri,
+  dersAdiNormalize,
+  hedefDersMevcutMu,
+} from '../../data/temeller-mufredat-denetimi';
+import {
   kartGuncelle,
   kartOlustur,
   kartSil,
+  kartYayinSorunlariniBul,
   tumKartlariYukle,
   type YeniKart,
 } from '../../lib/kesfet';
@@ -19,6 +27,9 @@ const bosForm = (): YeniKart => ({
   ikon: 'Rocket',
   kategori: 'Temeller',
   durum: 'yakinda',
+  uzmanlik_turu: null,
+  on_kosul_sluglari: [],
+  onerilen_on_kosul_sluglari: [],
   sira: 0,
 });
 
@@ -33,7 +44,7 @@ export const AdminKesfetSayfasi = () => {
 
   const yukle = async () => {
     try {
-      setKartlar(await tumKartlariYukle());
+      setKartlar(await tumKartlariYukle(undefined, true));
       setHata(null);
     } catch (e) {
       setHata(e instanceof Error ? e.message : 'Yüklenemedi');
@@ -60,6 +71,9 @@ export const AdminKesfetSayfasi = () => {
       ikon: k.ikon,
       kategori: k.kategori,
       durum: k.durum,
+      uzmanlik_turu: k.uzmanlik_turu,
+      on_kosul_sluglari: k.on_kosul_sluglari ?? [],
+      onerilen_on_kosul_sluglari: k.onerilen_on_kosul_sluglari ?? [],
       sira: k.sira,
     });
     window.scrollTo(0, 0);
@@ -74,6 +88,23 @@ export const AdminKesfetSayfasi = () => {
     if (!/^[a-z0-9-]+$/.test(form.slug)) {
       setHata('Slug yalnızca küçük harf, rakam ve tire içerebilir (örn: ticari-isletme).');
       return;
+    }
+    const mevcutKart = duzenlenen ? kartlar.find((kart) => kart.id === duzenlenen) : null;
+    if (form.durum === 'acik') {
+      if (!mevcutKart) {
+        setHata('Yeni kartı önce Yakında veya Gizli olarak oluştur; içerik ve bağlantılar tamamlandıktan sonra aç.');
+        return;
+      }
+      try {
+        const sorunlar = await kartYayinSorunlariniBul(mevcutKart);
+        if (sorunlar.length) {
+          setHata(`Kart yayınlanamaz: ${sorunlar.join(' · ')}`);
+          return;
+        }
+      } catch (e) {
+        setHata(`Yayın kontrolü çalışmadı: ${e instanceof Error ? e.message : 'Bilinmeyen hata'}`);
+        return;
+      }
     }
     setKaydediliyor(true);
     try {
@@ -113,9 +144,45 @@ export const AdminKesfetSayfasi = () => {
     }
   };
 
+  const yayinKontrolu = async (kart: KesfetKart) => {
+    try {
+      const sorunlar = await kartYayinSorunlariniBul(kart);
+      alert(sorunlar.length ? `Yayın sorunları:\n\n${sorunlar.join('\n')}` : 'Yayın kontrolü tamam: kartın yayınlanmış içerikleri hazır.');
+    } catch (e) {
+      alert(`Yayın kontrolü çalışmadı: ${e instanceof Error ? e.message : 'Bilinmeyen hata'}`);
+    }
+  };
+
   const inputCls =
     'w-full px-3 py-2 bg-bg-tint border border-line-strong rounded-lg text-sm font-medium outline-none focus:border-ink';
   const labelCls = 'block text-[10px] tracking-[0.2em] uppercase font-bold text-ink-mute mb-1.5';
+
+  const kesfetKartlari = kartlar.filter((k) => k.tip === 'kesfet');
+  const tumBolumler = kesfetKartlari.flatMap((k) => k.bolumler.map((b) => ({ kart: k, bolum: b })));
+  const tumItemlar = tumBolumler.flatMap(({ kart, bolum }) =>
+    bolum.itemlar.map((item) => ({ kart, bolum, item })),
+  );
+  const icerikVar = (icerik: unknown): boolean => Array.isArray(icerik) && icerik.length > 0;
+  const etkilesimliBlokSayisi = (icerik: unknown): number =>
+    Array.isArray(icerik)
+      ? icerik.filter((blok) => {
+          const tip = (blok as { type?: string })?.type;
+          return tip === 'kontrol' || tip === 'kayit';
+        }).length
+      : 0;
+  const doluItem = tumItemlar.filter(({ item }) => icerikVar(item.icerik)).length;
+  const etkilesimliItem = tumItemlar.filter(({ item }) => etkilesimliBlokSayisi(item.icerik) > 0).length;
+  const kullaniciyaAcik = tumItemlar.filter(({ kart, item }) =>
+    kart.durum === 'acik' && icerikVar(item.icerik),
+  ).length;
+  const temelAdlari = new Set(
+    tumItemlar
+      .filter(({ kart }) => kart.kategori.toLocaleLowerCase('tr').includes('temel'))
+      .map(({ item }) => dersAdiNormalize(item.ad)),
+  );
+  const mufredatEksikleri = TEMELLER_HEDEF_DERSLER.filter(
+    (hedef) => !hedefDersMevcutMu(hedef, temelAdlari),
+  );
 
   return (
     <div className="max-w-[1240px] mx-auto px-5 sm:px-8 py-8">
@@ -126,6 +193,28 @@ export const AdminKesfetSayfasi = () => {
             baslik="Keşfet Kartları"
             aksiyon={<span className="text-[12px] text-ink-mute tnum">{kartlar.length} kart</span>}
           />
+
+          {!yukleniyor && (
+            <section className="mb-8 border-y border-line py-4" aria-label="Keşfet içerik özeti">
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-x-5 gap-y-4">
+                {[
+                  ['Kart', kesfetKartlari.length],
+                  ['Bölüm', tumBolumler.length],
+                  ['Item', tumItemlar.length],
+                  ['İçerik hazır', doluItem],
+                  ['İçerik eksik', tumItemlar.length - doluItem],
+                  ['Etkileşimli', etkilesimliItem],
+                  ['Kullanıcıya açık', kullaniciyaAcik],
+                  ['Yakında kart', kesfetKartlari.filter((k) => k.durum === 'yakinda').length],
+                ].map(([etiket, deger]) => (
+                  <div key={etiket}>
+                    <div className="font-display text-xl font-bold text-ink tnum">{deger}</div>
+                    <div className="font-mono text-[9px] tracking-[0.14em] uppercase text-ink-mute mt-0.5">{etiket}</div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Form */}
           <div className="bg-surface border border-line rounded-xl p-5 mb-8">
@@ -185,12 +274,29 @@ export const AdminKesfetSayfasi = () => {
                   className={inputCls}
                   value={form.durum}
                   onChange={(e) =>
-                    setForm((f) => ({ ...f, durum: e.target.value as 'acik' | 'yakinda' }))
+                    setForm((f) => ({ ...f, durum: e.target.value as 'acik' | 'yakinda' | 'gizli' }))
                   }
                 >
                   <option value="acik">Açık</option>
                   <option value="yakinda">Yakında</option>
+                  <option value="gizli">Gizli</option>
                 </select>
+              </div>
+              <div>
+                <label className={labelCls}>Uzmanlık alt türü</label>
+                <select className={inputCls} value={form.uzmanlik_turu ?? ''} onChange={(e) => setForm((f) => ({ ...f, uzmanlik_turu: (e.target.value || null) as 'fonksiyonel' | 'sektorel' | null }))}>
+                  <option value="">Uygulanmaz</option>
+                  <option value="fonksiyonel">Fonksiyonel</option>
+                  <option value="sektorel">Sektörel</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelCls}>Zorunlu ön koşul slugları</label>
+                <input className={inputCls} value={(form.on_kosul_sluglari ?? []).join(', ')} onChange={(e) => setForm((f) => ({ ...f, on_kosul_sluglari: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) }))} placeholder="muhasebe-temelleri, gunluk-muhasebe-operasyonlari" />
+              </div>
+              <div className="md:col-span-2">
+                <label className={labelCls}>Önerilen ön koşul slugları</label>
+                <input className={inputCls} value={(form.onerilen_on_kosul_sluglari ?? []).join(', ')} onChange={(e) => setForm((f) => ({ ...f, onerilen_on_kosul_sluglari: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) }))} placeholder="finansal-raporlama" />
               </div>
               <div>
                 <label className={labelCls}>Sıra</label>
@@ -238,12 +344,19 @@ export const AdminKesfetSayfasi = () => {
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-ink text-sm truncate">{k.ad}</span>
                       <span className={`chip ${k.durum === 'acik' ? 'chip-success' : ''}`}>
-                        {k.durum === 'acik' ? 'Açık' : 'Yakında'}
+                        {k.durum === 'acik' ? 'Açık' : k.durum === 'yakinda' ? 'Yakında' : 'Gizli'}
                       </span>
+                      {k.uzmanlik_turu && <span className="chip">{k.uzmanlik_turu === 'fonksiyonel' ? 'Fonksiyonel' : 'Sektörel'}</span>}
                     </div>
                     <div className="text-[11.5px] text-ink-mute mt-0.5 tnum">
                       /{k.slug} · {k.kategori} · {k.bolumler.length} bölüm · {kartDersSayisi(k)} ders
                     </div>
+                    {((k.on_kosul_sluglari?.length ?? 0) > 0 || (k.onerilen_on_kosul_sluglari?.length ?? 0) > 0) && (
+                      <div className="text-[10.5px] text-ink-mute mt-1">
+                        {(k.on_kosul_sluglari?.length ?? 0) > 0 && <>Zorunlu: {k.on_kosul_sluglari?.join(', ')}</>}
+                        {(k.onerilen_on_kosul_sluglari?.length ?? 0) > 0 && <> · Önerilen: {k.onerilen_on_kosul_sluglari?.join(', ')}</>}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-1 flex-none">
@@ -269,6 +382,9 @@ export const AdminKesfetSayfasi = () => {
                     >
                       Bölümler
                     </button>
+                    <button onClick={() => void yayinKontrolu(k)} className="btn btn-soft btn-sm" title="Olay, belge, çözüm, yetkinlik ve mevzuat bağlarını denetle">
+                      Yayın kontrolü
+                    </button>
                     <button
                       onClick={() => duzenleBaslat(k)}
                       className="p-1.5 text-ink-mute hover:text-ink transition"
@@ -287,6 +403,81 @@ export const AdminKesfetSayfasi = () => {
                 </div>
               ))}
             </div>
+          )}
+
+          {!yukleniyor && tumItemlar.length > 0 && (
+            <section className="mt-10">
+              <div className="flex items-end justify-between gap-4 mb-3">
+                <div>
+                  <h2 className="font-display text-xl font-bold tracking-tight text-ink">İçerik denetimi</h2>
+                  <p className="text-[12px] text-ink-mute mt-1">Kullanıcı görünürlüğü kart durumundan; içerik durumu item bloklarından hesaplanır.</p>
+                </div>
+                <span className="font-mono text-[10px] text-ink-mute tnum">{tumItemlar.length} item</span>
+              </div>
+              <div className="border-t border-line-strong">
+                {tumItemlar.map(({ kart, bolum, item }) => {
+                  const dolu = icerikVar(item.icerik);
+                  const acik = kart.durum === 'acik' && dolu;
+                  const zincir = dersZinciri(item.icerik);
+                  return (
+                    <div key={item.id} className="grid lg:grid-cols-[1fr_auto] gap-3 py-3 border-b border-line-soft items-center">
+                      <div className="min-w-0 flex items-start gap-3">
+                        <Icon name={item.tip === 'ders' ? 'BookOpen' : 'Pencil'} size={14} className="text-ink-quiet mt-0.5 flex-none" />
+                        <div className="min-w-0">
+                          <div className="text-[13px] font-semibold text-ink truncate">{item.ad}</div>
+                          <div className="text-[10.5px] text-ink-mute mt-0.5 truncate">{kart.ad} · {bolum.ad}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-wrap lg:justify-end">
+                        <span className={`chip ${dolu ? 'chip-success' : ''}`}>{dolu ? 'İçerik var' : 'İçerik boş'}</span>
+                        <span className={`chip ${(item.sorular?.length ?? 0) > 0 ? 'chip-success' : ''}`}>
+                          {(item.sorular?.length ?? 0) > 0 ? `${item.sorular?.length} ölçümlü soru` : 'Ölçümlü soru yok'}
+                        </span>
+                        <span className={`chip ${etkilesimliBlokSayisi(item.icerik) > 0 ? 'chip-success' : ''}`}>
+                          {etkilesimliBlokSayisi(item.icerik)} etkileşim
+                        </span>
+                        <span className={`chip ${zincir.length >= 6 ? 'chip-success' : ''}`} title={`Karşılanan: ${zincir.join(', ') || 'yok'}\nEksik: ${OGRENME_ZINCIRI.map(([ad]) => ad).filter((ad) => !zincir.includes(ad)).join(', ')}`}>
+                          Zincir {zincir.length}/{OGRENME_ZINCIRI.length}
+                        </span>
+                        <span className="chip">{item.tip === 'ders' ? 'Ders' : 'Alıştırma'}</span>
+                        <span className={`chip ${!item.yayin_durumu || item.yayin_durumu === 'yayinlandi' ? 'chip-success' : ''}`}>
+                          {!item.yayin_durumu || item.yayin_durumu === 'yayinlandi' ? 'Yayınlandı' : item.yayin_durumu === 'incelemede' ? 'İncelemede' : item.yayin_durumu === 'arsiv' ? 'Arşiv' : 'Taslak'}
+                        </span>
+                        <span className={`chip ${acik ? 'chip-success' : ''}`}>{acik ? 'Kullanıcıya açık' : kart.durum === 'yakinda' ? 'Kart yakında' : kart.durum === 'gizli' ? 'Yalnız admin' : 'İçerik eksik'}</span>
+                        <button onClick={() => nav(`/admin/kesfet/${kart.id}/item/${item.id}`)} className="btn btn-soft btn-sm">Düzenle</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {!yukleniyor && (
+            <section className="mt-10 bg-surface border border-line rounded-xl p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-display text-lg font-bold text-ink">Temeller müfredat denetimi</h2>
+                  <p className="text-[12px] text-ink-mute mt-1">19 hedef ders, yalnız admin ekranında gerçek item adlarıyla karşılaştırılır.</p>
+                </div>
+                <span className={`chip ${mufredatEksikleri.length === 0 ? 'chip-success' : ''}`}>
+                  {19 - mufredatEksikleri.length}/19 mevcut
+                </span>
+              </div>
+              {mufredatEksikleri.length > 0 ? (
+                <div className="mt-4 border-t border-line-soft divide-y divide-line-soft">
+                  {mufredatEksikleri.map((hedef) => (
+                    <div key={hedef.no} className="py-3 flex items-center gap-3">
+                      <span className="font-mono text-[10px] text-danger tnum w-6">{String(hedef.no).padStart(2, '0')}</span>
+                      <div className="flex-1"><span className="text-[13px] font-semibold text-ink">{hedef.ad}</span><span className="block text-[10.5px] text-ink-mute">{hedef.bolum}</span></div>
+                      <span className="chip">Müfredat eksiği</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[12px] text-success mt-4">Hedef müfredatın tamamı mevcut item kayıtlarıyla karşılanıyor.</p>
+              )}
+            </section>
           )}
         </div>
       </div>

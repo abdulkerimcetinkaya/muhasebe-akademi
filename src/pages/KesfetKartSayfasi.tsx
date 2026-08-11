@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../components/Icon';
-import { kartBul, kartItemlari, kartSureDk, trackAyar, type KesfetKart } from '../data/kesfet';
+import { kartBul, kartErisimi, kartFinalBolumleri, kartItemlari, kartSureDk, normalBolumler, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
@@ -62,11 +62,33 @@ export const KesfetKartSayfasi = () => {
     );
   }
 
+  const erisim = kartErisimi(kart, kartlar, tamamlanan);
+  if (erisim.durum !== 'acik') {
+    const kilitli = erisim.durum === 'kilitli';
+    return (
+      <main className="max-w-[760px] mx-auto px-5 sm:px-8 py-20 text-center">
+        <Icon name={kilitli ? 'Lock' : 'Hourglass'} size={28} className="text-ink-mute mx-auto" />
+        <h1 className="font-display text-2xl font-bold text-ink mt-5">
+          {kilitli ? 'Önce gerekli yolu tamamla' : 'Bu kart henüz yayında değil'}
+        </h1>
+        {kilitli && (
+          <p className="text-ink-mute mt-3">
+            {erisim.eksikZorunlular.map((x) => x.ad).join(', ')} tamamlandığında bu kart açılır.
+          </p>
+        )}
+        <button onClick={() => nav(ayar.taban)} className="btn btn-soft mt-7">Keşfet'e dön</button>
+      </main>
+    );
+  }
+
   const hepsi = kartItemlari(kart);
-  const toplam = hepsi.length;
-  const biten = hepsi.filter((x) => tamamlanan.has(x.item.id)).length;
+  const hazirlar = hepsi.filter((x) => Array.isArray(x.item.icerik) && x.item.icerik.length > 0);
+  const toplam = hazirlar.length;
+  const biten = hazirlar.filter((x) => tamamlanan.has(x.item.id)).length;
   const yuzde = toplam ? Math.round((biten / toplam) * 100) : 0;
-  const sirada = hepsi.find((x) => !tamamlanan.has(x.item.id)) ?? hepsi[0];
+  const sirada = hazirlar.find((x) => !tamamlanan.has(x.item.id)) ?? hazirlar[0];
+  const bolumler = normalBolumler(kart);
+  const finalBolumleri = kartFinalBolumleri(kart);
 
   const R = 30;
   const C = 2 * Math.PI * R;
@@ -104,7 +126,7 @@ export const KesfetKartSayfasi = () => {
               </button>
             )}
             <div className="flex items-center gap-4 font-mono text-[11.5px] tracking-wide uppercase text-ink-mute tnum">
-              <span>{kart.bolumler.length} bölüm</span>
+              <span>{bolumler.length} bölüm</span>
               <span className="text-ink-quiet">·</span>
               <span>{toplam} ders</span>
               <span className="text-ink-quiet">·</span>
@@ -142,7 +164,7 @@ export const KesfetKartSayfasi = () => {
 
       {/* Bölümler — ders kartları grid */}
       <div className="flex flex-col gap-12">
-        {kart.bolumler.map((bolum, bi) => (
+        {bolumler.map((bolum, bi) => (
           <section key={bolum.id}>
             <div className="flex items-baseline gap-3 mb-5">
               <span className="font-display text-[24px] font-bold leading-none text-line-strong tnum select-none">
@@ -157,11 +179,13 @@ export const KesfetKartSayfasi = () => {
             <div className="border-t border-line-strong">
               {bolum.itemlar.map((item, ii) => {
                 const bitti = tamamlanan.has(item.id);
+                const hazir = Array.isArray(item.icerik) && item.icerik.length > 0;
                 return (
                   <button
                     key={item.id}
-                    onClick={() => nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
-                    className="group relative w-full flex items-center gap-4 py-3.5 pr-1 border-b border-line-soft text-left transition-all"
+                    onClick={() => hazir && nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
+                    disabled={!hazir}
+                    className={`group relative w-full flex items-center gap-4 py-3.5 pr-1 border-b border-line-soft text-left transition-all ${!hazir ? 'opacity-55 cursor-not-allowed' : ''}`}
                   >
                     {/* hover'da sola kayan mavi vurgu */}
                     <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand scale-y-0 group-hover:scale-y-100 transition-transform duration-200 origin-center" />
@@ -174,7 +198,7 @@ export const KesfetKartSayfasi = () => {
                       }`}
                     >
                       <Icon
-                        name={bitti ? 'CheckCircle2' : item.tip === 'ders' ? 'BookOpen' : 'Pencil'}
+                        name={!hazir ? 'Hourglass' : bitti ? 'CheckCircle2' : item.tip === 'ders' ? 'BookOpen' : 'Pencil'}
                         size={16}
                       />
                     </span>
@@ -182,16 +206,49 @@ export const KesfetKartSayfasi = () => {
                       {item.ad}
                     </span>
                     <span className="hidden sm:inline font-mono text-[10px] tracking-[0.16em] uppercase text-ink-mute flex-none">
-                      {item.tip === 'ders' ? 'Ders' : 'Alıştırma'}
+                      {hazir ? (item.tip === 'ders' ? 'Ders' : 'Alıştırma') : 'Hazırlanıyor'}
                     </span>
                     <span className="font-mono text-[11px] text-ink-quiet tnum flex-none w-14 text-right">
-                      ~{item.tip === 'ders' ? 3 : 6} dk
+                      {hazir ? `~${item.tip === 'ders' ? 3 : 6} dk` : '—'}
                     </span>
                     <Icon
                       name="ArrowRight"
                       size={15}
-                      className="flex-none text-ink-quiet opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all"
+                      className={`flex-none text-ink-quiet transition-all ${hazir ? 'opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0' : 'opacity-0'}`}
                     />
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+
+        {finalBolumleri.map((bolum) => (
+          <section key={bolum.id} className="rounded-2xl border border-brand/25 bg-brand-soft/30 p-5 sm:p-7">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-10 h-10 rounded-xl bg-brand text-white grid place-items-center">
+                <Icon name="Trophy" size={18} />
+              </span>
+              <div>
+                <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-brand-mute">Kart finali</span>
+                <h2 className="font-display text-[20px] font-bold tracking-tight text-ink">{bolum.ad}</h2>
+              </div>
+            </div>
+            <div className="border-t border-brand/20">
+              {bolum.itemlar.map((item) => {
+                const bitti = tamamlanan.has(item.id);
+                const hazir = Array.isArray(item.icerik) && item.icerik.length > 0;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => hazir && nav(`${ayar.taban}/${kart.slug}/${item.id}`)}
+                    disabled={!hazir}
+                    className="group w-full flex items-center gap-3 py-4 text-left disabled:opacity-50"
+                  >
+                    <Icon name={bitti ? 'CheckCircle2' : 'Target'} size={18} className={bitti ? 'text-success' : 'text-brand'} />
+                    <span className="flex-1 text-[15px] font-semibold text-ink">{item.ad}</span>
+                    <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-ink-mute">Değerlendirme</span>
+                    <Icon name="ArrowRight" size={16} className="text-brand" />
                   </button>
                 );
               })}

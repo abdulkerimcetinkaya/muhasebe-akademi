@@ -9,19 +9,32 @@ export interface KesfetItem {
   id: string;
   ad: string;
   tip: ItemTip;
+  yayin_durumu?: 'taslak' | 'incelemede' | 'yayinlandi' | 'arsiv';
   soru_id?: string | null;
+  sorular?: KesfetSoruBaglantisi[];
   /** Ders içeriği — BlockNote blok dizisi (özel yevmiye/sahanotu blokları dahil). */
   icerik?: unknown | null;
+}
+
+export interface KesfetSoruBaglantisi {
+  soru_id: string;
+  sira: number;
+  zorunlu: boolean;
+  minimum_basari: number;
+  destek_seviyesi: 'rehberli' | 'standart' | 'serbest';
 }
 
 export interface KesfetBolum {
   id: string;
   ad: string;
   sira: number;
+  tur: 'normal' | 'kart_finali';
   itemlar: KesfetItem[];
 }
 
 export type KartTip = 'kesfet' | 'isletme';
+export type KartYayinDurumu = 'acik' | 'yakinda' | 'gizli';
+export type UzmanlikTuru = 'fonksiyonel' | 'sektorel' | null;
 
 export interface KesfetKart {
   id: string;
@@ -32,7 +45,10 @@ export interface KesfetKart {
   kategori: string;
   /** Kart türü: 'kesfet' (kavram dersi) veya 'isletme' (dönem simülasyonu). */
   tip: KartTip;
-  durum: 'acik' | 'yakinda';
+  durum: KartYayinDurumu;
+  uzmanlik_turu?: UzmanlikTuru;
+  on_kosul_sluglari?: string[];
+  onerilen_on_kosul_sluglari?: string[];
   sira: number;
   bolumler: KesfetBolum[];
 }
@@ -63,10 +79,10 @@ export const KESFET_TRACK: TrackAyar = {
   katalogBaslikVurgu: 'başlamak',
   katalogBaslikSonra: ' istersin?',
   katalogAlt:
-    'Önce temelleri kavra, sonra uzmanlık alanlarında kendi patikanı çiz. Her kart, sıralı ders ve alıştırmalardan oluşur.',
+    'Temeller ile başla, günlük yetkinliklerini geliştir, ardından uzmanlık yolunu seç. Her kart sıralı ders ve uygulamalardan oluşur.',
   bosBaslik: 'Henüz içerik yok',
   bosAciklama: 'Keşfet kartları yakında burada olacak. İlk kart eklendiğinde görünecek.',
-  kategoriSira: ['Temeller', 'Uzmanlık Alanları', 'Uzmanlık'],
+  kategoriSira: ['Temeller', 'Yetkinlikler', 'Uzmanlıklar'],
 };
 
 export const ISLETME_TRACK: TrackAyar = {
@@ -117,3 +133,43 @@ export const kartSureDk = (kart: KesfetKart): number =>
 
 export const kartDersSayisi = (kart: KesfetKart): number =>
   kart.bolumler.flatMap((b) => b.itemlar).length;
+
+export const normalBolumler = (kart: KesfetKart): KesfetBolum[] =>
+  kart.bolumler.filter((bolum) => bolum.tur !== 'kart_finali');
+
+export const kartFinalBolumleri = (kart: KesfetKart): KesfetBolum[] =>
+  kart.bolumler.filter((bolum) => bolum.tur === 'kart_finali');
+
+export const yayinlanabilirItemlar = (kart: KesfetKart): KesfetItem[] =>
+  kart.bolumler
+    .flatMap((b) => b.itemlar)
+    .filter((item) => Array.isArray(item.icerik) && item.icerik.length > 0);
+
+export const kartTamamlandiMi = (kart: KesfetKart, tamamlanan: Set<string>): boolean => {
+  const itemlar = yayinlanabilirItemlar(kart);
+  return itemlar.length > 0 && itemlar.every((item) => tamamlanan.has(item.id));
+};
+
+export type KartErisim = {
+  durum: 'acik' | 'kilitli' | 'yakinda' | 'gizli';
+  eksikZorunlular: KesfetKart[];
+};
+
+export const kartErisimi = (
+  kart: KesfetKart,
+  kartlar: KesfetKart[],
+  tamamlanan: Set<string>,
+): KartErisim => {
+  if (kart.durum === 'gizli') return { durum: 'gizli', eksikZorunlular: [] };
+  if (kart.durum === 'yakinda') return { durum: 'yakinda', eksikZorunlular: [] };
+  const eksikZorunlular = (kart.on_kosul_sluglari ?? [])
+    .map((slug) => kartlar.find((aday) => aday.slug === slug))
+    .filter((aday): aday is KesfetKart => Boolean(aday))
+    .filter((aday) => !kartTamamlandiMi(aday, tamamlanan));
+  return { durum: eksikZorunlular.length ? 'kilitli' : 'acik', eksikZorunlular };
+};
+
+export const olcumTamamlandiMi = (
+  sorular: KesfetSoruBaglantisi[],
+  dogruCozulenler: Set<string>,
+): boolean => sorular.filter((soru) => soru.zorunlu).every((soru) => dogruCozulenler.has(soru.soru_id));

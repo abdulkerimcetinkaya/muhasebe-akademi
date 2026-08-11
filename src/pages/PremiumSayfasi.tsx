@@ -217,7 +217,7 @@ export const PremiumSayfasi = () => {
           Planını seç
         </h1>
         <p className="text-base md:text-lg text-ink-soft font-medium max-w-xl mx-auto leading-relaxed">
-          Soru çözmek her zaman ücretsiz. Premium öğrenmeyi hızlandıran katmandır.
+          Tüm sorular ücretsizdir. Premium, AI hata analizi ve adım adım çözüm desteği ekler.
         </p>
       </div>
 
@@ -351,7 +351,7 @@ export const PremiumSayfasi = () => {
                   color: '#fff',
                 }}
               >
-                En İyi Değer
+                Premium
               </span>
             </div>
             <div className="flex items-baseline gap-1.5 mb-1">
@@ -361,7 +361,7 @@ export const PremiumSayfasi = () => {
               </h3>
             </div>
             <div className="text-[12.5px] opacity-70 font-medium mb-6">
-              Yapay zeka rehberli öğrenme
+              AI hata analizi ve çözüm desteği
             </div>
             {(() => {
               const ayFiyat = donem === 'aylik' ? aylikFiyat : Math.round(yillikAylikEsdeger);
@@ -402,7 +402,7 @@ export const PremiumSayfasi = () => {
               ) : (
                 <>
                   <Icon name="ArrowRight" size={13} />
-                  Premium’u Başlat
+                  Premium’u başlat
                 </>
               )}
             </button>

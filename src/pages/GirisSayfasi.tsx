@@ -145,7 +145,7 @@ export const GirisSayfasi = () => {
     setYukleniyor(false);
 
     if (!sonuc.basarili) {
-      setHata(sonuc.hata ?? 'Bilinmeyen hata.');
+      setHata(sonuc.hata ?? 'İşlem tamamlanamadı. Lütfen tekrar dene.');
       return;
     }
     if (mod === 'kayit' && !sonuc.user?.email_confirmed_at) {
@@ -260,7 +260,7 @@ export const GirisSayfasi = () => {
               setYukleniyor(true);
               const sonuc = await googleIleGiris();
               if (!sonuc.basarili) {
-                setHata(sonuc.hata ?? 'Google ile giriş başarısız.');
+                setHata(sonuc.hata ?? 'Google ile giriş tamamlanamadı. Lütfen tekrar dene.');
                 setYukleniyor(false);
               }
               // Başarılı olursa Google'a redirect olur, setYukleniyor(false) gerekmez

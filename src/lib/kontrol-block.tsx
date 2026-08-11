@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // Özel BlockNote bloğu — Kontrol Sorusu (ders içi interaktif mini-kontrol).
 //
 // Saklama formatı (props):
@@ -61,6 +62,9 @@ export const KontrolBlock = createReactBlockSpec(
       siklar: { default: '[]' },
       aciklama: { default: '' },
       ipucu: { default: '' },
+      yanlisAciklama: { default: '' },
+      sunum: { default: 'test' },
+      cokluSecim: { default: false },
     },
     content: 'none',
   },
@@ -70,9 +74,11 @@ export const KontrolBlock = createReactBlockSpec(
       const siklar = parse(block.props.siklar);
       const aciklama = block.props.aciklama;
       const ipucu = block.props.ipucu;
+      const yanlisAciklama = block.props.yanlisAciklama;
+      const cokluSecim = block.props.cokluSecim;
 
       if (!editor.isEditable) {
-        return <KontrolOkuyucu soru={soru} siklar={siklar} aciklama={aciklama} ipucu={ipucu} />;
+        return <KontrolOkuyucu soru={soru} siklar={siklar} aciklama={aciklama} yanlisAciklama={yanlisAciklama} ipucu={ipucu} cokluSecim={cokluSecim} />;
       }
       return (
         <KontrolDuzenleyici
@@ -80,9 +86,12 @@ export const KontrolBlock = createReactBlockSpec(
           siklar={siklar}
           aciklama={aciklama}
           ipucu={ipucu}
+          yanlisAciklama={yanlisAciklama}
+          sunum={block.props.sunum}
+          cokluSecim={cokluSecim}
           onDegis={(yeni) =>
             editor.updateBlock(block, {
-              props: { soru: yeni.soru, siklar: stringify(yeni.siklar), aciklama: yeni.aciklama, ipucu: yeni.ipucu },
+              props: { ...yeni, siklar: stringify(yeni.siklar) },
             })
           }
         />
@@ -97,26 +106,42 @@ const KontrolOkuyucu = ({
   soru,
   siklar,
   aciklama,
+  yanlisAciklama,
   ipucu,
+  cokluSecim = false,
   onDurum,
 }: {
   soru: string;
   siklar: KontrolSik[];
   aciklama: string;
+  yanlisAciklama?: string;
   ipucu?: string;
+  cokluSecim?: boolean;
   // Test modalı için: doğru=geçti, yanlış=yeniden dene, null=henüz cevaplanmadı.
   onDurum?: (dogru: boolean | null) => void;
 }) => {
-  const [secili, setSecili] = useState<number | null>(null);
-  const cevaplandi = secili !== null;
-  const dogruMu = cevaplandi && siklar[secili]?.dogru;
+  const [secililer, setSecililer] = useState<number[]>([]);
+  const [cevaplandi, setCevaplandi] = useState(false);
+  const dogruMu = cevaplandi && siklar.every((s, i) => s.dogru === secililer.includes(i));
 
   const sec = (i: number) => {
-    setSecili(i);
+    if (cokluSecim) {
+      setSecililer((mevcut) => mevcut.includes(i) ? mevcut.filter((x) => x !== i) : [...mevcut, i]);
+      return;
+    }
+    setSecililer([i]);
+    setCevaplandi(true);
     onDurum?.(!!siklar[i]?.dogru);
   };
+  const kontrolEt = () => {
+    if (secililer.length === 0) return;
+    const sonuc = siklar.every((s, i) => s.dogru === secililer.includes(i));
+    setCevaplandi(true);
+    onDurum?.(sonuc);
+  };
   const tekrar = () => {
-    setSecili(null);
+    setSecililer([]);
+    setCevaplandi(false);
     onDurum?.(null);
   };
 
@@ -130,9 +155,9 @@ const KontrolOkuyucu = ({
           let durum = 'bos';
           if (cevaplandi) {
             if (s.dogru) durum = 'dogru';
-            else if (i === secili) durum = 'yanlis';
+            else if (secililer.includes(i)) durum = 'yanlis';
             else durum = 'pas';
-          }
+          } else if (secililer.includes(i)) durum = 'secili';
           return (
             <button
               key={i}
@@ -149,12 +174,13 @@ const KontrolOkuyucu = ({
           );
         })}
       </div>
+      {cokluSecim && !cevaplandi && <button type="button" className="bn-kn-kontrol-et" disabled={secililer.length === 0} onClick={kontrolEt}>Seçimlerimi kontrol et</button>}
       {cevaplandi && (
         <div className={`bn-kn-sonuc ${dogruMu ? 'bn-kn-basari' : 'bn-kn-hata'}`}>
           <span className="bn-kn-sonuc-ikon" aria-hidden="true">{dogruMu ? '✓' : '✕'}</span>
           <div className="bn-kn-sonuc-govde">
             <div className="bn-kn-sonuc-baslik">{dogruMu ? 'Doğru' : 'Tekrar bak'}</div>
-            {aciklama && <div className="bn-kn-aciklama">{aciklama}</div>}
+            {(dogruMu ? aciklama : yanlisAciklama || aciklama) && <div className="bn-kn-aciklama">{dogruMu ? aciklama : yanlisAciklama || aciklama}</div>}
             <button type="button" className="bn-kn-tekrar" onClick={tekrar}>
               Tekrar dene
             </button>
@@ -171,15 +197,19 @@ export const KontrolSoruView = ({
   soru,
   siklar,
   aciklama,
+  yanlisAciklama,
   ipucu,
+  cokluSecim,
   onDurum,
 }: {
   soru: string;
   siklar: string;
   aciklama: string;
+  yanlisAciklama?: string;
   ipucu?: string;
+  cokluSecim?: boolean;
   onDurum?: (dogru: boolean | null) => void;
-}) => <KontrolOkuyucu soru={soru} siklar={parse(siklar)} aciklama={aciklama} ipucu={ipucu} onDurum={onDurum} />;
+}) => <KontrolOkuyucu soru={soru} siklar={parse(siklar)} aciklama={aciklama} yanlisAciklama={yanlisAciklama} ipucu={ipucu} cokluSecim={cokluSecim} onDurum={onDurum} />;
 
 // ---------- Düzenleyici (admin) ----------
 
@@ -187,23 +217,30 @@ const KontrolDuzenleyici = ({
   soru,
   siklar,
   aciklama,
+  yanlisAciklama,
   ipucu,
+  sunum,
+  cokluSecim,
   onDegis,
 }: {
   soru: string;
   siklar: KontrolSik[];
   aciklama: string;
+  yanlisAciklama: string;
   ipucu: string;
-  onDegis: (yeni: { soru: string; siklar: KontrolSik[]; aciklama: string; ipucu: string }) => void;
+  sunum: string;
+  cokluSecim: boolean;
+  onDegis: (yeni: { soru: string; siklar: KontrolSik[]; aciklama: string; yanlisAciklama: string; ipucu: string; sunum: string; cokluSecim: boolean }) => void;
 }) => {
-  const sikGuncelle = (yeni: KontrolSik[]) => onDegis({ soru, siklar: yeni, aciklama, ipucu });
+  const degerler = { soru, siklar, aciklama, yanlisAciklama, ipucu, sunum, cokluSecim };
+  const sikGuncelle = (yeni: KontrolSik[]) => onDegis({ ...degerler, siklar: yeni });
 
   return (
     <div className="bn-th-duz" contentEditable={false}>
       <input
         type="text"
         value={soru}
-        onChange={(e) => onDegis({ soru: e.target.value, siklar, aciklama, ipucu })}
+        onChange={(e) => onDegis({ ...degerler, soru: e.target.value })}
         placeholder="Soru — örn: Kasadaki 120.000 TL varlık mı, kaynak mı?"
         className="bn-th-duz-hesap"
         style={{ textAlign: 'left' }}
@@ -214,7 +251,7 @@ const KontrolDuzenleyici = ({
             <button
               type="button"
               onClick={() =>
-                sikGuncelle(siklar.map((x, j) => ({ ...x, dogru: j === i })))
+                sikGuncelle(siklar.map((x, j) => ({ ...x, dogru: cokluSecim ? (j === i ? !x.dogru : x.dogru) : j === i })))
               }
               className={`bn-kn-duz-radyo ${s.dogru ? 'secili' : ''}`}
               title="Doğru şık"
@@ -248,10 +285,14 @@ const KontrolDuzenleyici = ({
           + Şık
         </button>
       </div>
+      <div className="bn-kn-duz-ayarlar">
+        <label><input type="checkbox" checked={sunum === 'satirici'} onChange={(e) => onDegis({ ...degerler, sunum: e.target.checked ? 'satirici' : 'test' })} /> Ders içinde göster</label>
+        <label><input type="checkbox" checked={cokluSecim} onChange={(e) => onDegis({ ...degerler, cokluSecim: e.target.checked })} /> Çoklu seçim</label>
+      </div>
       <input
         type="text"
         value={ipucu}
-        onChange={(e) => onDegis({ soru, siklar, aciklama, ipucu: e.target.value })}
+        onChange={(e) => onDegis({ ...degerler, ipucu: e.target.value })}
         placeholder="İpucu (opsiyonel — soru altında açılır; boşsa görünmez)"
         className="bn-th-duz-not"
         style={{ width: '100%', marginTop: '0.5rem' }}
@@ -259,8 +300,16 @@ const KontrolDuzenleyici = ({
       <input
         type="text"
         value={aciklama}
-        onChange={(e) => onDegis({ soru, siklar, aciklama: e.target.value, ipucu })}
+        onChange={(e) => onDegis({ ...degerler, aciklama: e.target.value })}
         placeholder="Açıklama (cevap sonrası gösterilir)"
+        className="bn-th-duz-not"
+        style={{ width: '100%', marginTop: '0.5rem' }}
+      />
+      <input
+        type="text"
+        value={yanlisAciklama}
+        onChange={(e) => onDegis({ ...degerler, yanlisAciklama: e.target.value })}
+        placeholder="Yanlış cevap açıklaması (boşsa genel açıklama kullanılır)"
         className="bn-th-duz-not"
         style={{ width: '100%', marginTop: '0.5rem' }}
       />

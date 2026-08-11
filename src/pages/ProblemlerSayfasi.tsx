@@ -240,7 +240,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
             Problemler
           </h1>
           <p className="font-display-italic text-ink-soft text-[17px] sm:text-[19px] leading-snug mt-4 max-w-md">
-            Gerçek senaryolarla yevmiye kaydı pratiği. Çöz, anında gör, ustalaş.
+            Gerçek işlemlerden yola çıkan soruları çöz; hatalı satırları ve borç-alacak dengesini hemen gör.
           </p>
         </div>
 
@@ -323,7 +323,7 @@ export const ProblemlerSayfasi = ({ ilerleme }: Props) => {
             </p>
             <div className="flex items-center gap-4 mt-6 flex-wrap">
               <span className="inline-flex items-center gap-2 rounded-full bg-white text-[#1d3a5f] font-semibold text-[14px] px-5 py-2.5 group-hover:gap-3 transition-all">
-                Çöze Başla <Icon name="ArrowRight" size={16} />
+                Soruyu çöz <Icon name="ArrowRight" size={16} />
               </span>
               <span className="font-mono text-[11.5px] text-[#a9c4e6] uppercase tracking-[0.14em]">
                 {ZORLUK_AD[devamSoru.zorluk]} · {ZORLUK_PUAN[devamSoru.zorluk]} puan

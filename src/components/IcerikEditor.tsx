@@ -239,6 +239,42 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         } as any);
       },
     };
+    const veriKartlariOgesi: DefaultReactSuggestionItem = {
+      title: 'Veri Kartları',
+      subtext: 'İşletme bilgilerini aşamalı veya karşılaştırmalı göster',
+      aliases: ['veri', 'kart', 'karsilastirma', 'işletme', 'durum'],
+      group: 'Diğer',
+      icon: <VeriKartlariGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'verikartlari', props: { baslik: '', kartlar: '[]', asamali: false },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
+    const laboratuvarOgesi: DefaultReactSuggestionItem = {
+      title: 'İşlem Laboratuvarı',
+      subtext: 'Sürgüler ve olay nedenleriyle etkileşimli deney alanı',
+      aliases: ['laboratuvar', 'slider', 'sürgü', 'deney', 'işlem'],
+      group: 'Diğer',
+      icon: <LaboratuvarGlyph />,
+      onItemClick: () => {
+        insertOrUpdateBlockForSlashMenu(editor, {
+          type: 'islemlaboratuvari', props: { baslik: 'Aynı para, farklı işletme', config: '{}' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any);
+      },
+    };
+    const bilgiDonusumuOgesi: DefaultReactSuggestionItem = {
+      title: 'Bilgi Dönüşümü',
+      subtext: 'Dağınık işletme olaylarını soruya göre anlamlı bilgiye dönüştür',
+      aliases: ['bilgi', 'dönüşüm', 'muhasebe laboratuvarı', 'girdi', 'çıktı'],
+      group: 'Diğer', icon: <BilgiDonusumuGlyph />,
+      onItemClick: () => insertOrUpdateBlockForSlashMenu(editor, {
+        type: 'bilgidonusumu', props: { baslik: 'Dağınık Bilgiden Anlamlı Bilgiye', config: '{}' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any),
+    };
     return filterSuggestionItems(
       [
         ...getDefaultReactSlashMenuItems(editor),
@@ -248,6 +284,9 @@ export const IcerikEditor = ({ initialContent, onChange }: Props) => {
         bilancoOgesi,
         kontrolOgesi,
         kayitOgesi,
+        veriKartlariOgesi,
+        laboratuvarOgesi,
+        bilgiDonusumuOgesi,
       ],
       query,
     );
@@ -380,6 +419,21 @@ const KontrolGlyph = () => (
     <path d="M9.5 9.5a2.5 2.5 0 1 1 3.4 2.3c-.6.3-.9.8-.9 1.5v.2" />
     <path d="M12 17h.01" />
   </svg>
+);
+
+const VeriKartlariGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+    <rect x="3" y="4" width="8" height="16" rx="2" /><rect x="13" y="4" width="8" height="16" rx="2" /><path d="M6 9h2M16 9h2M6 14h2M16 14h2" />
+  </svg>
+);
+
+const LaboratuvarGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <path d="M9 3h6M10 3v6l-5 8a3 3 0 0 0 2.6 4.5h8.8A3 3 0 0 0 19 17l-5-8V3" /><path d="M7.5 16h9" />
+  </svg>
+);
+const BilgiDonusumuGlyph = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M4 6h6M14 6h6M10 6l4 6-4 6M14 18h6M4 18h6" /></svg>
 );
 
 const KayitGlyph = () => (

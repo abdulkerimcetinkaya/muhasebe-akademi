@@ -36,6 +36,7 @@ import type {
   SenetBelge,
   Soru,
   SoruWithUnite,
+  CoktanSecmeliConfig,
   UserRow,
 } from '../types';
 
@@ -211,7 +212,9 @@ const SoruEkraniIci = ({
 }: Props) => {
   const nav = useNavigate();
   const location = useLocation();
-  const liste = (location.state as { liste?: string[] } | null)?.liste ?? null;
+  const routeState = location.state as { liste?: string[]; kesfetDonus?: string } | null;
+  const liste = routeState?.liste ?? null;
+  const kesfetDonus = routeState?.kesfetDonus ?? null;
   const { uniteler, tumSorular } = useUniteler();
   const { user } = useAuth();
   const unite = uniteler.find((u) => u.id === soru.uniteId);
@@ -599,6 +602,10 @@ const SoruEkraniIci = ({
   };
 
   const sonraki = () => {
+    if (kesfetDonus) {
+      nav(kesfetDonus, { replace: true });
+      return;
+    }
     if (liste && liste.length > 0) {
       const idx = liste.findIndex((id) => id === soru.id);
       if (idx >= 0 && idx < liste.length - 1) {
@@ -1493,6 +1500,96 @@ interface WrapperProps {
   getSessionCombo: () => number;
 }
 
+const CoktanSecmeliSoru = ({
+  soru,
+  onCozuldu,
+  onYanlis,
+  cozulmusMu,
+}: {
+  soru: SoruWithUnite;
+  onCozuldu: WrapperProps['onCozuldu'];
+  onYanlis: WrapperProps['onYanlis'];
+  cozulmusMu: boolean;
+}) => {
+  const nav = useNavigate();
+  const location = useLocation();
+  const donus = (location.state as { kesfetDonus?: string } | null)?.kesfetDonus ?? '/problemler';
+  const config = soru.config as CoktanSecmeliConfig;
+  const maddeler = Array.isArray(config?.maddeler) ? config.maddeler : [];
+  const [cevaplar, setCevaplar] = useState<Record<string, string>>({});
+  const [kontrolEdildi, setKontrolEdildi] = useState(false);
+  const hepsiCevapli = maddeler.length > 0 && maddeler.every((m) => cevaplar[m.id]);
+  const hepsiDogru = hepsiCevapli && maddeler.every((m) => cevaplar[m.id] === m.dogruSecenekId);
+
+  const kontrolEt = () => {
+    if (!hepsiCevapli) return;
+    setKontrolEdildi(true);
+    if (hepsiDogru) onCozuldu(soru);
+    else onYanlis(soru.id);
+  };
+
+  if (!maddeler.length) {
+    return <main className="max-w-3xl mx-auto px-5 py-20 text-center text-ink-mute">Bu değerlendirme yapılandırılamadı.</main>;
+  }
+
+  return (
+    <main className="max-w-4xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
+      <button onClick={() => nav(donus)} className="inline-flex items-center gap-2 text-sm font-semibold text-ink-mute hover:text-ink mb-8">
+        <Icon name="ArrowLeft" size={15} /> Karta dön
+      </button>
+      <div className="mb-9">
+        <span className="font-mono text-[10px] tracking-[0.22em] uppercase text-brand-mute">Ölçümlü kart finali</span>
+        <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight text-ink mt-2">{soru.baslik}</h1>
+        <p className="mt-3 text-ink-soft leading-relaxed">{soru.senaryo}</p>
+      </div>
+      <div className="space-y-6">
+        {maddeler.map((madde, index) => {
+          const dogru = cevaplar[madde.id] === madde.dogruSecenekId;
+          return (
+            <section key={madde.id} className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
+              <div className="flex gap-3">
+                <span className="font-mono text-xs text-ink-quiet tnum pt-1">{String(index + 1).padStart(2, '0')}</span>
+                <div className="flex-1">
+                  <h2 className="font-display text-lg font-bold text-ink">{madde.soru}</h2>
+                  <div className="mt-4 grid gap-2">
+                    {madde.secenekler.map((secenek) => {
+                      const secili = cevaplar[madde.id] === secenek.id;
+                      return (
+                        <button
+                          key={secenek.id}
+                          type="button"
+                          onClick={() => { setCevaplar((onceki) => ({ ...onceki, [madde.id]: secenek.id })); setKontrolEdildi(false); }}
+                          className={`rounded-xl border px-4 py-3 text-left text-sm transition ${secili ? 'border-brand bg-brand-soft text-brand-deep' : 'border-line-soft hover:border-brand/40 text-ink-soft'}`}
+                        >
+                          {secenek.metin}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {kontrolEdildi && (
+                    <p className={`mt-3 text-sm ${dogru ? 'text-success' : 'text-danger'}`}>
+                      {dogru ? 'Doğru. ' : 'Tekrar düşün. '}{madde.aciklama}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        })}
+      </div>
+      <div className="sticky bottom-4 mt-8 flex items-center justify-between gap-4 rounded-2xl border border-line bg-surface/95 p-4 shadow-lg backdrop-blur">
+        <span className="text-sm text-ink-mute">{Object.keys(cevaplar).length}/{maddeler.length} cevaplandı</span>
+        {kontrolEdildi && hepsiDogru ? (
+          <button className="btn btn-primary" onClick={() => nav(donus)}><Icon name="CheckCircle2" size={16} /> Final tamamlandı</button>
+        ) : (
+          <button className="btn btn-primary" disabled={!hepsiCevapli} onClick={kontrolEt}>Cevapları kontrol et</button>
+        )}
+      </div>
+      {cozulmusMu && <p className="mt-4 text-center text-sm text-success">Bu finali daha önce başarıyla tamamladın.</p>}
+    </main>
+  );
+};
+
 export const SoruEkrani = ({
   ilerleme,
   onCozuldu,
@@ -1521,6 +1618,17 @@ export const SoruEkrani = ({
   if (!soru) return null;
 
   if (!user) return <GirisDuvari soru={soru} />;
+
+  if (soru.tip === 'coktan_secmeli') {
+    return (
+      <CoktanSecmeliSoru
+        soru={soru}
+        onCozuldu={onCozuldu}
+        onYanlis={onYanlis}
+        cozulmusMu={!!ilerleme.cozulenler[soru.id]}
+      />
+    );
+  }
 
   return (
     <SoruEkraniIci

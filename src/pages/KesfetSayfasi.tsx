@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/Icon';
 import { EmptyState } from '../components/EmptyState';
-import { kartDersSayisi, kartSureDk, trackAyar, type KesfetKart } from '../data/kesfet';
+import { kartDersSayisi, kartErisimi, kartSureDk, trackAyar, type KesfetKart } from '../data/kesfet';
 import { tumKartlariYukle } from '../lib/kesfet';
 import { useKesfetIlerleme } from '../lib/use-kesfet-ilerleme';
 
@@ -44,7 +44,7 @@ export const KesfetSayfasi = () => {
   const gruplar = useMemo(() => {
     if (!kartlar) return [];
     const harita = new Map<string, KesfetKart[]>();
-    for (const k of kartlar) {
+    for (const k of kartlar.filter((kart) => kart.durum !== 'gizli')) {
       const ad = k.kategori?.trim() || 'Diğer';
       if (!harita.has(ad)) harita.set(ad, []);
       harita.get(ad)!.push(k);
@@ -134,11 +134,15 @@ export const KesfetSayfasi = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {grup.kartlar.map((k, i) => {
-                  const acik = k.durum === 'acik';
+                  const erisim = kartErisimi(k, kartlar, tamamlanan);
+                  const acik = erisim.durum === 'acik';
                   const toplam = kartDersSayisi(k);
                   const biten = k.bolumler
                     .flatMap((b) => b.itemlar)
                     .filter((it) => tamamlanan.has(it.id)).length;
+                  const siradaki = k.bolumler
+                    .flatMap((b) => b.itemlar)
+                    .find((it) => Array.isArray(it.icerik) && it.icerik.length > 0 && !tamamlanan.has(it.id));
                   const yuzde = toplam ? Math.round((biten / toplam) * 100) : 0;
 
                   return (
@@ -169,6 +173,11 @@ export const KesfetSayfasi = () => {
 
                       {/* Orta: başlık + açıklama */}
                       <div className="mt-6">
+                        {k.uzmanlik_turu && (
+                          <span className="font-mono text-[9px] tracking-[0.18em] uppercase text-brand-mute">
+                            {k.uzmanlik_turu === 'fonksiyonel' ? 'Fonksiyonel uzmanlık' : 'Sektörel uzmanlık'}
+                          </span>
+                        )}
                         <h3
                           className="font-display font-bold tracking-tight leading-[1.1] text-ink"
                           style={{ fontSize: 'clamp(18px, 1.6vw, 22px)' }}
@@ -199,11 +208,24 @@ export const KesfetSayfasi = () => {
                                 style={{ width: `${yuzde}%` }}
                               />
                             </div>
+                            {siradaki && (
+                              <p className="mt-2 text-[10.5px] text-ink-mute truncate">
+                                Sıradaki: {siradaki.ad}
+                              </p>
+                            )}
                           </>
+                        ) : erisim.durum === 'kilitli' ? (
+                          <div>
+                            <span className="font-mono text-[9.5px] tracking-[0.18em] uppercase font-bold text-ink-mute inline-flex items-center gap-1.5">
+                              <Icon name="Lock" size={10} /> Ön koşul gerekli
+                            </span>
+                            <p className="mt-2 text-[11px] leading-snug text-ink-mute">
+                              Önce {erisim.eksikZorunlular.map((x) => x.ad).join(', ')} tamamlanmalı.
+                            </p>
+                          </div>
                         ) : (
                           <span className="font-mono text-[9.5px] tracking-[0.22em] uppercase font-bold text-premium-deep inline-flex items-center gap-1.5 bg-premium-soft/60 px-2 py-1 rounded">
-                            <Icon name="Lock" size={10} />
-                            Yakında
+                            <Icon name="Hourglass" size={10} /> Yakında
                           </span>
                         )}
                       </div>

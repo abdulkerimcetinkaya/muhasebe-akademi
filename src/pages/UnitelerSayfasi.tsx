@@ -56,8 +56,8 @@ export const UnitelerSayfasi = () => {
           className="font-display-italic text-ink-soft leading-snug max-w-[640px] mt-5"
           style={{ fontSize: 'clamp(14px, 1.2vw, 17px)' }}
         >
-          Her işletme türü kendi senaryolarına, hesap planına ve özel kayıt akışına sahiptir.
-          Aktif olanlar üzerinde çalışmaya başlayabilirsin; diğerlerinin müfredatı hazırlanıyor.
+          Her işletme türünde farklı belge, hesap ve kayıt akışlarıyla çalışırsın.
+          Açık olan bir işletmeyi seç; kilitli işletmelerin müfredatı hazırlanıyor.
         </p>
       </header>
 
@@ -115,7 +115,7 @@ export const UnitelerSayfasi = () => {
                     </span>
                   ) : (
                     <span className="font-mono text-[10px] tracking-[0.22em] uppercase font-bold text-ink-mute inline-flex items-center gap-1.5 group-hover:text-brand-deep transition-colors">
-                      Modülleri Aç
+                      Modülleri gör
                       <Icon name="ArrowRight" size={11} />
                     </span>
                   )}
@@ -128,7 +128,7 @@ export const UnitelerSayfasi = () => {
         {sirali.length === 0 && (
           <div className="bg-surface border border-dashed border-line-strong rounded-2xl px-6 py-16 text-center">
             <p className="text-sm text-ink-mute">
-              Henüz işletme türü eklenmemiş. Admin panelinden ekleyebilirsin.
+              Henüz bir işletme türü yayımlanmadı. Daha sonra tekrar kontrol et.
             </p>
           </div>
         )}

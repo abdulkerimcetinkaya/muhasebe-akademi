@@ -107,7 +107,7 @@ const KullaniciPaneli = ({ ilerleme, stat }: Props) => {
     <main className="max-w-[1240px] mx-auto px-5 sm:px-8 py-10">
       <SeoMeta
         title="MuhasebeAkademi — Muhasebe ve Yevmiye Kaydı Pratik Platformu"
-        description="Türkiye'deki muhasebe öğrencileri için interaktif yevmiye kaydı pratik platformu. Senaryolu sorular, gerçek belgeler, anında geri bildirim. Tek Düzen Hesap Planı tabanlı."
+        description="Muhasebe öğrencileri için yevmiye kaydı pratik platformu. Gerçek belge senaryoları, anında kontrol ve Tek Düzen Hesap Planı alıştırmaları."
         canonical="/"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -439,26 +439,26 @@ const YETENEKLER = [
     no: '01',
     baslik: 'Gerçek senaryolar',
     aciklama:
-      'Fatura, makbuz, dekont. Olay, taraflar, tutar. Sınıfta görmediğin pratiği masan başında çöz.',
+      'Fatura, makbuz ve dekontlardaki işlemleri yevmiye kaydına dönüştür.',
   },
   {
     no: '02',
     baslik: 'Konuyu uygulayarak pekiştir',
     aciklama:
-      'Her işletmede teori + bol soru. Aynı kavramı farklı senaryolarda görerek kalıcı öğren.',
+      'Aynı muhasebe kavramını farklı işletme ve işlem senaryolarında uygula.',
   },
   {
     no: '03',
     baslik: 'AI hata analizi',
     aciklama:
-      'Yanlış cevabını satır satır açıklar. Hangi kodun neden hatalı olduğunu kavramsal anlatır.',
+      'Yanlış satırı, hesap kodunu ve borç-alacak seçimini ayrı ayrı açıklar.',
     rozet: 'Premium',
   },
   {
     no: '04',
     baslik: 'İş hayatına hazırlık',
     aciklama:
-      'Stajda göreceğin yevmiye fişinin tam aynısı. Mezun olunca defter karşısında tereddüt etmeyesin.',
+      'Stajda karşılaşacağın belgelere ve yevmiye kayıtlarına önceden çalış.',
   },
 ];
 
@@ -501,7 +501,7 @@ const NASIL_ADIMLAR: NasilAdim[] = [
   {
     no: 'III',
     baslik: 'Anında kontrol',
-    aciklama: 'Yanlış satır kırmızı, dengeli kayıt yeşil. Saniyeler içinde puan.',
+    aciklama: 'Kaydı gönder; hatalı satırları ve borç-alacak dengesini hemen gör.',
     snippet: [
       { tip: 'sonuc', not: '✓ Borç-Alacak dengeli' },
       { tip: 'sonuc', not: '+10p kazanıldı' },
@@ -584,7 +584,7 @@ const AnonimAnaSayfa = () => {
       {/* Bakım açıkken: beklenti şeridi (yakında açılıyoruz) */}
       {bakim && (
         <div className="bg-ink text-bg text-center text-[13px] sm:text-sm font-semibold px-4 py-2.5 flex items-center justify-center gap-x-2 gap-y-1 flex-wrap">
-          <span>Yakında açılıyoruz — kaydol, açılışta ilk sen haberdar ol.</span>
+          <span>Yakında açılıyoruz. Kaydol, açılış tarihini e-postayla öğren.</span>
           <button
             onClick={() => nav('/giris?mod=kayit')}
             className="underline underline-offset-2 hover:opacity-80"
@@ -638,8 +638,8 @@ const AnonimAnaSayfa = () => {
               </p>
               <Reveal delay={0.55}>
                 <p className="text-[15px] sm:text-[16px] text-ink-soft leading-relaxed mt-10 max-w-xl">
-                  Stajda göreceğin senaryo, bugün masan başında. Çöz, takıl, yapay zekâ
-                  açıklasın — sınıftan iş hayatına geçişin pürüzsüz olsun.
+                  Stajda karşılaşacağın fatura, makbuz ve dekontları bugünden çalış.
+                  Takıldığında AI asistan, hatalı satırı ve hesap kodunu açıklasın.
                 </p>
               </Reveal>
             </div>
@@ -757,7 +757,7 @@ const AnonimAnaSayfa = () => {
                 },
               ]}
             >
-              Tek amacı: gerçek hayata hazırlamak.
+              Gerçek muhasebe işlemlerine hazırlan.
             </SlideInWords>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-l border-line">
@@ -812,7 +812,7 @@ const AnonimAnaSayfa = () => {
                 { index: 3, color: 'var(--copper-deep)', italic: true, fontFamily: 'var(--font-display)' },
               ]}
             >
-              Üç adım, üç saniye.
+              Üç adımda bir yevmiye kaydı.
             </SlideInWords>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12">
