@@ -35,6 +35,40 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
   const moduller = unite?.moduller ?? [];
   const modul = moduller.find((m) => m.id === modulId);
 
+  // İçerik lazy yüklenir — uniteler-loader liste yüklemesinde icerik çekmiyor.
+  // Modül sayfası açılınca ayrı bir query ile çek.
+  //
+  // DİKKAT: Bu hook'lar "modül bulunamadı" erken dönüşünün ÜSTÜNDE kalmalı.
+  // `uniteler` asenkron yüklendiği için ilk render'da modül bulunamıyor; hook'lar
+  // erken dönüşün altında olursa ikinci render'da fazladan çağrılır ve React
+  // "Rendered more hooks than during the previous render" hatasıyla çöker.
+  const [icerik, setIcerik] = useState<unknown[] | null>(
+    Array.isArray(modul?.icerik) ? (modul.icerik as unknown[]) : null,
+  );
+  const [icerikYukleniyor, setIcerikYukleniyor] = useState(!Array.isArray(modul?.icerik));
+
+  const modulId_ = modul?.id;
+  const modulIcerik = modul?.icerik;
+
+  useEffect(() => {
+    if (!modulId_) return;
+    if (Array.isArray(modulIcerik)) {
+      setIcerik(modulIcerik as unknown[]);
+      setIcerikYukleniyor(false);
+      return;
+    }
+    let iptal = false;
+    setIcerikYukleniyor(true);
+    modulIcerikYukle(modulId_).then((r) => {
+      if (iptal) return;
+      setIcerik(r.icerik);
+      setIcerikYukleniyor(false);
+    });
+    return () => {
+      iptal = true;
+    };
+  }, [modulId_, modulIcerik]);
+
   if (!unite || !modul) {
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -59,32 +93,6 @@ export const ModulSayfasi = ({ ilerleme }: Props) => {
   const acanModul = kilitli ? kilidiAcanModul(moduller, modul, ilerleme) : null;
   const altBasliklar = modul.altBasliklar;
   const tamamAlt = altBasliklar.filter((a) => altBaslikTamamlandiMi(a, ilerleme)).length;
-
-  // İçerik lazy yüklenir — uniteler-loader liste yüklemesinde icerik çekmiyor.
-  // Modül sayfası açılınca ayrı bir query ile çek.
-  const [icerik, setIcerik] = useState<unknown[] | null>(
-    Array.isArray(modul.icerik) ? (modul.icerik as unknown[]) : null,
-  );
-  const [icerikYukleniyor, setIcerikYukleniyor] = useState(!Array.isArray(modul.icerik));
-
-  useEffect(() => {
-    if (!modul.id) return;
-    if (Array.isArray(modul.icerik)) {
-      setIcerik(modul.icerik as unknown[]);
-      setIcerikYukleniyor(false);
-      return;
-    }
-    let iptal = false;
-    setIcerikYukleniyor(true);
-    modulIcerikYukle(modul.id).then((r) => {
-      if (iptal) return;
-      setIcerik(r.icerik);
-      setIcerikYukleniyor(false);
-    });
-    return () => {
-      iptal = true;
-    };
-  }, [modul.id, modul.icerik]);
 
   const icerikVar = icerikDolu(icerik);
 
